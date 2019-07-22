@@ -14,12 +14,12 @@ effort <- tbl(BDSHProjects, "effort") %>% collect()
 researchers <- tbl(BDSHProjects, "researchers") %>% collect()
 
 #function that reloads database after data has been added
-# loadDatabase <- function() {
-#   input$projects <<- tbl(BDSHProjects, "projects") %>% collect()
-#   input$people <<- tbl(BDSHProjects, "bdshPeople") %>% collect()
-#   input$effort <<- tbl(BDSHProjects, "effort") %>% collect()
-#   input$researchers <<- tbl(BDSHProjects, "researchers") %>% collect()
-# }
+loadDatabase <- function() {
+  projects <<- tbl(BDSHProjects, "projects") %>% collect()
+  people <<- tbl(BDSHProjects, "bdshPeople") %>% collect()
+  effort <<- tbl(BDSHProjects, "effort") %>% collect()
+  researchers <<- tbl(BDSHProjects, "researchers") %>% collect()
+}
 
 
 
