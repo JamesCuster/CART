@@ -2,7 +2,7 @@ library(shiny)
 
 # Project form functions
 saveProjectFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse))
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("projectFormData")) {
     projectFormData <<- rbind(projectFormData, formResponse)
   } else {
@@ -19,7 +19,7 @@ loadProjectFormData <- function() {
 
 # Time form functions
 saveTimeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse))
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("timeFormData")) {
     timeFormData <<- rbind(timeFormData, formResponse)
   } else {
@@ -128,7 +128,7 @@ shinyServer(
           loadProjectFormData()})
         
         # # reload database
-        # loadDatabaseReactive()
+        loadDatabase()
       }
     )
 
@@ -184,7 +184,7 @@ shinyServer(
           loadTimeFormData()})
         
         # reload database
-        # loadDatabaseReactive()
+        loadDatabase()
         
       }
     )
