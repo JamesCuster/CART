@@ -1,1 +1,1 @@
-r CMD BATCH "run.r"
+rscript "run.r"
