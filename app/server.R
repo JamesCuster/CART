@@ -2,7 +2,7 @@ library(shiny)
 
 # Project form functions
 saveProjectFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse))
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("projectFormData")) {
     projectFormData <<- rbind(projectFormData, formResponse)
   } else {
@@ -19,7 +19,7 @@ loadProjectFormData <- function() {
 
 # Time form functions
 saveTimeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse))
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("timeFormData")) {
     timeFormData <<- rbind(timeFormData, formResponse)
   } else {
@@ -44,7 +44,8 @@ shinyServer(
     # loaddb <- reactivePoll(1000, session)
 
 # Reactives for addProject ------------------------------------------------
-
+    
+    
     # Creates reactive when addProject/Time submit buttons are pressed
     cleanProjectFormData <-
       reactive({
@@ -64,16 +65,7 @@ shinyServer(
         })
         projectFormResponse
       })
-    
-    # Create reactive to reload data from database when it is edited
-    # loadDatabaseReactive <-
-    #   reactive({
-    #     projects <- tbl(BDSHProjects, "projects") %>% collect()
-    #     people <- tbl(BDSHProjects, "bdshPeople") %>% collect()
-    #     effort <- tbl(BDSHProjects, "effort") %>% collect()
-    #     researchers <- tbl(BDSHProjects, "researchers") %>% collect()
-    #   })
-    # loadDatabaseReactive()
+
 
     # This is an attempt to add "add researcher" option to add project tab
     # observeEvent({
@@ -127,8 +119,9 @@ shinyServer(
           input$submitAddProject
           loadProjectFormData()})
         
-        # # reload database
-        # loadDatabaseReactive()
+        # reload database
+        loadDatabase()
+        updateSelectInput(session, "projectID", "Select the project to add time to", projects$projectName)
       }
     )
 
@@ -184,7 +177,7 @@ shinyServer(
           loadTimeFormData()})
         
         # reload database
-        # loadDatabaseReactive()
+        #loadDatabase()
         
       }
     )
