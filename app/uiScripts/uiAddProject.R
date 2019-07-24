@@ -119,5 +119,7 @@ tabPanel(
   
   # Once data is submitted through the form, this button appears to submit to
   # database
-  uiOutput("projectToDatabase")
+  actionButton(
+    inputId = "projectToDatabase", 
+    label = "Save To Database")
 )

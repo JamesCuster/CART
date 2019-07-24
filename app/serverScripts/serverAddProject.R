@@ -34,9 +34,7 @@ observeEvent(
     })
     
     # creates button to submit data to database once a form is submitted
-    output$projectToDatabase <- renderUI({
-      actionButton("projectToDatabase", "Save To Database")
-    })
+
   }
 )
 
