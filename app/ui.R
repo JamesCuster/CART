@@ -15,16 +15,16 @@ shinyUI(
 # Add tab panels (add project/time, view (project/time) -------------------
       # Add Project Panel
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiPages/addProject.r", 
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddProject.r", 
         local = TRUE)$value,
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiPages/addTime.r", 
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddTime.r", 
         local = TRUE)$value,
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiPages/viewProjects.r", 
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewProjects.r", 
         local = TRUE)$value,
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiPages/viewTime.r", 
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewTime.r", 
         local = TRUE)$value
     )
   )
