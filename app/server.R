@@ -71,8 +71,6 @@ shinyServer(
     
     
 
-
-    
 # Reactives for add time --------------------------------------------------
     cleanTimeFormData <-
       reactive({
