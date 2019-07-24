@@ -10,8 +10,11 @@ cleanProjectFormData <-
       else if (grepl("projectID", x)) {
         NA
       } 
-      else if (grepl("bdshLead", x)) {
+      else if (x %in% addProjectFieldsBDSH) {
         people[people$name == input[[x]], "uteid", drop = TRUE]
+      } 
+      else if (x %in% addProjectFieldsResearchers) {
+        researchers[researchers$name == input[[x]], "uteid", drop = TRUE]
       } 
       else {
         input[[x]]
