@@ -3,26 +3,26 @@ tabPanel(
   # fields in the database. Don't think I need projectID, autopopulated in DB
   # textInput("projectID", "projectID"),
   textInput(
-    "projectName", 
-    "Name of Project"
+    inputId = "projectName", 
+    label = "Project Name"
   ),
   
   selectInput(
-    "bdshLead", 
-    "BDSH Project Lead",
-    people$name
+    inputId = "bdshLead", 
+    label = "BDSH Project Lead",
+    choices = people$name
   ),
 
   selectInput(
-    "bdshSecondary", 
-    "BDSH Project Secondary",
-    people$name
+    inputId = "bdshSecondary", 
+    label = "BDSH Project Secondary",
+    choices = people$name
   ),
   
   selectInput(
-    "projectPI", 
-    "Project Primary Investigator",
-    researchers$name
+    inputId = "projectPI", 
+    label = "Project Primary Investigator",
+    choices = researchers$name
   ),
   
 # # button to add new researcher
@@ -38,48 +38,48 @@ tabPanel(
 #   uiOutput("submitNewResearcher"),
   
   textInput(
-    "projectPIEmail", 
-    "Primary Investigators Email"
+    inputId = "projectPIEmail", 
+    label = "Primary Investigators Email"
   ),
   
   textInput(
-    "projectSupport1", 
-    "Project Support Staff 1"
+    inputId = "projectSupport1", 
+    label = "Project Support Staff 1"
   ),
   
   textInput(
-    "projectSupport1Email", 
-    "Project Support Staff 1 - Email"
+    inputId = "projectSupport1Email", 
+    label = "Project Support Staff 1 - Email"
   ),
   
   textInput(
-    "projectSupport2", 
-    "Project Support Staff 2"
+    inputId = "projectSupport2", 
+    label = "Project Support Staff 2"
   ),
   
   textInput(
-    "projectSupport2Email", 
-    "Project Support Staff 2 - Email"
+    inputId = "projectSupport2Email", 
+    label = "Project Support Staff 2 - Email"
   ),
   
   textInput(
-    "projectSupport3", 
-    "Project Support Staff 3"
+    inputId = "projectSupport3", 
+    label = "Project Support Staff 3"
   ),
   
   textInput(
-    "projectSupport3Email", 
-    "Project Support Staff 3 - Email"
+    inputId = "projectSupport3Email", 
+    label = "Project Support Staff 3 - Email"
   ),
   
   textInput(
-    "projectSupport4", 
-    "Project Support Staff 4"
+    inputId = "projectSupport4", 
+    label = "Project Support Staff 4"
   ),
   
   textInput(
-    "projectSupport4Email", 
-    "Project Support Staff 4 - Email"
+    inputId = "projectSupport4Email", 
+    label = "Project Support Staff 4 - Email"
   ),
 
 # This extra code allows for the text input box size to be customized.
@@ -88,7 +88,6 @@ tabPanel(
       h5(
         b("Brief Description of Project")
       ),
-      
       textarea(
         id = "projectDescription", 
         class = "form-control shiny-bound-input",
@@ -98,19 +97,19 @@ tabPanel(
   ),
   
   selectInput(
-    "projectStatus", 
-    "Status of Project",
-    c("Active", "Quite", "Inactive", "Complete")
+    inputId = "projectStatus", 
+    label = "Status of Project",
+    choices = c("Active", "Quite", "Inactive", "Complete")
   ),
   
   dateInput(
-    "projectDueDate", 
-    "Due Date of Project"
+    inputId = "projectDueDate", 
+    label = "Due Date of Project"
   ),
   
   actionButton(
-    "submitAddProject", 
-    "Submit"
+    inputId = "submitAddProject", 
+    label = "Add To Queue"
   ),
 
   tags$br(),
