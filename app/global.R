@@ -57,11 +57,13 @@ addProjectFieldsResearchers <-
 
 
 addTimeFields <- 
-  c("projectID",
+  c("timeProjectID",
     "workBy",
     "dateOfWork",
     "dateOfEntry",
     "workTime",
+    "workTimeCategory",
+    "workCategory",
     "workDescription")
 
 # Function that allows for two text inputs to be in a row

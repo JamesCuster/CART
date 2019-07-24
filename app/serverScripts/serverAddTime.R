@@ -27,11 +27,6 @@ observeEvent(
       updateTextInput(session, x, value = "")
       session$sendCustomMessage(type = "resetValue", message = x)
     })
-    
-    # creates button to submit data to database once a form is submitted
-    output$timeToDatabase <- renderUI({
-      actionButton("timeToDatabase", "Add data above to the database")
-    })
   }
 )
 

@@ -30,7 +30,7 @@ saveTimeFormData <- function(formResponse) {
 loadTimeFormData <- function() {
   if (exists("timeFormData")) {
     timeFormData
-  }
+  } 
 }
 
 
