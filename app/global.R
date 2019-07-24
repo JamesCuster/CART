@@ -8,10 +8,10 @@ library(RSQLite)
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
 # pulls table into R
-projects <- tbl(BDSHProjects, "projects") %>% collect()
-people <- tbl(BDSHProjects, "bdshPeople") %>% collect()
-effort <- tbl(BDSHProjects, "effort") %>% collect()
-researchers <- tbl(BDSHProjects, "researchers") %>% collect()
+# projects <- tbl(BDSHProjects, "projects") %>% collect()
+# people <- tbl(BDSHProjects, "bdshPeople") %>% collect()
+# effort <- tbl(BDSHProjects, "effort") %>% collect()
+# researchers <- tbl(BDSHProjects, "researchers") %>% collect()
 
 #function that reloads database after data has been added
 loadDatabase <- function() {
@@ -21,7 +21,7 @@ loadDatabase <- function() {
   researchers <<- tbl(BDSHProjects, "researchers") %>% collect()
 }
 
-
+loadDatabase()
 
 
 # Variables, Functions, and List needed for addProjects -------------------
