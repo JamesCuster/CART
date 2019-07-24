@@ -13,6 +13,9 @@ cleanProjectFormData <-
           else if (grepl("projectID", x)) {
             NA
           } 
+          else if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
+            return(NA)
+          }
           else if (x %in% addProjectFieldsBDSH) {
             people[people$name == input[[x]], "uteid", drop = TRUE]
           } 
@@ -23,7 +26,7 @@ cleanProjectFormData <-
             input[[x]]
         }
     })
-    projectFormResponse
+    projectFormResponse <<- projectFormResponse
   })
 
 
@@ -56,11 +59,11 @@ observeEvent(
     dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)
     projectFormData <<- projectFormData[c(), ]
     
-    # output$projectFormResponses <-
-    #   DT::renderDataTable({
-    #     input$submitAddProject
-    #     loadProjectFormData()
-    #   })
+    output$projectFormResponses <-
+      DT::renderDataTable({
+        input$submitAddProject
+        loadProjectFormData()
+      })
     
     # reload database after submission
     loadDatabase()

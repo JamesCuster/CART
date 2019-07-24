@@ -4,11 +4,11 @@ tabPanel(
   tags$h1("Add Time To A Project"),
   
   selectizeInput(
-    inputId = "TimeProjectID",
+    inputId = "timeProjectID",
     label = "Select Project",
     choices = projects$projectName,
     options = list(
-      placeholder = NULL,
+      placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
@@ -18,7 +18,7 @@ tabPanel(
     label = "BDSH Staff",
     choices = people$name,
     options = list(
-      placeholder = NULL,
+      placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
@@ -43,7 +43,7 @@ tabPanel(
     label = "Effort Category",
     choices = c("Small", "Medium", "Large"),
     options = list(
-      placeholder = NULL,
+      placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
@@ -56,7 +56,7 @@ tabPanel(
       Analysis = c("Data Management", "Analysis", "Report/Manuscript")
     ),
     options = list(
-      placeholder = NULL,
+      placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")
     )
   ),

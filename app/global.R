@@ -49,8 +49,7 @@ addProjectFieldsBDSH <-
     )
 
 addProjectFieldsResearchers <- 
-  c("effortID",
-    "projectPI",
+  c("projectPI",
     "projectPIEmail",
     "projectSupport1",
     "projectSupport2",
@@ -59,7 +58,8 @@ addProjectFieldsResearchers <-
 
 
 addTimeFields <- 
-  c("timeProjectID",
+  c("effortID",
+    "timeProjectID",
     "workBy",
     "dateOfWork",
     "dateOfEntry",

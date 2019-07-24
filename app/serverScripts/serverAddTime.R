@@ -5,14 +5,17 @@ cleanTimeFormData <-
       if (grepl("date", x, ignore.case = TRUE)) {
         as.character(input[[x]])
       } 
+      else if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
+        return(NA)
+      }
       else if (grepl("workBy", x)) {
         people[people$name == input[[x]], "uteid", drop = TRUE]
-      } 
+      }
       else {
         input[[x]]
       }
     })
-    timeFormResponse
+    timeFormResponse <<- timeFormResponse
   })
 
 # This is what controls what happens when the submit button on the add time
