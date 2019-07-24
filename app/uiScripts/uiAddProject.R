@@ -38,18 +38,8 @@ tabPanel(
 #   uiOutput("submitNewResearcher"),
   
   textInput(
-    inputId = "projectPIEmail", 
-    label = "Primary Investigators Email"
-  ),
-  
-  textInput(
     inputId = "projectSupport1", 
     label = "Project Support Staff 1"
-  ),
-  
-  textInput(
-    inputId = "projectSupport1Email", 
-    label = "Project Support Staff 1 - Email"
   ),
   
   textInput(
@@ -58,18 +48,8 @@ tabPanel(
   ),
   
   textInput(
-    inputId = "projectSupport2Email", 
-    label = "Project Support Staff 2 - Email"
-  ),
-  
-  textInput(
     inputId = "projectSupport3", 
     label = "Project Support Staff 3"
-  ),
-  
-  textInput(
-    inputId = "projectSupport3Email", 
-    label = "Project Support Staff 3 - Email"
   ),
   
   textInput(
@@ -77,11 +57,6 @@ tabPanel(
     label = "Project Support Staff 4"
   ),
   
-  textInput(
-    inputId = "projectSupport4Email", 
-    label = "Project Support Staff 4 - Email"
-  ),
-
 # This extra code allows for the text input box size to be customized.
   withTags(
     div(
