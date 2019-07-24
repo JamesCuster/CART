@@ -38,9 +38,40 @@ tabPanel(
     label = "Time spend in hours (as number with decimals)"
   ),
   
-  textInput(
-    inputId = "workDescription", 
-    label = "Brief description of work completed"
+  selectizeInput(
+    inputId = "workTimeCategory",
+    label = "Effort Category",
+    choices = c("Small", "Medium", "Large"),
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
+  ),
+  
+  selectizeInput(
+    inputId = "workCategory",
+    label = "Work Category",
+    choices = list(
+      `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
+      Analysis = c("Data Management", "Analysis", "Report/Manuscript")
+    ),
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
+  ),
+  
+  withTags(
+    div(
+      h5(
+        b("Work Description")
+      ),
+      textarea(
+        id = "workDescription", 
+        class = "form-control shiny-bound-input",
+        style = "width: 300px; height: 102px"
+      )
+    )
   ),
   
   actionButton(
