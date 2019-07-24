@@ -44,13 +44,19 @@ observeEvent(
 )
 
 
+output$projectFormResponses <-
+  DT::renderDataTable({
+    input$submitAddProject
+    loadProjectFormData()
+  })
+
 # controls actions when Save to Database is pressed
 observeEvent(
   input$projectToDatabase, {
     dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)
     projectFormData <<- projectFormData[c(), ]
     
-    # output$projectFormResponses <- 
+    # output$projectFormResponses <-
     #   DT::renderDataTable({
     #     input$submitAddProject
     #     loadProjectFormData()

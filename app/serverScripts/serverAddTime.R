@@ -23,10 +23,12 @@ observeEvent(
     saveTimeFormData(cleanTimeFormData())
     
     # Clears data from the forms
-    sapply(addTimeFields, function(x) {
-      updateTextInput(session, x, value = "")
-      session$sendCustomMessage(type = "resetValue", message = x)
-    })
+    sapply(
+      addTimeFields, 
+      function(x) {
+        updateTextInput(session, x, value = "")
+        session$sendCustomMessage(type = "resetValue", message = x)
+      })
   }
 )
 
@@ -44,7 +46,7 @@ observeEvent(
       loadTimeFormData()})
     
     # reload database
-    #loadDatabase()
+    loadDatabase()
     
   }
 )

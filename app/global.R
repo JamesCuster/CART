@@ -39,7 +39,8 @@ addProjectFields <-
     "projectSupport4",
     "projectDescription",
     "projectStatus",
-    "projectDueDate")
+    "projectDueDate",
+    "lastModified")
 
 # addProject inputs that need to get values from other tables
 addProjectFieldsBDSH <- 
@@ -48,7 +49,8 @@ addProjectFieldsBDSH <-
     )
 
 addProjectFieldsResearchers <- 
-  c("projectPI",
+  c("effortID",
+    "projectPI",
     "projectPIEmail",
     "projectSupport1",
     "projectSupport2",
@@ -65,6 +67,7 @@ addTimeFields <-
     "workTimeCategory",
     "workCategory",
     "workDescription")
+
 
 # Function that allows for two text inputs to be in a row
 textInputRow <- function(inputId, label, value = "") {
