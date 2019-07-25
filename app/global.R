@@ -4,21 +4,25 @@ library(dplyr)
 # library(DBI)
 library(RSQLite)
 
-# Connect to database
+
+# Database related functions ----------------------------------------------
+
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
-# pulls table into R
-# projects <- tbl(BDSHProjects, "projects") %>% collect()
-# people <- tbl(BDSHProjects, "bdshPeople") %>% collect()
-# effort <- tbl(BDSHProjects, "effort") %>% collect()
-# researchers <- tbl(BDSHProjects, "researchers") %>% collect()
-
-#function that reloads database after data has been added
+# function that loads all tables from database
 loadDatabase <- function() {
-  projects <<- tbl(BDSHProjects, "projects") %>% collect()
-  people <<- tbl(BDSHProjects, "bdshPeople") %>% collect()
-  effort <<- tbl(BDSHProjects, "effort") %>% collect()
-  researchers <<- tbl(BDSHProjects, "researchers") %>% collect()
+  projects <<- tbl(BDSHProjects, "projects") %>% 
+    collect() %>% 
+    as.data.frame(stringsAsFactors = FALSE)
+  people <<- tbl(BDSHProjects, "bdshPeople") %>% 
+    collect() %>% 
+    as.data.frame(stringsAsFactors = FALSE)
+  effort <<- tbl(BDSHProjects, "effort") %>% 
+    collect() %>% 
+    as.data.frame(stringsAsFactors = FALSE)
+  researchers <<- tbl(BDSHProjects, "researchers") %>% 
+    collect() %>% 
+    as.data.frame(stringsAsFactors = FALSE)
 }
 
 loadDatabase()
@@ -56,7 +60,7 @@ addProjectFieldsResearchers <-
     "projectSupport3",
     "projectSupport4")
 
-
+# Inputs fr the add time form
 addTimeFields <- 
   c("effortID",
     "timeProjectID",
@@ -67,6 +71,24 @@ addTimeFields <-
     "workTimeCategory",
     "workCategory",
     "workDescription")
+
+# Inputs for the add researcher form
+addResearcherFields <- 
+  c("researcherUteid",
+    "researcherName",
+    "researcherEmail",
+    "primaryDept",
+    "secondaryDept"
+  )
+
+# Inputs for the add BDSH employee form
+addEmployeeFields <- 
+  c("employeeUteid",
+    "employeeName",
+    "employeeEmail",
+    "degree",
+    "role"
+    )
 
 
 # Function that allows for two text inputs to be in a row

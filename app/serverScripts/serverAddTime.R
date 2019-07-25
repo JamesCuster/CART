@@ -31,13 +31,15 @@ observeEvent(
       function(x) {
         updateTextInput(session, x, value = "")
         session$sendCustomMessage(type = "resetValue", message = x)
-      })
+      }
+    )
   }
 )
 
 output$timeFormResponses <- DT::renderDataTable({
   input$submitAddTime
-  loadTimeFormData()})
+  loadTimeFormData()
+})
 
 observeEvent(
   input$timeToDatabase, {

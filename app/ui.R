@@ -1,6 +1,5 @@
 library(shiny)
 
-# Define UI for application that draws a histogram
 shinyUI(
   fluidPage(
     # This is a script which will reset the form inputs after it has been submitted
@@ -19,6 +18,9 @@ shinyUI(
         local = TRUE)$value,
       source(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddTime.r", 
+        local = TRUE)$value,
+      source(
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddPeople.r", 
         local = TRUE)$value,
       source(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewProjects.r", 
