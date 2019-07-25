@@ -69,6 +69,10 @@ observeEvent(
     loadDatabase()
     
     # update inputs after data is reloaded
-    updateSelectInput(session, "projectID", "Select the project to add time to", projects$projectName)
+    updateSelectizeInput(
+      session,
+      inputId = "timeProjectID",
+      choices = projects$projectName
+    )
   }
 )
