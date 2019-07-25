@@ -1,7 +1,6 @@
 # connect to DB here
 library(shiny)
 library(dplyr)
-# library(DBI)
 library(RSQLite)
 
 
@@ -14,7 +13,7 @@ loadDatabase <- function() {
   projects <<- tbl(BDSHProjects, "projects") %>% 
     collect() %>% 
     as.data.frame(stringsAsFactors = FALSE)
-  people <<- tbl(BDSHProjects, "bdshPeople") %>% 
+  people <<- tbl(BDSHProjects, "employees") %>% 
     collect() %>% 
     as.data.frame(stringsAsFactors = FALSE)
   effort <<- tbl(BDSHProjects, "effort") %>% 
