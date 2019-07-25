@@ -22,12 +22,12 @@ tabPanel(
   
   textInput(
     inputId = "primaryDept",
-    label = "secondaryDept"
+    label = "Primary Department"
   ),
   
   textInput(
-    inputId = "primaryDept",
-    label = "secondaryDept"
+    inputId = "secondaryDept",
+    label = "Secondary Department"
   ),
   
   
@@ -36,16 +36,13 @@ tabPanel(
     label = "Add To Queue"
   ),
   
+  tags$br(),
+  tags$br(),
   tags$h4("Researchers in the queue to be added to the database"),
-  
-  
-  
-  
-  
-  
+  DT::dataTableOutput("researcherFormResponses", width = 300),
   
   actionButton(
-    inputId = "ResearcherToDatabase", 
+    inputId = "researcherToDatabase", 
     label = "Save To Database"
   ),
   
@@ -87,12 +84,10 @@ tabPanel(
     label = "Add To Queue"
   ),
   
+  tags$br(),
+  tags$br(),
   tags$h4("BDSH Employees in the queue to be added to the database"),
-  
-  
-  
-  
-  
+  DT::dataTableOutput("employeeFormResponses", width = 300),
   
   
   

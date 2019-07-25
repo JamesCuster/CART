@@ -1,6 +1,8 @@
 library(shiny)
 
-# Project form functions
+
+# Project form functions --------------------------------------------------
+
 saveProjectFormData <- function(formResponse) {
   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("projectFormData")) {
@@ -17,7 +19,8 @@ loadProjectFormData <- function() {
 }
 
 
-# Time form functions
+# Time form functions -----------------------------------------------------
+
 saveTimeFormData <- function(formResponse) {
   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("timeFormData")) {
@@ -34,6 +37,40 @@ loadTimeFormData <- function() {
 }
 
 
+# Researcher form functions -----------------------------------------------
+
+saveResearcherFormData <- function(formResponse) {
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+  if (exists("researcherFormData")) {
+    researcherFormData <<- rbind(researcherFormData, formResponse)
+  } else {
+    researcherFormData <<- formResponse
+  }
+}
+
+loadResearcherFromData <- function() {
+  if (exists("researcherFormData")) {
+    researcherFormData
+  }
+}
+
+
+# BDSH employee form functions --------------------------------------------
+
+saveEmployeeFormData <- function(formResponse) {
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+  if (exists("employeeFormData")) {
+    employeeFormData <<- rbind(employeeFormData, formResponse)
+  } else {
+    employeeFormData <<- formResponse
+  }
+}
+
+loadEmployeeFormData <- function(formResponse) {
+  if (exists("employeeFormData")) {
+    employeeFormData
+  }
+}
 
 
 # Define server logic required to draw a histogram
@@ -55,6 +92,12 @@ shinyServer(
     # serverAddTime
     source(
       "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddTime.R",
+      local = TRUE
+    )
+    
+    #serverAddPeople
+    source(
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddPeople.R",
       local = TRUE
     )
     
