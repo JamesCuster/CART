@@ -9,7 +9,7 @@ cleanTimeFormData <-
         return(NA)
       }
       else if (grepl("workBy", x)) {
-        people[people$name == input[[x]], "uteid", drop = TRUE]
+        employees[employees$employeeName == input[[x]], "employeeUteid", drop = TRUE]
       }
       else {
         input[[x]]

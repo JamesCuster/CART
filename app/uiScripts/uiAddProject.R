@@ -15,7 +15,7 @@ tabPanel(
   selectizeInput(
     inputId = "bdshLead",
     label = "BDSH Lead",
-    choices = people$name,
+    choices = employees$employeeName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -25,7 +25,7 @@ tabPanel(
   selectizeInput(
     inputId = "bdshSecondary",
     label = "BDSH Secondary",
-    choices = people$name,
+    choices = employees$employeeName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -35,7 +35,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectPI",
     label = "Primary Investigator",
-    choices = researchers$name,
+    choices = researchers$researcherName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -45,7 +45,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport1",
     label = "Support Staff 1",
-    choices = researchers$name,
+    choices = researchers$researcherName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -56,7 +56,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport2",
     label = "Support Staff 2",
-    choices = researchers$name,
+    choices = researchers$researcherName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -66,7 +66,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport3",
     label = "Support Staff 3",
-    choices = researchers$name,
+    choices = researchers$researcherName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -76,7 +76,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport4",
     label = "Support Staff 4",
-    choices = researchers$name,
+    choices = researchers$researcherName,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
