@@ -1,7 +1,8 @@
 tabPanel(
   "Add People",
   
-  #### Add Researcher
+  
+  # Add Researcher ----------------------------------------------------------
   
   tags$h1("Add New Researcher"),
   
@@ -47,7 +48,8 @@ tabPanel(
   ),
   
   
-  ##### Add BDSH employee
+
+  # Add BDSH employee  ------------------------------------------------------
   
   tags$hr(style="border-color: black;"),
   tags$br(),
@@ -80,7 +82,7 @@ tabPanel(
   ),
   
   actionButton(
-    inputId = "submitAddBDSH", 
+    inputId = "submitAddEmployee", 
     label = "Add To Queue"
   ),
   
@@ -92,6 +94,6 @@ tabPanel(
   
   
   actionButton(
-    inputId = "bdshToDatabase", 
+    inputId = "employeeToDatabase", 
     label = "Save To Database")
 )

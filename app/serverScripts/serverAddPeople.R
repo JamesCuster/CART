@@ -4,7 +4,7 @@ cleanResearcherFormData <- reactive({
     sapply(
       addResearcherFields,
       function(x) {
-        if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
+        if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
           return(NA)
         } else {
           input[[x]]
@@ -56,5 +56,52 @@ observeEvent(
 )
 
 # Add Reactives for add BDSH employee -------------------------------------
+cleanEmployeeFormData <-
+  reactive({
+    employeeFormResponse <- sapply(addEmployeeFields, function(x) {
+      if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
+        return(NA)
+      } else {
+        input[[x]]
+      }
+    })
+    employeeFormResponse <<- employeeFormResponse
+  })
 
+# This is what controls what happens when the submit button on the add employee
+# tab is pressed
+observeEvent(
+  input$submitAddEmployee, {
+    # creates and displays table of inputs
+    saveEmployeeFormData(cleanEmployeeFormData())
+    
+    # Clears data from the forms
+    sapply(
+      addEmployeeFields, 
+      function(x) {
+        updateTextInput(session, x, value = "")
+        session$sendCustomMessage(type = "resetValue", message = x)
+      }
+    )
+  }
+)
 
+output$employeeFormResponses <- DT::renderDataTable({
+  input$submitAddEmployee
+  loadEmployeeFormData()
+})
+
+observeEvent(
+  input$employeeToDatabase, {
+    dbWriteTable(BDSHProjects, "effort", employeeFormData, append = TRUE)
+    employeeFormData <<- employeeFormData[c(), ]
+    
+    output$employeeFormResponses <- DT::renderDataTable({
+      input$submitAddEmployee
+      loadEmployeeFormData()})
+    
+    # reload database
+    loadDatabase()
+    
+  }
+)
