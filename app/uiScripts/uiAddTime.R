@@ -1,36 +1,82 @@
 tabPanel(
   "Add Time",
-  # Need to figure out how to manage this...
-  selectInput(
-    "projectID", 
-    "Select the project to add time to",
-    projects$projectName
+  
+  tags$h1("Add Time To A Project"),
+  
+  selectizeInput(
+    inputId = "timeProjectID",
+    label = "Select Project",
+    choices = projects$projectName,
+    options = list(
+      placeholder = NA,
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
-  selectInput(
-    "workBy", 
-    "BDSH Staff",
-    people$name
+  
+  selectizeInput(
+    inputId = "workBy",
+    label = "BDSH Staff",
+    choices = people$name,
+    options = list(
+      placeholder = NA,
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
+  
   dateInput(
-    "dateOfWork", 
-    "Date that this work was completed"
+    inputId = "dateOfWork", 
+    label = "Work Completed On"
   ),
+  
   dateInput(
-    "dateOfEntry", 
-    "Date work was logged"
+    inputId = "dateOfEntry", 
+    label = "Work Logged On"
   ),
+  
   textInput(
-    "workTime", 
-    "Time spend in hours (as number with decimals)"
+    inputId = "workTime", 
+    label = "Time spend in hours (as number with decimals)"
   ),
-  textInput(
-    "workDescription", 
-    "Brief description of work completed"
+  
+  selectizeInput(
+    inputId = "workTimeCategory",
+    label = "Effort Category",
+    choices = c("Small", "Medium", "Large"),
+    options = list(
+      placeholder = NA,
+      onInitialize = I("function() {this.setValue('');}")
+    )
+  ),
+  
+  selectizeInput(
+    inputId = "workCategory",
+    label = "Work Category",
+    choices = list(
+      `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
+      Analysis = c("Data Management", "Analysis", "Report/Manuscript")
+    ),
+    options = list(
+      placeholder = NA,
+      onInitialize = I("function() {this.setValue('');}")
+    )
+  ),
+  
+  withTags(
+    div(
+      h5(
+        b("Work Description")
+      ),
+      textarea(
+        id = "workDescription", 
+        class = "form-control shiny-bound-input",
+        style = "width: 300px; height: 102px"
+      )
+    )
   ),
   
   actionButton(
-    "submitAddTime", 
-    "Submit"
+    inputId = "submitAddTime", 
+    label = "Add To Queue"
   ),
   
   tags$br(),
@@ -38,5 +84,9 @@ tabPanel(
   tags$h4("Time in the queue to be added to the database"),
   DT::dataTableOutput("timeFormResponses", width = 300),
   
-  uiOutput("timeToDatabase")
+  # creates button to submit data to database once a form is submitted
+  actionButton(
+    inputId = "timeToDatabase", 
+    label = "Save To Database")
+  
 )

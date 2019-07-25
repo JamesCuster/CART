@@ -1,0 +1,8 @@
+addProjects
+	when people inputs are converted to eid's, need to add extra provisions in case there are ever overlapping names
+		perhaps paste together sql rowID and name to make a unique identifier with name
+		maybe have the way the input is displayed be changed so that the rowID is linked to the name in the background
+
+	when displaying the table of data to be input, should I display names or eid?
+
+	need to add reactives to update the input objects when new data is retrived,

@@ -8,10 +8,10 @@ library(RSQLite)
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
 # pulls table into R
-projects <- tbl(BDSHProjects, "projects") %>% collect()
-people <- tbl(BDSHProjects, "bdshPeople") %>% collect()
-effort <- tbl(BDSHProjects, "effort") %>% collect()
-researchers <- tbl(BDSHProjects, "researchers") %>% collect()
+# projects <- tbl(BDSHProjects, "projects") %>% collect()
+# people <- tbl(BDSHProjects, "bdshPeople") %>% collect()
+# effort <- tbl(BDSHProjects, "effort") %>% collect()
+# researchers <- tbl(BDSHProjects, "researchers") %>% collect()
 
 #function that reloads database after data has been added
 loadDatabase <- function() {
@@ -21,37 +21,53 @@ loadDatabase <- function() {
   researchers <<- tbl(BDSHProjects, "researchers") %>% collect()
 }
 
+loadDatabase()
 
 
-# field (variable names) for the [add]projects and [add]time forms and tables in
-# the database
+# Variables, Functions, and List needed for addProjects -------------------
 
+# addProject form inputs
 addProjectFields <- 
   c("projectID",
     "projectName",
     "bdshLead",
     "bdshSecondary",
     "projectPI",
-    "projectPIEmail",
     "projectSupport1",
-    "projectSupport1Email",
     "projectSupport2",
-    "projectSupport2Email",
     "projectSupport3",
-    "projectSupport3Email",
     "projectSupport4",
-    "projectSupport4Email",
     "projectDescription",
     "projectStatus",
-    "projectDueDate")
+    "projectDueDate",
+    "lastModified")
+
+# addProject inputs that need to get values from other tables
+addProjectFieldsBDSH <- 
+  c("bdshLead",
+    "bdshSecondary"
+    )
+
+addProjectFieldsResearchers <- 
+  c("projectPI",
+    "projectPIEmail",
+    "projectSupport1",
+    "projectSupport2",
+    "projectSupport3",
+    "projectSupport4")
+
 
 addTimeFields <- 
-  c("projectID",
+  c("effortID",
+    "timeProjectID",
     "workBy",
     "dateOfWork",
     "dateOfEntry",
     "workTime",
+    "workTimeCategory",
+    "workCategory",
     "workDescription")
+
 
 # Function that allows for two text inputs to be in a row
 textInputRow <- function(inputId, label, value = "") {

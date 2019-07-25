@@ -1,5 +1,10 @@
 tabPanel(
+  # tab title
   "Add Project",
+  
+  # page title
+  tags$h1("Input New Project"),
+  
   # fields in the database. Don't think I need projectID, autopopulated in DB
   # textInput("projectID", "projectID"),
   textInput(
@@ -7,86 +12,82 @@ tabPanel(
     label = "Project Name"
   ),
   
-  selectInput(
-    inputId = "bdshLead", 
-    label = "BDSH Project Lead",
-    choices = people$name
-  ),
-
-  selectInput(
-    inputId = "bdshSecondary", 
-    label = "BDSH Project Secondary",
-    choices = people$name
+  selectizeInput(
+    inputId = "bdshLead",
+    label = "BDSH Lead",
+    choices = people$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-  selectInput(
-    inputId = "projectPI", 
-    label = "Project Primary Investigator",
-    choices = researchers$name
+  selectizeInput(
+    inputId = "bdshSecondary",
+    label = "BDSH Secondary",
+    choices = people$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-# # button to add new researcher
-#   conditionalPanel(
-#     condition = "input.projectPI != 'Add Researcher'",
-#   
-#   actionButton(
-#     "submitNewResearcher", 
-#     "Input new researcher data"
-#   )),
-# 
-# # ui update to happen when add new researcher button is pressed.
-#   uiOutput("submitNewResearcher"),
-  
-  textInput(
-    inputId = "projectPIEmail", 
-    label = "Primary Investigators Email"
+  selectizeInput(
+    inputId = "projectPI",
+    label = "Primary Investigator",
+    choices = researchers$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-  textInput(
-    inputId = "projectSupport1", 
-    label = "Project Support Staff 1"
+  selectizeInput(
+    inputId = "projectSupport1",
+    label = "Support Staff 1",
+    choices = researchers$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-  textInput(
-    inputId = "projectSupport1Email", 
-    label = "Project Support Staff 1 - Email"
+  
+  selectizeInput(
+    inputId = "projectSupport2",
+    label = "Support Staff 2",
+    choices = researchers$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-  textInput(
-    inputId = "projectSupport2", 
-    label = "Project Support Staff 2"
+  selectizeInput(
+    inputId = "projectSupport3",
+    label = "Support Staff 3",
+    choices = researchers$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-  textInput(
-    inputId = "projectSupport2Email", 
-    label = "Project Support Staff 2 - Email"
+  selectizeInput(
+    inputId = "projectSupport4",
+    label = "Support Staff 4",
+    choices = researchers$name,
+    options = list(
+      placeholder = "",
+      onInitialize = I("function() {this.setValue('');}")
+    )
   ),
   
-  textInput(
-    inputId = "projectSupport3", 
-    label = "Project Support Staff 3"
-  ),
-  
-  textInput(
-    inputId = "projectSupport3Email", 
-    label = "Project Support Staff 3 - Email"
-  ),
-  
-  textInput(
-    inputId = "projectSupport4", 
-    label = "Project Support Staff 4"
-  ),
-  
-  textInput(
-    inputId = "projectSupport4Email", 
-    label = "Project Support Staff 4 - Email"
-  ),
-
 # This extra code allows for the text input box size to be customized.
   withTags(
     div(
       h5(
-        b("Brief Description of Project")
+        b("Brief Description")
       ),
       textarea(
         id = "projectDescription", 
@@ -98,13 +99,13 @@ tabPanel(
   
   selectInput(
     inputId = "projectStatus", 
-    label = "Status of Project",
+    label = "Status",
     choices = c("Active", "Quite", "Inactive", "Complete")
   ),
   
   dateInput(
     inputId = "projectDueDate", 
-    label = "Due Date of Project"
+    label = "Due Date"
   ),
   
   actionButton(
@@ -119,5 +120,22 @@ tabPanel(
   
   # Once data is submitted through the form, this button appears to submit to
   # database
-  uiOutput("projectToDatabase")
+  actionButton(
+    inputId = "projectToDatabase", 
+    label = "Save To Database")
 )
+
+
+
+
+# button to add new researcher
+#   conditionalPanel(
+#     condition = "input.projectPI != 'Add Researcher'",
+#   
+#   actionButton(
+#     "submitNewResearcher", 
+#     "Input new researcher data"
+#   )),
+# 
+# ui update to happen when add new researcher button is pressed.
+#   uiOutput("submitNewResearcher")
