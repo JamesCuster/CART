@@ -56,7 +56,7 @@ addProjectFieldsResearchers <-
     "projectSupport3",
     "projectSupport4")
 
-
+# Inputs fr the add time form
 addTimeFields <- 
   c("effortID",
     "timeProjectID",
@@ -67,6 +67,24 @@ addTimeFields <-
     "workTimeCategory",
     "workCategory",
     "workDescription")
+
+# Inputs for the add researcher form
+addResearcherFields <- 
+  c("uteid",
+    "name",
+    "email",
+    "primaryDept",
+    "secondaryDept"
+  )
+
+# Inputs for the add BDSH employee form
+addEmployeeFields <- 
+  c("uteid",
+    "name",
+    "email",
+    "degree",
+    "role"
+    )
 
 
 # Function that allows for two text inputs to be in a row

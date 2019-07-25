@@ -21,6 +21,9 @@ shinyUI(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddTime.r", 
         local = TRUE)$value,
       source(
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddPeople.r", 
+        local = TRUE)$value,
+      source(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewProjects.r", 
         local = TRUE)$value,
       source(
