@@ -52,6 +52,38 @@ observeEvent(
     
     # Reload database
     loadDatabase()
+    
+    # Update selectInput selection options after uploading data to database
+    updateSelectizeInput(
+      session,
+      inputId = "projectPI",
+      choices = researchers$researcherName
+    )
+    
+    updateSelectizeInput(
+      session,
+      inputId = "projectSupport1",
+      choices = researchers$researcherName
+    )
+    
+    updateSelectizeInput(
+      session,
+      inputId = "projectSupport2",
+      choices = researchers$researcherName
+    )
+    
+    updateSelectizeInput(
+      session,
+      inputId = "projectSupport3",
+      choices = researchers$researcherName
+    )
+    
+    updateSelectizeInput(
+      session,
+      inputId = "projectSupport4",
+      choices = researchers$researcherName
+    )
+
   }
 )
 
@@ -93,7 +125,7 @@ output$employeeFormResponses <- DT::renderDataTable({
 
 observeEvent(
   input$employeeToDatabase, {
-    dbWriteTable(BDSHProjects, "BDSHpeople", employeeFormData, append = TRUE)
+    dbWriteTable(BDSHProjects, "employees", employeeFormData, append = TRUE)
     employeeFormData <<- employeeFormData[c(), ]
     
     output$employeeFormResponses <- DT::renderDataTable({
@@ -102,6 +134,26 @@ observeEvent(
     
     # reload database
     loadDatabase()
+    
+    # Update selection inputs in the Add Projects form
+    updateSelectizeInput(
+      session,
+      inputId = "bdshLead",
+      choices = employees$employeeName
+    )
+    
+    updateSelectizeInput(
+      session,
+      inputId = "bdshSecondary",
+      choices = employees$employeeName
+    )
+    
+    # Update selection inputs in the Add Time form
+    updateSelectizeInput(
+      session,
+      inputId = "workBy",
+      choices = employees$employeeName
+    )
     
   }
 )

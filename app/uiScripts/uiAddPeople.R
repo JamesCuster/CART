@@ -73,7 +73,7 @@ tabPanel(
   
   textInput(
     inputId = "degree",
-    label = "BDSH Employee's" 
+    label = "BDSH Employee's Degree" 
   ),
   
   textInput(
