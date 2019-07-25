@@ -1,6 +1,5 @@
 library(shiny)
 
-# Define UI for application that draws a histogram
 shinyUI(
   fluidPage(
     # This is a script which will reset the form inputs after it has been submitted

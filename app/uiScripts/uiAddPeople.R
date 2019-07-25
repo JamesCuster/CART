@@ -7,17 +7,17 @@ tabPanel(
   tags$h1("Add New Researcher"),
   
   textInput(
-    inputId = "uteid",
+    inputId = "researcherUteid",
     label = "Researcher's UT EID"
   ),
   
   textInput(
-    inputId = "name",
+    inputId = "researcherName",
     label = "Researcher's Name"
   ),
   
   textInput(
-    inputId = "email",
+    inputId = "researcherEmail",
     label = "Researchers Email"
   ),
   
@@ -57,17 +57,17 @@ tabPanel(
   tags$h1("Add New BDSH Staff"),
   
   textInput(
-    inputId = "uteid",
+    inputId = "employeeUteid",
     label = "BDSH Employee's UT EID"
   ),
   
   textInput(
-    inputId = "name",
+    inputId = "employeeName",
     label = "BDSH Employee's Name"
   ),
   
   textInput(
-    inputId = "email",
+    inputId = "employeeEmail",
     label = "BDSH Employee's Email"
   ),
   
