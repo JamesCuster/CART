@@ -14,7 +14,7 @@ loadDatabase <- function() {
   projects <<- tbl(BDSHProjects, "projects") %>% 
     collect() %>% 
     as.data.frame(stringsAsFactors = FALSE)
-  people <<- tbl(BDSHProjects, "bdshPeople") %>% 
+  employees <<- tbl(BDSHProjects, "employees") %>% 
     collect() %>% 
     as.data.frame(stringsAsFactors = FALSE)
   effort <<- tbl(BDSHProjects, "effort") %>% 
@@ -74,7 +74,8 @@ addTimeFields <-
 
 # Inputs for the add researcher form
 addResearcherFields <- 
-  c("researcherUteid",
+  c("researcherID",
+    "researcherUteid",
     "researcherName",
     "researcherEmail",
     "primaryDept",
@@ -83,7 +84,8 @@ addResearcherFields <-
 
 # Inputs for the add BDSH employee form
 addEmployeeFields <- 
-  c("employeeUteid",
+  c("bdshID",
+    "employeeUteid",
     "employeeName",
     "employeeEmail",
     "degree",

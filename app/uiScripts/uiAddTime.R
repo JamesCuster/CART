@@ -16,7 +16,7 @@ tabPanel(
   selectizeInput(
     inputId = "workBy",
     label = "BDSH Staff",
-    choices = people$name,
+    choices = employees$employeeName,
     options = list(
       placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")

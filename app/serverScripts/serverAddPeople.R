@@ -93,7 +93,7 @@ output$employeeFormResponses <- DT::renderDataTable({
 
 observeEvent(
   input$employeeToDatabase, {
-    dbWriteTable(BDSHProjects, "BDSHpeople", employeeFormData, append = TRUE)
+    dbWriteTable(BDSHProjects, "employees", employeeFormData, append = TRUE)
     employeeFormData <<- employeeFormData[c(), ]
     
     output$employeeFormResponses <- DT::renderDataTable({

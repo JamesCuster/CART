@@ -13,14 +13,14 @@ cleanProjectFormData <-
           else if (grepl("projectID", x)) {
             NA
           } 
-          else if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
+          else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
             return(NA)
           }
           else if (x %in% addProjectFieldsBDSH) {
-            people[people$name == input[[x]], "uteid", drop = TRUE]
+            employees[employees$employeeName == input[[x]], "employeeUteid", drop = TRUE]
           } 
           else if (x %in% addProjectFieldsResearchers) {
-            researchers[researchers$name == input[[x]], "uteid", drop = TRUE]
+            researchers[researchers$researcherName == input[[x]], "researcherUteid", drop = TRUE]
           } 
           else {
             input[[x]]
