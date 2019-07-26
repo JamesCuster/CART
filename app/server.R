@@ -75,8 +75,105 @@ loadEmployeeFormData <- function(formResponse) {
 shinyServer(
   function(input, output, session) {
     
-    # # monitor database for changes
-    # loaddb <- reactivePoll(1000, session)
+
+# monitor database for changes and reload changed tables ------------------
+    
+    monitorDatabase <- 
+      reactivePoll(
+        intervalMillis = 1000,
+        session,
+        checkFunc = function() {
+          modifiedCurrent <- tbl(BDSHProjects, "modified") %>% 
+            collect() %>% 
+            as.data.frame(stringsAsfactors = FALSE)
+          if (as.POSIXct(modified$modified) < as.POSIXct(modifiedCurrent$modified)) {
+            modified <<- modifiedCurrent
+            return(TRUE)
+          } else {
+            return(FALSE)
+          }
+        },
+        valueFunc = function() {
+          loadDatabase(tables = modified$tableName)
+          refresh[[modified$tableName]] <- TRUE
+        }
+      )
+    
+    observe({
+      monitorDatabase()
+    })
+    
+
+# Update select(ize)Input's when tables from database are reloaded --------
+    
+    # When new employee data is fetched from database
+    observeEvent(refresh$employees == TRUE, {
+      updateSelectizeInput(
+        session,
+        inputId = "bdshLead",
+        choices = employees$employeeName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "bdshSecondary",
+        choices = employees$employeeName
+      )
+      
+      # Update selection inputs in the Add Time form
+      updateSelectizeInput(
+        session,
+        inputId = "workBy",
+        choices = employees$employeeName
+      )
+      
+      refresh$employees <- FALSE
+    })
+    
+    # When new project data is fetched from database
+    observeEvent(refresh$projects == TRUE, {
+      updateSelectizeInput(
+        session,
+        inputId = "timeProjectID",
+        choices = projects$projectName
+      )
+      
+      refresh <- FALSE
+    })
+
+    # When new researcher data is fetched from database
+    observeEvent(refresh$researcher == TRUE, {
+      updateSelectizeInput(
+        session,
+        inputId = "projectPI",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport1",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport2",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport3",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport4",
+        choices = researchers$researcherName
+      )
+      refresh$researcher <- FALSE
+    })
 
 
 # Server Scripts ----------------------------------------------------------
@@ -99,34 +196,6 @@ shinyServer(
       local = TRUE
     )
     
-    # This is an attempt to add "add researcher" option to add project tab
-    # observeEvent({
-    #   if ((input$submitNewResearcher) || (input$projectPI == "Add Researcher")) TRUE
-    #       else return()
-    # }, {
-    #     # creates button to submit data to database once a form is submitted
-    #     output$submitNewResearcher <- renderUI({
-    #       tagList(
-    #         tags$br(),
-    #         textInputRow("name", "Researchers Name"),
-    #         textInputRow("Email", "Researchers Email"),
-    #         actionButton("researcherToDatabase", "Add researcher to the database"),
-    #         tags$br(),
-    #         tags$br()
-    #       )
-    #     })
-    #   }
-    # )
-    
-    
-
-
-    
-    
-    
-    
-    
-    
     # stops the app when window is closed
     session$onSessionEnded(function() {
       dbDisconnect(BDSHProjects)
@@ -134,29 +203,5 @@ shinyServer(
       #    stopApp()
       #    quit("no")
     })
-
-
-
   }
 )
-
-
-
-# timeFormData <-
-#   reactive({
-#     data <- sapply(addTimeFields, function(x) {
-#       if (grepl("date", x, ignore.case = TRUE)) {
-#         as.character(input[[x]])
-#       } else {
-#         input[[x]]
-#       }
-#     })
-#     data
-#   })
-# 
-# # what happens when submit button on Add Time is pressed
-# observeEvent(
-#   input$submitAddTime, {
-#     output$timeFormResponses <- DT::renderDataTable(t(timeFormData()))
-#   }
-# )

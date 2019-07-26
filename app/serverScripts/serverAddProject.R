@@ -64,15 +64,5 @@ observeEvent(
         input$submitAddProject
         loadProjectFormData()
       })
-    
-    # reload database after submission
-    loadDatabase()
-    
-    # update inputs after data is reloaded
-    updateSelectizeInput(
-      session,
-      inputId = "timeProjectID",
-      choices = projects$projectName
-    )
   }
 )

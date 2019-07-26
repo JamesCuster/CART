@@ -49,9 +49,5 @@ observeEvent(
     output$timeFormResponses <- DT::renderDataTable({
       input$submitAddTime
       loadTimeFormData()})
-    
-    # reload database
-    loadDatabase()
-    
   }
 )
