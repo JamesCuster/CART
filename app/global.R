@@ -28,6 +28,7 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
     researchers <<- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
+    
   }
   if ("modified" %in% tables) {
     modified <<- tbl(BDSHProjects, "modified") %>% 
@@ -38,6 +39,15 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
 
 loadDatabase()
 
+
+# Reactives used to trigger updates to select(ize)Input when data is reloaded
+refresh <- 
+  reactiveValues(
+    effort = FALSE,
+    employees = FALSE,
+    projects = FALSE,
+    researchers = FALSE
+  )
 
 # List of database field names used to clean form data --------------------
 

@@ -3,7 +3,9 @@
 shinyServer(
   function(input, output, session) {
     
-    # monitor database for changes
+
+# monitor database for changes and reload changed tables ------------------
+    
     monitorDatabase <- 
       reactivePoll(
         intervalMillis = 1000,
@@ -12,7 +14,7 @@ shinyServer(
           modifiedCurrent <- tbl(BDSHProjects, "modified") %>% 
             collect() %>% 
             as.data.frame(stringsAsfactors = FALSE)
-          if (modified$modified < modifiedCurrent$modified) {
+          if (as.POSIXct(modified$modified) < as.POSIXct(modifiedCurrent$modified)) {
             modified <<- modifiedCurrent
             return(TRUE)
           } else {
@@ -21,10 +23,85 @@ shinyServer(
         },
         valueFunc = function() {
           loadDatabase(tables = modified$tableName)
+          refresh[[modified$tableName]] <- TRUE
         }
       )
     
-    observe({monitorDatabase()})
+    observe({
+      monitorDatabase()
+    })
+    
+
+# Update select(ize)Input's when tables from database are reloaded --------
+    
+    # When new employee data is fetched from database
+    observeEvent(refresh$employees == TRUE, {
+      updateSelectizeInput(
+        session,
+        inputId = "bdshLead",
+        choices = employees$employeeName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "bdshSecondary",
+        choices = employees$employeeName
+      )
+      
+      # Update selection inputs in the Add Time form
+      updateSelectizeInput(
+        session,
+        inputId = "workBy",
+        choices = employees$employeeName
+      )
+      
+      refresh$employees <- FALSE
+    })
+    
+    # When new project data is fetched from database
+    observeEvent(refresh$projects == TRUE, {
+      updateSelectizeInput(
+        session,
+        inputId = "timeProjectID",
+        choices = projects$projectName
+      )
+      
+      refresh <- FALSE
+    })
+
+    # When new researcher data is fetched from database
+    observeEvent(refresh$researcher == TRUE, {
+      updateSelectizeInput(
+        session,
+        inputId = "projectPI",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport1",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport2",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport3",
+        choices = researchers$researcherName
+      )
+      
+      updateSelectizeInput(
+        session,
+        inputId = "projectSupport4",
+        choices = researchers$researcherName
+      )
+      refresh$researcher <- FALSE
+    })
 
 
 # Server Scripts ----------------------------------------------------------
