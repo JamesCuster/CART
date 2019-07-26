@@ -8,7 +8,6 @@ shinyUI(
         });
       "),
     
-
     tabsetPanel(
       # Add tab panels (add project/time, view (project/time) -------------------
       

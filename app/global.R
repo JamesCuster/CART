@@ -29,7 +29,7 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
   }
-  if ("effort" %in% tables) {
+  if ("modified" %in% tables) {
     modified <<- tbl(BDSHProjects, "modified") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)

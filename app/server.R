@@ -3,8 +3,28 @@
 shinyServer(
   function(input, output, session) {
     
-    # # monitor database for changes
-    # loaddb <- reactivePoll(1000, session)
+    # monitor database for changes
+    monitorDatabase <- 
+      reactivePoll(
+        intervalMillis = 1000,
+        session,
+        checkFunc = function() {
+          modifiedCurrent <- tbl(BDSHProjects, "modified") %>% 
+            collect() %>% 
+            as.data.frame(stringsAsfactors = FALSE)
+          if (modified$modified < modifiedCurrent$modified) {
+            modified <<- modifiedCurrent
+            return(TRUE)
+          } else {
+            return(FALSE)
+          }
+        },
+        valueFunc = function() {
+          loadDatabase(tables = modified$tableName)
+        }
+      )
+    
+    observe({monitorDatabase()})
 
 
 # Server Scripts ----------------------------------------------------------
