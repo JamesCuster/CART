@@ -138,11 +138,11 @@ shinyServer(
         choices = projects$projectName
       )
       
-      refresh <- FALSE
+      refresh$projects <- FALSE
     })
 
     # When new researcher data is fetched from database
-    observeEvent(refresh$researcher == TRUE, {
+    observeEvent(refresh$researchers == TRUE, {
       updateSelectizeInput(
         session,
         inputId = "projectPI",
@@ -172,7 +172,7 @@ shinyServer(
         inputId = "projectSupport4",
         choices = researchers$researcherName
       )
-      refresh$researcher <- FALSE
+      refresh$researchers <- FALSE
     })
 
 
