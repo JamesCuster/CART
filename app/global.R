@@ -8,19 +8,32 @@ library(RSQLite)
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
 # function that loads all tables from database
-loadDatabase <- function() {
-  projects <<- tbl(BDSHProjects, "projects") %>% 
-    collect() %>% 
-    as.data.frame(stringsAsFactors = FALSE)
-  employees <<- tbl(BDSHProjects, "employees") %>% 
-    collect() %>% 
-    as.data.frame(stringsAsFactors = FALSE)
-  effort <<- tbl(BDSHProjects, "effort") %>% 
-    collect() %>% 
-    as.data.frame(stringsAsFactors = FALSE)
-  researchers <<- tbl(BDSHProjects, "researchers") %>% 
-    collect() %>% 
-    as.data.frame(stringsAsFactors = FALSE)
+loadDatabase <- function(tables = c("projects", "employees", "effort", "researchers", "modified")) {
+  if ("projects" %in% tables) {
+    projects <<- tbl(BDSHProjects, "projects") %>% 
+      collect() %>% 
+      as.data.frame(stringsAsFactors = FALSE)
+  }
+  if ("employees" %in% tables) {
+    employees <<- tbl(BDSHProjects, "employees") %>% 
+      collect() %>% 
+      as.data.frame(stringsAsFactors = FALSE)
+  }
+  if ("effort" %in% tables) {
+    effort <<- tbl(BDSHProjects, "effort") %>% 
+      collect() %>% 
+      as.data.frame(stringsAsFactors = FALSE)
+  }
+  if ("researchers" %in% tables) {
+    researchers <<- tbl(BDSHProjects, "researchers") %>% 
+      collect() %>% 
+      as.data.frame(stringsAsFactors = FALSE)
+  }
+  if ("effort" %in% tables) {
+    modified <<- tbl(BDSHProjects, "modified") %>% 
+      collect() %>% 
+      as.data.frame(stringsAsFactors = FALSE)
+  }
 }
 
 loadDatabase()
