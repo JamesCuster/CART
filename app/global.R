@@ -1,7 +1,5 @@
-# connect to DB here
 library(shiny)
 library(dplyr)
-# library(DBI)
 library(RSQLite)
 
 
@@ -28,7 +26,7 @@ loadDatabase <- function() {
 loadDatabase()
 
 
-# Variables, Functions, and List needed for addProjects -------------------
+# List of database field names used to clean form data --------------------
 
 # addProject form inputs
 addProjectFields <- 
@@ -46,12 +44,13 @@ addProjectFields <-
     "projectDueDate",
     "lastModified")
 
-# addProject inputs that need to get values from other tables
+# addProject inputs that need to get values from employees tables
 addProjectFieldsBDSH <- 
   c("bdshLead",
     "bdshSecondary"
     )
 
+# addProject inputs that need to get values from researchers tables
 addProjectFieldsResearchers <- 
   c("projectPI",
     "projectPIEmail",
@@ -60,7 +59,7 @@ addProjectFieldsResearchers <-
     "projectSupport3",
     "projectSupport4")
 
-# Inputs fr the add time form
+# addTime form inputs
 addTimeFields <- 
   c("effortID",
     "timeProjectID",
@@ -72,7 +71,7 @@ addTimeFields <-
     "workCategory",
     "workDescription")
 
-# Inputs for the add researcher form
+# addResearcher form inputs
 addResearcherFields <- 
   c("researcherID",
     "researcherUteid",
@@ -82,7 +81,7 @@ addResearcherFields <-
     "secondaryDept"
   )
 
-# Inputs for the add BDSH employee form
+# addEmployee form inputs
 addEmployeeFields <- 
   c("bdshID",
     "employeeUteid",
@@ -93,9 +92,82 @@ addEmployeeFields <-
     )
 
 
-# Function that allows for two text inputs to be in a row
-textInputRow <- function(inputId, label, value = "") {
-  div(style="display:inline-block",
-      tags$label(label, `for` = inputId), 
-      tags$input(id = inputId, type = "text", value = value,class="input-small"))
+# Functions to save and load add____ form data ---------------------------
+
+# addProject form functions 
+saveProjectFormData <- function(formResponse) {
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+  if (exists("projectFormData")) {
+    projectFormData <<- rbind(projectFormData, formResponse)
+  } else {
+    projectFormData <<- formResponse
+  }
 }
+
+loadProjectFormData <- function() {
+  if (exists("projectFormData")) {
+    projectFormData
+  }
+}
+
+
+# addTime form functions 
+saveTimeFormData <- function(formResponse) {
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+  if (exists("timeFormData")) {
+    timeFormData <<- rbind(timeFormData, formResponse)
+  } else {
+    timeFormData <<- formResponse
+  }
+}
+
+loadTimeFormData <- function() {
+  if (exists("timeFormData")) {
+    timeFormData
+  } 
+}
+
+
+# addResearcher form functions
+saveResearcherFormData <- function(formResponse) {
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+  if (exists("researcherFormData")) {
+    researcherFormData <<- rbind(researcherFormData, formResponse)
+  } else {
+    researcherFormData <<- formResponse
+  }
+}
+
+loadResearcherFromData <- function() {
+  if (exists("researcherFormData")) {
+    researcherFormData
+  }
+}
+
+
+# addEmployee form functions
+saveEmployeeFormData <- function(formResponse) {
+  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+  if (exists("employeeFormData")) {
+    employeeFormData <<- rbind(employeeFormData, formResponse)
+  } else {
+    employeeFormData <<- formResponse
+  }
+}
+
+loadEmployeeFormData <- function(formResponse) {
+  if (exists("employeeFormData")) {
+    employeeFormData
+  }
+}
+
+
+
+# Function that allows for two text inputs to be in a row
+    # Not currently used, but leaving in here for now because it might be useful
+    # later
+# textInputRow <- function(inputId, label, value = "") {
+#   div(style="display:inline-block",
+#       tags$label(label, `for` = inputId), 
+#       tags$input(id = inputId, type = "text", value = value,class="input-small"))
+# }
