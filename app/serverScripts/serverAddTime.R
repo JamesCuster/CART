@@ -47,9 +47,16 @@ output$timeFormResponses <- DT::renderDataTable({
 
 observeEvent(
   input$timeToDatabase, {
+    # remove variables that are not saved to database (Peoples names)
+    timeFormData <- timeFormData[, !(names(timeFormData) %in% "workByName")]
+    
+    # Write table to database
     dbWriteTable(BDSHProjects, "effort", timeFormData, append = TRUE)
+    
+    # clear data.frame after added to database
     timeFormData <<- timeFormData[c(), ]
     
+    # render the now blank data.frame to be displayed in the UI
     output$timeFormResponses <- DT::renderDataTable({
       input$submitAddTime
       loadTimeFormData()})

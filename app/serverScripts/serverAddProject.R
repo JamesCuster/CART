@@ -60,9 +60,16 @@ output$projectFormResponses <-
 # controls actions when Save to Database is pressed
 observeEvent(
   input$projectToDatabase, {
+    # remove variables that are not saved to database (Peoples Names)
+    projectFormData <- projectFormData[, !(names(projectFormData) %in% addProjectPeopleNames)]
+    
+    # Write table to database
     dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)
+    
+    # Clear data.frame after added to database
     projectFormData <<- projectFormData[c(), ]
     
+    # render the now blank data.frame to be displayed in the UI
     output$projectFormResponses <-
       DT::renderDataTable({
         input$submitAddProject
