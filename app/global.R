@@ -1,6 +1,7 @@
 library(shiny)
 library(dplyr)
 library(RSQLite)
+library(DT)
 
 
 # Database related functions ----------------------------------------------
@@ -192,9 +193,13 @@ loadResearcherFromData <- function() {
 saveEmployeeFormData <- function(formResponse) {
   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("employeeFormData")) {
-    employeeFormData <<- rbind(employeeFormData, formResponse)
+    employeeFormData <- rbind(employeeFormData, formResponse)
+    row.names(employeeFormData) <- NULL
+    employeeFormData <<- employeeFormData
   } else {
-    employeeFormData <<- formResponse
+    employeeFormData <- formResponse
+    row.names(employeeFormData) <- NULL
+    employeeFormData <<- employeeFormData
   }
 }
 
@@ -205,17 +210,7 @@ loadEmployeeFormData <- function(formResponse) {
 }
 
 
-
-# Function that allows for two text inputs to be in a row
-    # Not currently used, but leaving in here for now because it might be useful
-    # later
-# textInputRow <- function(inputId, label, value = "") {
-#   div(style="display:inline-block",
-#       tags$label(label, `for` = inputId), 
-#       tags$input(id = inputId, type = "text", value = value,class="input-small"))
-# }
-
-
+# Functions and helpers to create/manipulate delete/edit buttons ----------
 
 # function that adds the delete button to data.frames
 addDeleteEditLink <- function(df, idPrefix) {
@@ -235,7 +230,8 @@ addDeleteEditLink <- function(df, idPrefix) {
     as.character(
       actionLink(
         inputId = paste(idPrefix, "edit", rowID, sep = "\\."),
-        label = "Edit"
+        label = "Edit",
+        onclick = 'Shiny.setInputValue(\"editPressed\", this.id, {priority: "event"})'
       )
     )
   }
@@ -247,7 +243,7 @@ addDeleteEditLink <- function(df, idPrefix) {
       Edit = sapply(row.names(df), editLink),
       df
     ),
-    escape = FALSE
+    escape = FALSE,
   )
 }
 
