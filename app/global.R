@@ -54,17 +54,23 @@ refresh <-
 addProjectFields <- 
   c("projectID",
     "projectName",
+    "bdshLeadName",
     "bdshLead",
+    "bdshSecondaryName",
     "bdshSecondary",
+    "projectPIName",
     "projectPI",
+    "projectSupport1Name",
     "projectSupport1",
+    "projectSupport2Name",
     "projectSupport2",
+    "projectSupport3Name",
     "projectSupport3",
+    "projectSupport4Name",
     "projectSupport4",
     "projectDescription",
     "projectStatus",
-    "projectDueDate",
-    "lastModified")
+    "projectDueDate")
 
 # addProject inputs that need to get values from employees tables
 addProjectFieldsBDSH <- 
@@ -81,10 +87,24 @@ addProjectFieldsResearchers <-
     "projectSupport3",
     "projectSupport4")
 
+# This inputs are used to display the names of people entered on the addProjects
+# form, but are not saved to the database. This is used just so that the person
+# inputing the data sees the persons name for clarity sake
+addProjectPeopleNames <- 
+  c("bdshLeadName",
+    "bdshSecondaryName",
+    "projectPIName",
+    "projectSupport1Name",
+    "projectSupport2Name",
+    "projectSupport3Name",
+    "projectSupport4Name")
+
+
 # addTime form inputs
 addTimeFields <- 
   c("effortID",
     "timeProjectID",
+    "workByName",
     "workBy",
     "dateOfWork",
     "dateOfEntry",
@@ -92,6 +112,7 @@ addTimeFields <-
     "workTimeCategory",
     "workCategory",
     "workDescription")
+
 
 # addResearcher form inputs
 addResearcherFields <- 
@@ -128,7 +149,7 @@ saveProjectFormData <- function(formResponse) {
 
 loadProjectFormData <- function() {
   if (exists("projectFormData")) {
-    projectFormData
+    projectFormData[-1]
   }
 }
 
@@ -145,7 +166,7 @@ saveTimeFormData <- function(formResponse) {
 
 loadTimeFormData <- function() {
   if (exists("timeFormData")) {
-    timeFormData
+    timeFormData[-1]
   } 
 }
 
@@ -162,7 +183,7 @@ saveResearcherFormData <- function(formResponse) {
 
 loadResearcherFromData <- function() {
   if (exists("researcherFormData")) {
-    researcherFormData
+    researcherFormData[-1]
   }
 }
 
@@ -179,7 +200,7 @@ saveEmployeeFormData <- function(formResponse) {
 
 loadEmployeeFormData <- function(formResponse) {
   if (exists("employeeFormData")) {
-    employeeFormData
+    employeeFormData[-1]
   }
 }
 

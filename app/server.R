@@ -1,76 +1,4 @@
 
-# Project form functions --------------------------------------------------
-
-saveProjectFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("projectFormData")) {
-    projectFormData <<- rbind(projectFormData, formResponse)
-  } else {
-    projectFormData <<- formResponse
-  }
-}
-
-loadProjectFormData <- function() {
-  if (exists("projectFormData")) {
-    projectFormData
-  }
-}
-
-
-# Time form functions -----------------------------------------------------
-
-saveTimeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("timeFormData")) {
-    timeFormData <<- rbind(timeFormData, formResponse)
-  } else {
-    timeFormData <<- formResponse
-  }
-}
-
-loadTimeFormData <- function() {
-  if (exists("timeFormData")) {
-    timeFormData
-  } 
-}
-
-
-# Researcher form functions -----------------------------------------------
-
-saveResearcherFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("researcherFormData")) {
-    researcherFormData <<- rbind(researcherFormData, formResponse)
-  } else {
-    researcherFormData <<- formResponse
-  }
-}
-
-loadResearcherFromData <- function() {
-  if (exists("researcherFormData")) {
-    researcherFormData
-  }
-}
-
-
-# BDSH employee form functions --------------------------------------------
-
-saveEmployeeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("employeeFormData")) {
-    employeeFormData <<- rbind(employeeFormData, formResponse)
-  } else {
-    employeeFormData <<- formResponse
-  }
-}
-
-loadEmployeeFormData <- function(formResponse) {
-  if (exists("employeeFormData")) {
-    employeeFormData
-  }
-}
-
-
 # Define server logic required to draw a histogram
 shinyServer(
   function(input, output, session) {
@@ -111,20 +39,20 @@ shinyServer(
       updateSelectizeInput(
         session,
         inputId = "bdshLead",
-        choices = employees$employeeName
+        choices = sort(employees$employeeName)
       )
       
       updateSelectizeInput(
         session,
         inputId = "bdshSecondary",
-        choices = employees$employeeName
+        choices = sort(employees$employeeName)
       )
       
       # Update selection inputs in the Add Time form
       updateSelectizeInput(
         session,
         inputId = "workBy",
-        choices = employees$employeeName
+        choices = sort(employees$employeeName)
       )
       
       refresh$employees <- FALSE
@@ -135,7 +63,7 @@ shinyServer(
       updateSelectizeInput(
         session,
         inputId = "timeProjectID",
-        choices = projects$projectName
+        choices = sort(projects$projectName)
       )
       
       refresh$projects <- FALSE
@@ -146,31 +74,31 @@ shinyServer(
       updateSelectizeInput(
         session,
         inputId = "projectPI",
-        choices = researchers$researcherName
+        choices = sort(researchers$researcherName)
       )
       
       updateSelectizeInput(
         session,
         inputId = "projectSupport1",
-        choices = researchers$researcherName
+        choices = sort(researchers$researcherName)
       )
       
       updateSelectizeInput(
         session,
         inputId = "projectSupport2",
-        choices = researchers$researcherName
+        choices = sort(researchers$researcherName)
       )
       
       updateSelectizeInput(
         session,
         inputId = "projectSupport3",
-        choices = researchers$researcherName
+        choices = sort(researchers$researcherName)
       )
       
       updateSelectizeInput(
         session,
         inputId = "projectSupport4",
-        choices = researchers$researcherName
+        choices = sort(researchers$researcherName)
       )
       refresh$researchers <- FALSE
     })

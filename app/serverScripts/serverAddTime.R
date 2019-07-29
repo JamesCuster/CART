@@ -5,6 +5,10 @@ cleanTimeFormData <-
       if (grepl("date", x, ignore.case = TRUE)) {
         as.character(input[[x]])
       } 
+      else if (x %in% "workByName") {
+        x <- gsub("Name", "", x)
+        input[[x]]
+      }
       else if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
         return(NA)
       }
@@ -43,9 +47,16 @@ output$timeFormResponses <- DT::renderDataTable({
 
 observeEvent(
   input$timeToDatabase, {
+    # remove variables that are not saved to database (Peoples names)
+    timeFormData <- timeFormData[, !(names(timeFormData) %in% "workByName")]
+    
+    # Write table to database
     dbWriteTable(BDSHProjects, "effort", timeFormData, append = TRUE)
+    
+    # clear data.frame after added to database
     timeFormData <<- timeFormData[c(), ]
     
+    # render the now blank data.frame to be displayed in the UI
     output$timeFormResponses <- DT::renderDataTable({
       input$submitAddTime
       loadTimeFormData()})
