@@ -200,7 +200,7 @@ saveEmployeeFormData <- function(formResponse) {
 
 loadEmployeeFormData <- function(formResponse) {
   if (exists("employeeFormData")) {
-    employeeFormData[-1]
+    addDeleteEditLink(employeeFormData[-1], "employeeForm")
   }
 }
 
@@ -214,3 +214,36 @@ loadEmployeeFormData <- function(formResponse) {
 #       tags$label(label, `for` = inputId), 
 #       tags$input(id = inputId, type = "text", value = value,class="input-small"))
 # }
+
+# function that adds the delete button to data.frames
+addDeleteEditLink <- function(df, idPrefix) {
+  # function to make delete link to be used with lapply
+  deleteLink <- function(rowID) {
+    as.character(
+      actionLink(
+        inputId = paste0(idPrefix, "delete", rowID),
+        label = "Delete"
+      )
+    )
+  }
+  
+  # function to make edit link to be used with lapply
+  editLink <- function(rowID) {
+    as.character(
+      actionLink(
+        inputId = paste0(idPrefix, "edit", rowID),
+        label = "Edit"
+      )
+    )
+  }
+  
+  # create datatable with given data.frame and the two functions above
+  datatable(
+    cbind(
+      Delete = sapply(row.names(df), deleteLink),
+      Edit = sapply(row.names(df), editLink),
+      df
+    ),
+    escape = FALSE
+  )
+}
