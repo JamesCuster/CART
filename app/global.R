@@ -215,14 +215,17 @@ loadEmployeeFormData <- function(formResponse) {
 #       tags$input(id = inputId, type = "text", value = value,class="input-small"))
 # }
 
+
+
 # function that adds the delete button to data.frames
 addDeleteEditLink <- function(df, idPrefix) {
   # function to make delete link to be used with lapply
   deleteLink <- function(rowID) {
     as.character(
       actionLink(
-        inputId = paste0(idPrefix, "delete", rowID),
-        label = "Delete"
+        inputId = paste(idPrefix, "delete", rowID, sep = "\\."),
+        label = "Delete",
+        onclick = 'Shiny.setInputValue(\"deletePressed\", this.id, {priority: "event"})'
       )
     )
   }
@@ -231,7 +234,7 @@ addDeleteEditLink <- function(df, idPrefix) {
   editLink <- function(rowID) {
     as.character(
       actionLink(
-        inputId = paste0(idPrefix, "edit", rowID),
+        inputId = paste(idPrefix, "edit", rowID, sep = "\\."),
         label = "Edit"
       )
     )
@@ -246,4 +249,11 @@ addDeleteEditLink <- function(df, idPrefix) {
     ),
     escape = FALSE
   )
+}
+
+
+# Function that grabs the rowID for the row to be edited or deleted
+parseDeleteEvent <- function(idstr) {
+  res <- as.integer(sub(".*\\.([0-9]+)", "\\1", idstr))
+  if (!is.na(res)) res
 }

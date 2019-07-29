@@ -98,3 +98,17 @@ observeEvent(
       loadEmployeeFormData()})
   }
 )
+
+
+# handling the delete buttons on the employeeForm datatable
+observeEvent(
+  input$deletePressed, {
+    rowID <- parseDeleteEvent(input$deletePressed)
+    
+    employeeFormData <<- employeeFormData[-rowID, ]
+    
+    output$employeeFormResponses <- DT::renderDataTable({
+      input$submitAddEmployee
+      loadEmployeeFormData()})
+  }
+)
