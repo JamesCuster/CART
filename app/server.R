@@ -1,56 +1,56 @@
-
-# Project form functions --------------------------------------------------
-
-saveProjectFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("projectFormData")) {
-    projectFormData <<- rbind(projectFormData, formResponse)
-  } else {
-    projectFormData <<- formResponse
-  }
-}
-
-loadProjectFormData <- function() {
-  if (exists("projectFormData")) {
-    projectFormData[-1]
-  }
-}
-
-
-# Time form functions -----------------------------------------------------
-
-saveTimeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("timeFormData")) {
-    timeFormData <<- rbind(timeFormData, formResponse)
-  } else {
-    timeFormData <<- formResponse
-  }
-}
-
-loadTimeFormData <- function() {
-  if (exists("timeFormData")) {
-    timeFormData[-1]
-  } 
-}
-
-
-# Researcher form functions -----------------------------------------------
-
-saveResearcherFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("researcherFormData")) {
-    researcherFormData <<- rbind(researcherFormData, formResponse)
-  } else {
-    researcherFormData <<- formResponse
-  }
-}
-
-loadResearcherFromData <- function() {
-  if (exists("researcherFormData")) {
-    researcherFormData[-1]
-  }
-}
+# 
+# # Project form functions --------------------------------------------------
+# 
+# saveProjectFormData <- function(formResponse) {
+#   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+#   if (exists("projectFormData")) {
+#     projectFormData <<- rbind(projectFormData, formResponse)
+#   } else {
+#     projectFormData <<- formResponse
+#   }
+# }
+# 
+# loadProjectFormData <- function() {
+#   if (exists("projectFormData")) {
+#     projectFormData[-1]
+#   }
+# }
+# 
+# 
+# # Time form functions -----------------------------------------------------
+# 
+# saveTimeFormData <- function(formResponse) {
+#   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+#   if (exists("timeFormData")) {
+#     timeFormData <<- rbind(timeFormData, formResponse)
+#   } else {
+#     timeFormData <<- formResponse
+#   }
+# }
+# 
+# loadTimeFormData <- function() {
+#   if (exists("timeFormData")) {
+#     timeFormData[-1]
+#   } 
+# }
+# 
+# 
+# # Researcher form functions -----------------------------------------------
+# 
+# saveResearcherFormData <- function(formResponse) {
+#   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
+#   if (exists("researcherFormData")) {
+#     researcherFormData <<- rbind(researcherFormData, formResponse)
+#   } else {
+#     researcherFormData <<- formResponse
+#   }
+# }
+# 
+# loadResearcherFromData <- function() {
+#   if (exists("researcherFormData")) {
+#     researcherFormData[-1]
+#   }
+# }
 
 
 # BDSH employee form functions --------------------------------------------

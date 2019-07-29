@@ -5,6 +5,10 @@ cleanTimeFormData <-
       if (grepl("date", x, ignore.case = TRUE)) {
         as.character(input[[x]])
       } 
+      else if (x %in% "workByName") {
+        x <- gsub("Name", "", x)
+        input[[x]]
+      }
       else if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
         return(NA)
       }

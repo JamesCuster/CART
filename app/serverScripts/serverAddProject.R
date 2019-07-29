@@ -13,6 +13,10 @@ cleanProjectFormData <-
           else if (grepl("projectID", x)) {
             NA
           } 
+          else if (x %in% addProjectPeopleNames) {
+            x <- gsub("Name", "", x)
+            input[[x]]
+          }
           else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
             return(NA)
           }
