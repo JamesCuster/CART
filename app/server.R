@@ -12,7 +12,7 @@ saveProjectFormData <- function(formResponse) {
 
 loadProjectFormData <- function() {
   if (exists("projectFormData")) {
-    projectFormData
+    projectFormData[-1]
   }
 }
 
@@ -30,7 +30,7 @@ saveTimeFormData <- function(formResponse) {
 
 loadTimeFormData <- function() {
   if (exists("timeFormData")) {
-    timeFormData
+    timeFormData[-1]
   } 
 }
 
@@ -48,7 +48,7 @@ saveResearcherFormData <- function(formResponse) {
 
 loadResearcherFromData <- function() {
   if (exists("researcherFormData")) {
-    researcherFormData
+    researcherFormData[-1]
   }
 }
 
@@ -66,7 +66,7 @@ saveEmployeeFormData <- function(formResponse) {
 
 loadEmployeeFormData <- function(formResponse) {
   if (exists("employeeFormData")) {
-    employeeFormData
+    employeeFormData[-1]
   }
 }
 
