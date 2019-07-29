@@ -1,6 +1,7 @@
 library(shiny)
 library(dplyr)
 library(RSQLite)
+library(DT)
 
 
 # Database related functions ----------------------------------------------
@@ -192,25 +193,63 @@ loadResearcherFromData <- function() {
 saveEmployeeFormData <- function(formResponse) {
   formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
   if (exists("employeeFormData")) {
-    employeeFormData <<- rbind(employeeFormData, formResponse)
+    employeeFormData <- rbind(employeeFormData, formResponse)
+    row.names(employeeFormData) <- NULL
+    employeeFormData <<- employeeFormData
   } else {
-    employeeFormData <<- formResponse
+    employeeFormData <- formResponse
+    row.names(employeeFormData) <- NULL
+    employeeFormData <<- employeeFormData
   }
 }
 
 loadEmployeeFormData <- function(formResponse) {
   if (exists("employeeFormData")) {
-    employeeFormData[-1]
+    addDeleteEditLink(employeeFormData[-1], "employeeForm")
   }
 }
 
 
+# Functions and helpers to create/manipulate delete/edit buttons ----------
 
-# Function that allows for two text inputs to be in a row
-    # Not currently used, but leaving in here for now because it might be useful
-    # later
-# textInputRow <- function(inputId, label, value = "") {
-#   div(style="display:inline-block",
-#       tags$label(label, `for` = inputId), 
-#       tags$input(id = inputId, type = "text", value = value,class="input-small"))
-# }
+# function that adds the delete button to data.frames
+addDeleteEditLink <- function(df, idPrefix) {
+  # function to make delete link to be used with lapply
+  deleteLink <- function(rowID) {
+    as.character(
+      actionLink(
+        inputId = paste(idPrefix, "delete", rowID, sep = "\\."),
+        label = "Delete",
+        onclick = 'Shiny.setInputValue(\"deletePressed\", this.id, {priority: "event"})'
+      )
+    )
+  }
+  
+  # function to make edit link to be used with lapply
+  editLink <- function(rowID) {
+    as.character(
+      actionLink(
+        inputId = paste(idPrefix, "edit", rowID, sep = "\\."),
+        label = "Edit",
+        onclick = 'Shiny.setInputValue(\"editPressed\", this.id, {priority: "event"})'
+      )
+    )
+  }
+  
+  # create datatable with given data.frame and the two functions above
+  datatable(
+    cbind(
+      Delete = sapply(row.names(df), deleteLink),
+      Edit = sapply(row.names(df), editLink),
+      df
+    ),
+    escape = FALSE,
+  )
+}
+
+
+# Function that grabs the rowID for the row to be edited or deleted
+parseDeleteEvent <- function(idstr) {
+  res <- as.integer(sub(".*\\.([0-9]+)", "\\1", idstr))
+  if (!is.na(res)) res
+}
