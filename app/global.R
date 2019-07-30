@@ -150,7 +150,7 @@ saveProjectFormData <- function(formResponse) {
 
 loadProjectFormData <- function() {
   if (exists("projectFormData")) {
-    projectFormData[-1]
+    addDeleteEditLink(projectFormData[-1], "projectFormData")
   }
 }
 
@@ -167,7 +167,7 @@ saveTimeFormData <- function(formResponse) {
 
 loadTimeFormData <- function() {
   if (exists("timeFormData")) {
-    timeFormData[-1]
+    addDeleteEditLink(timeFormData[-1], "timeFormData")
   } 
 }
 

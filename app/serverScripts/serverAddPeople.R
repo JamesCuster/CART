@@ -24,7 +24,7 @@ cleanResearcherFormData <- reactive({
 })
 
 
-# 1.2 Add To Queue Button
+# 1.2 Add To Queue Button ---------------------------------------------------
 # This controls what happens when the add to queue button on the add researcher
 # form is pressed
 observeEvent(
@@ -47,7 +47,6 @@ observeEvent(
       })
   }
 )
-
 
 
 # 1.3 Save to Database Button -----------------------------------------------
