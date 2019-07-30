@@ -100,7 +100,7 @@ tabPanel(
   selectInput(
     inputId = "projectStatus", 
     label = "Status",
-    choices = c("Active", "Quite", "Inactive", "Complete")
+    choices = c("Active", "Complete", "Inactive",  "Quiet")
   ),
   
   dateInput(
