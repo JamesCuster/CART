@@ -52,7 +52,12 @@ observeEvent(
   }
 )
 
-# Add Reactives for add BDSH employee -------------------------------------
+
+
+
+# 2 Add Reactives for add BDSH employee -------------------------------------
+
+# Cleans the form data after it has been added to queue
 cleanEmployeeFormData <-
   reactive({
     employeeFormResponse <- sapply(addEmployeeFields, function(x) {
@@ -65,14 +70,14 @@ cleanEmployeeFormData <-
     employeeFormResponse <<- employeeFormResponse
   })
 
-# This is what controls what happens when the submit button on the add employee
+# This controls what happens when the add to queue button on the add employee
 # tab is pressed
 observeEvent(
   input$submitAddEmployee, {
     # creates and displays table of inputs
     saveEmployeeFormData(cleanEmployeeFormData())
     
-    # Clears data from the forms
+    # Clears data from the input forms
     sapply(
       addEmployeeFields, 
       function(x) {
@@ -83,11 +88,14 @@ observeEvent(
   }
 )
 
+# Creates the datatable to display add employee queue
 output$employeeFormResponses <- DT::renderDataTable({
   input$submitAddEmployee
   loadEmployeeFormData()
 })
 
+# This controls what happens when the save to database button is pressed on the
+# add employee section
 observeEvent(
   input$employeeToDatabase, {
     dbWriteTable(BDSHProjects, "employees", employeeFormData, append = TRUE)
@@ -100,7 +108,8 @@ observeEvent(
 )
 
 
-# handling the delete buttons on the employeeForm datatable
+# This controls what happens when the delete buttons on the employeeForm
+# datatable are pressed
 observeEvent(
   input$deletePressed, {
     # identify row to be deleted
@@ -123,7 +132,8 @@ observeEvent(
 )
 
 
-# handling the edit buttons on the employeeForm datatable
+# # This controls what happens when the edit buttons on the employeeForm
+# datatable are pressed
 observeEvent(
   input$editPressed, {
     # identify row to be edited
