@@ -100,7 +100,7 @@ tabPanel(
   selectInput(
     inputId = "projectStatus", 
     label = "Status",
-    choices = c("Active", "Quite", "Inactive", "Complete")
+    choices = c("Active", "Complete", "Inactive",  "Quiet")
   ),
   
   dateInput(
@@ -116,7 +116,7 @@ tabPanel(
   tags$br(),
   tags$br(),
   tags$h4("These Projects are in the queue to be added to the database"),
-  DT::dataTableOutput("projectFormResponses", width = 300),
+  DT::dataTableOutput("projectFormData", width = 300),
   
   # Once data is submitted through the form, this button appears to submit to
   # database

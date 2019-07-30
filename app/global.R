@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(RSQLite)
 library(DT)
+library(shinydashboard)
 
 
 # Database related functions ----------------------------------------------
@@ -150,7 +151,7 @@ saveProjectFormData <- function(formResponse) {
 
 loadProjectFormData <- function() {
   if (exists("projectFormData")) {
-    projectFormData[-1]
+    addDeleteEditLink(projectFormData[-1], "projectFormData")
   }
 }
 
@@ -167,7 +168,7 @@ saveTimeFormData <- function(formResponse) {
 
 loadTimeFormData <- function() {
   if (exists("timeFormData")) {
-    timeFormData[-1]
+    addDeleteEditLink(timeFormData[-1], "timeFormData")
   } 
 }
 
@@ -182,9 +183,9 @@ saveResearcherFormData <- function(formResponse) {
   }
 }
 
-loadResearcherFromData <- function() {
+loadResearcherFormData <- function() {
   if (exists("researcherFormData")) {
-    researcherFormData[-1]
+    addDeleteEditLink(researcherFormData[-1], "researcherFormData")
   }
 }
 
@@ -205,7 +206,7 @@ saveEmployeeFormData <- function(formResponse) {
 
 loadEmployeeFormData <- function(formResponse) {
   if (exists("employeeFormData")) {
-    addDeleteEditLink(employeeFormData[-1], "employeeForm")
+    addDeleteEditLink(employeeFormData[-1], "employeeFormData")
   }
 }
 
@@ -216,22 +217,38 @@ loadEmployeeFormData <- function(formResponse) {
 addDeleteEditLink <- function(df, idPrefix) {
   # function to make delete link to be used with lapply
   deleteLink <- function(rowID) {
+    # create inputId name
+    delID <- paste0(idPrefix, "Delete")
+    
     as.character(
       actionLink(
-        inputId = paste(idPrefix, "delete", rowID, sep = "\\."),
+        inputId = paste(idPrefix, rowID, sep = "_"),
         label = "Delete",
-        onclick = 'Shiny.setInputValue(\"deletePressed\", this.id, {priority: "event"})'
+        onclick = 
+          paste0(
+            'Shiny.setInputValue(\"',
+            delID,
+            '\", this.id, {priority: "event"})'
+          )
       )
     )
   }
   
   # function to make edit link to be used with lapply
   editLink <- function(rowID) {
+    # create inputId name
+    editID <- paste0(idPrefix, "Edit")
+    
     as.character(
       actionLink(
-        inputId = paste(idPrefix, "edit", rowID, sep = "\\."),
+        inputId = paste(idPrefix, rowID, sep = "_"),
         label = "Edit",
-        onclick = 'Shiny.setInputValue(\"editPressed\", this.id, {priority: "event"})'
+        onclick = 
+          paste0(
+            'Shiny.setInputValue(\"',
+            editID,
+            '\", this.id, {priority: "event"})'
+          )
       )
     )
   }
@@ -250,6 +267,16 @@ addDeleteEditLink <- function(df, idPrefix) {
 
 # Function that grabs the rowID for the row to be edited or deleted
 parseDeleteEvent <- function(idstr) {
-  res <- as.integer(sub(".*\\.([0-9]+)", "\\1", idstr))
+  res <- as.integer(sub(".*_([0-9]+)", "\\1", idstr))
   if (!is.na(res)) res
+}
+
+
+
+# Functions to Modify The UI ----------------------------------------------
+
+selectizeInputRow <- function (inputId, label, value = "", choices = "", ...) {
+  div(style="display:inline-block",
+      tags$label(label, `for` = inputId), 
+      tags$input(id = inputId, type = "selectize", value = value, choices = choices, ..., class="input-small"))
 }

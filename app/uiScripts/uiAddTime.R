@@ -82,7 +82,7 @@ tabPanel(
   tags$br(),
   tags$br(),
   tags$h4("Time in the queue to be added to the database"),
-  DT::dataTableOutput("timeFormResponses", width = 300),
+  DT::dataTableOutput("timeFormData", width = 300),
   
   # creates button to submit data to database once a form is submitted
   actionButton(

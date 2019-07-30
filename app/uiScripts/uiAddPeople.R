@@ -40,7 +40,7 @@ tabPanel(
   tags$br(),
   tags$br(),
   tags$h4("Researchers in the queue to be added to the database"),
-  DT::dataTableOutput("researcherFormResponses", width = 300),
+  DT::dataTableOutput("researcherFormData", width = 300),
   
   actionButton(
     inputId = "researcherToDatabase", 
@@ -89,7 +89,7 @@ tabPanel(
   tags$br(),
   tags$br(),
   tags$h4("BDSH Employees in the queue to be added to the database"),
-  DT::dataTableOutput("employeeFormResponses", width = 300),
+  DT::dataTableOutput("employeeFormData", width = 300),
   
   
   

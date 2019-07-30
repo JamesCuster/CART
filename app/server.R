@@ -124,6 +124,12 @@ shinyServer(
       local = TRUE
     )
     
+    #serverViewProjects
+    source(
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewProjects.R",
+      local = TRUE
+    )
+    
     # stops the app when window is closed
     session$onSessionEnded(function() {
       dbDisconnect(BDSHProjects)
