@@ -1,7 +1,7 @@
 # Add Reactives for add Researcher ----------------------------------------
 
 # creates the datetable to display add researcher queue
-output$researcherFormResponses <- 
+output$researcherFormData <- 
   renderDataTable({
     loadResearcherFormData()
   })
@@ -41,7 +41,7 @@ observeEvent(
     )
     
     # creates the datetable to display add researcher queue
-    output$researcherFormResponses <- 
+    output$researcherFormData <- 
       renderDataTable({
         loadResearcherFormData()
       })
@@ -58,7 +58,7 @@ observeEvent(
     dbWriteTable(BDSHProjects, "researchers", researcherFormData, append = TRUE)
     researcherFormData <<- researcherFormData[c(), ]
     
-    output$researcherFormResponses <- 
+    output$researcherFormData <- 
       renderDataTable({
         loadResearcherFormData()
       })
@@ -85,7 +85,7 @@ observeEvent(
     researcherFormData <<- researcherFormData
 
     # Re-render the table for display in the UI
-    output$researcherFormResponses <-
+    output$researcherFormData <-
       renderDataTable({
         loadResearcherFormData()
       })
@@ -126,7 +126,7 @@ observeEvent(
     )
 
     # Re-render table after the row to edit has been removed
-    output$researcherFormResponses <-
+    output$researcherFormData <-
       renderDataTable({
         loadResearcherFormData()
       })
@@ -138,7 +138,7 @@ observeEvent(
 # 2 Add Employee Reactives --------------------------------------------------
 
 # Creates the datatable to display add employee queue
-output$employeeFormResponses <- 
+output$employeeFormData <- 
   renderDataTable({
     loadEmployeeFormData()
   })
@@ -180,7 +180,7 @@ observeEvent(
     )
     
     # Creates the datatable to display add employee queue
-    output$employeeFormResponses <- 
+    output$employeeFormData <- 
       renderDataTable({
         loadEmployeeFormData()
       })
@@ -202,7 +202,7 @@ observeEvent(
     
     employeeFormData <<- employeeFormData[c(), ]
     
-    output$employeeFormResponses <- 
+    output$employeeFormData <- 
       renderDataTable({
         loadEmployeeFormData()
       })
@@ -228,7 +228,7 @@ observeEvent(
     employeeFormData <<- employeeFormData
 
     # Re-render the table for display in the UI
-    output$employeeFormResponses <-
+    output$employeeFormData <-
       renderDataTable({
         loadEmployeeFormData()
       })
@@ -269,7 +269,7 @@ observeEvent(
     )
 
     # Re-render table after the row to edit has been removed
-    output$employeeFormResponses <-
+    output$employeeFormData <-
       renderDataTable({
         loadEmployeeFormData()
       })

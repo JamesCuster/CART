@@ -40,7 +40,7 @@ observeEvent(
   }
 )
 
-output$timeFormResponses <- DT::renderDataTable({
+output$timeFormData <- DT::renderDataTable({
   input$submitAddTime
   loadTimeFormData()
 })
@@ -57,7 +57,7 @@ observeEvent(
     timeFormData <<- timeFormData[c(), ]
     
     # render the now blank data.frame to be displayed in the UI
-    output$timeFormResponses <- DT::renderDataTable({
+    output$timeFormData <- DT::renderDataTable({
       input$submitAddTime
       loadTimeFormData()})
   }

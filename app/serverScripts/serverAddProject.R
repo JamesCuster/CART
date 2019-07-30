@@ -51,7 +51,7 @@ observeEvent(
 )
 
 
-output$projectFormResponses <-
+output$projectFormData <-
   DT::renderDataTable({
     input$submitAddProject
     loadProjectFormData()
@@ -70,7 +70,7 @@ observeEvent(
     projectFormData <<- projectFormData[c(), ]
     
     # render the now blank data.frame to be displayed in the UI
-    output$projectFormResponses <-
+    output$projectFormData <-
       DT::renderDataTable({
         input$submitAddProject
         loadProjectFormData()
