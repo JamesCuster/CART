@@ -6,8 +6,8 @@ output$researcherFormData <-
     loadResearcherFormData()
   })
 
-# 1.1 Clean form data -------------------------------------------------------
-# reactive that cleans form data after it has been added to queue. Used in 1.2
+# 1.1 Clean Form Data -------------------------------------------------------
+# reactive that cleans form data after added to queue is pressed. Used in 1.2
 cleanResearcherFormData <- reactive({
   researcherFormResponse <- 
     sapply(
@@ -66,7 +66,7 @@ observeEvent(
 
 
 
-# 1.4 Delete Table Row Buttons ----------------------------------------------
+# 1.4 Delete Row Table Buttons ----------------------------------------------
 # This controls what happens when the delete buttons on the employeeForm
 # datatable are pressed
 observeEvent(
@@ -92,7 +92,7 @@ observeEvent(
 )
 
 
-# 1.5 Edit Table Row Buttons ------------------------------------------------
+# 1.5 Edit Row Table Buttons ------------------------------------------------
 # # This controls what happens when the edit buttons on the employeeForm
 # datatable are pressed
 observeEvent(
@@ -209,7 +209,7 @@ observeEvent(
 )
 
 
-# 2.4 Delete Table Row Buttons ----------------------------------------------
+# 2.4 Delete Row Table Buttons ----------------------------------------------
 # This controls what happens when the delete buttons on the employeeForm
 # datatable are pressed
 observeEvent(
@@ -235,7 +235,7 @@ observeEvent(
 )
 
 
-# 2.5 Edit Table Row Buttons ------------------------------------------------
+# 2.5 Edit Row Table Buttons ------------------------------------------------
 # This controls what happens when the edit buttons on the employeeForm
 # datatable are pressed
 observeEvent(

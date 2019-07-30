@@ -91,7 +91,7 @@ observeEvent(
 )
 
 
-# 1.4 Delete Table Row Buttons --------------------------------------------
+# 1.4 Delete Row Table Buttons --------------------------------------------
 # This controls what happens when the delete buttons on the employeeForm
 # datatable are pressed
 observeEvent(
@@ -118,7 +118,7 @@ observeEvent(
 )
 
 
-# 1.5 Edit Table Row Buttons ------------------------------------------------
+# 1.5 Edit Row Table Buttons ------------------------------------------------
 # # This controls what happens when the edit buttons on the projectForm
 # datatable are pressed
 observeEvent(

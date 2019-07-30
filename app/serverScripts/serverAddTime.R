@@ -1,4 +1,14 @@
-# Reactives for add time --------------------------------------------------
+# Add Reactives for add time --------------------------------------------------
+
+# Creats the datatable to display add time queue
+output$timeFormData <- 
+  renderDataTable({
+    loadTimeFormData()
+  })
+
+
+# 1.1 Clean Form Data -------------------------------------------------------
+#reactive that cleans the form data after added to queue is pressed. Used in 1.2
 cleanTimeFormData <-
   reactive({
     timeFormResponse <- sapply(addTimeFields, function(x) {
@@ -22,13 +32,15 @@ cleanTimeFormData <-
     timeFormResponse <<- timeFormResponse
   })
 
-# This is what controls what happens when the submit button on the add time
-# tab is pressed
+
+# 1.2 Add To Queue Button -------------------------------------------------
+# This is what controls what happens when the add to queue button on the add time
+# form is pressed
 observeEvent(
   input$submitAddTime, {
     # creates and displays table of inputs
     saveTimeFormData(cleanTimeFormData())
-    
+
     # Clears data from the forms
     sapply(
       addTimeFields, 
@@ -37,14 +49,19 @@ observeEvent(
         session$sendCustomMessage(type = "resetValue", message = x)
       }
     )
+    
+    # Creats the datatable to display add time queue
+    output$timeFormData <- 
+      renderDataTable({
+        loadTimeFormData()
+      })
   }
 )
 
-output$timeFormData <- DT::renderDataTable({
-  input$submitAddTime
-  loadTimeFormData()
-})
 
+# 1.3 Save To Database Button -----------------------------------------------
+#This controls what happens when the save to databse button is pressed on the
+#add time page
 observeEvent(
   input$timeToDatabase, {
     # remove variables that are not saved to database (Peoples names)
@@ -56,9 +73,77 @@ observeEvent(
     # clear data.frame after added to database
     timeFormData <<- timeFormData[c(), ]
     
-    # render the now blank data.frame to be displayed in the UI
-    output$timeFormData <- DT::renderDataTable({
-      input$submitAddTime
-      loadTimeFormData()})
+    # Creats the datatable to display add time queue
+    output$timeFormData <- 
+      renderDataTable({
+        loadTimeFormData()
+      })
+  }
+)
+
+
+# 1.4 Delete Row Table Buttons ----------------------------------------------
+# This controls what happens when the delete buttons on the timeForm
+# datatable are pressed
+observeEvent(
+  input$timeFormDataDelete, {
+    # identify row to be deleted
+    rowID <- parseDeleteEvent(input$timeFormDataDelete)
+    
+    # delete row from data.frame
+    timeFormData <- timeFormData[-rowID, ]
+    
+    # reset data.frame's row.names, remove rowID, and save timeFormData to
+    # global environment
+    row.names(timeFormData) <- NULL
+    rowID <- NULL
+    timeFormData <<- timeFormData
+    
+    # Re-render the table for display in the UI
+    output$timeFormData <-
+      renderDataTable({
+        loadTimeFormData()
+      })
+  }
+)
+
+
+# 1.5 Edit Row Table Buttons ------------------------------------------------
+# # This controls what happens when the edit buttons on the timeForm
+# datatable are pressed
+observeEvent(
+  input$timeFormDataEdit, {
+    # identify row to be edited
+    rowID <- parseDeleteEvent(input$timeFormDataEdit)
+    
+    # Grab row to be edited
+    edit <- timeFormData[rowID, ]
+    
+    # Remove the row to be edited from the data.frame/table
+    timeFormData <- timeFormData[-rowID, ]
+    
+    # reset data.frame's row.names, remove rowID, and save timeFormData to
+    # global environment
+    row.names(timeFormData) <- NULL
+    rowID <- NULL
+    timeFormData <<- timeFormData
+    
+    # Put the values of the row to be updated back into the form
+    sapply(
+      names(timeFormData[-1]),
+      function(x) {
+        updateTextInput(
+          session,
+          inputId = x,
+          value = edit[, x]
+        )
+      }
+    )
+    
+    # Re-render table after the row to edit has been removed
+    output$timeFormData <-
+      renderDataTable({
+        loadTimeFormData()
+      })
   }
 )
