@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(RSQLite)
 library(DT)
+library(shinydashboard)
 
 
 # Database related functions ----------------------------------------------
@@ -268,4 +269,14 @@ addDeleteEditLink <- function(df, idPrefix) {
 parseDeleteEvent <- function(idstr) {
   res <- as.integer(sub(".*_([0-9]+)", "\\1", idstr))
   if (!is.na(res)) res
+}
+
+
+
+# Functions to Modify The UI ----------------------------------------------
+
+selectizeInputRow <- function (inputId, label, value = "", choices = "", ...) {
+  div(style="display:inline-block",
+      tags$label(label, `for` = inputId), 
+      tags$input(id = inputId, type = "selectize", value = value, choices = choices, ..., class="input-small"))
 }
