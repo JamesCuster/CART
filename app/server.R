@@ -124,6 +124,7 @@ shinyServer(
       local = TRUE
     )
     
+    
     # stops the app when window is closed
     session$onSessionEnded(function() {
       dbDisconnect(BDSHProjects)
