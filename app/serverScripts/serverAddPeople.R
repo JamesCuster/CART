@@ -55,21 +55,34 @@ observeEvent(
 
 
 
-# 2 Add Reactives for add BDSH employee -------------------------------------
+# 2 Add Employee Reactives --------------------------------------------------
 
-# Cleans the form data after it has been added to queue
+# Creates the datatable to display add employee queue
+output$employeeFormResponses <- 
+  renderDataTable({
+    loadEmployeeFormData()
+  })
+
+
+# 2.1 Clean form Data -------------------------------------------------------
+# reactive that cleans form data after it has been added to queue. Used in 2.2
 cleanEmployeeFormData <-
   reactive({
-    employeeFormResponse <- sapply(addEmployeeFields, function(x) {
-      if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
-        return(NA)
-      } else {
-        input[[x]]
-      }
-    })
+    employeeFormResponse <- 
+      sapply(
+        addEmployeeFields, 
+        function(x) {
+          if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
+            return(NA)
+          } else {
+            input[[x]]
+          }
+        }
+      )
     employeeFormResponse <<- employeeFormResponse
   })
 
+# 2.2 Add To Queue Button ---------------------------------------------------
 # This controls what happens when the add to queue button on the add employee
 # tab is pressed
 observeEvent(
@@ -85,29 +98,39 @@ observeEvent(
         session$sendCustomMessage(type = "resetValue", message = x)
       }
     )
+    
+    # Creates the datatable to display add employee queue
+    output$employeeFormResponses <- 
+      renderDataTable({
+        loadEmployeeFormData()
+      })
   }
 )
 
-# Creates the datatable to display add employee queue
-output$employeeFormResponses <- DT::renderDataTable({
-  input$submitAddEmployee
-  loadEmployeeFormData()
-})
 
+# 2.3 Save To Database Button -----------------------------------------------
 # This controls what happens when the save to database button is pressed on the
 # add employee section
 observeEvent(
   input$employeeToDatabase, {
-    dbWriteTable(BDSHProjects, "employees", employeeFormData, append = TRUE)
+    
+    dbWriteTable(
+      BDSHProjects, 
+      "employees", 
+      employeeFormData, 
+      append = TRUE)
+    
     employeeFormData <<- employeeFormData[c(), ]
     
-    output$employeeFormResponses <- DT::renderDataTable({
-      input$submitAddEmployee
-      loadEmployeeFormData()})
+    output$employeeFormResponses <- 
+      renderDataTable({
+        loadEmployeeFormData()
+      })
   }
 )
 
 
+# 2.4 Delete Table Row Buttons ----------------------------------------------
 # This controls what happens when the delete buttons on the employeeForm
 # datatable are pressed
 observeEvent(
@@ -125,13 +148,15 @@ observeEvent(
     employeeFormData <<- employeeFormData
     
     # Re-render the table for display in the UI
-    output$employeeFormResponses <- DT::renderDataTable({
-      input$submitAddEmployee
-      loadEmployeeFormData()})
+    output$employeeFormResponses <- 
+      renderDataTable({
+        loadEmployeeFormData()
+      })
   }
 )
 
 
+# 2.5 Edit Table Row Buttons ------------------------------------------------
 # # This controls what happens when the edit buttons on the employeeForm
 # datatable are pressed
 observeEvent(
@@ -143,7 +168,13 @@ observeEvent(
     edit <- employeeFormData[rowID, ]
     
     # Remove the row to be edited from the data.frame/table
-    employeeFormData <<- employeeFormData[-rowID, ]
+    employeeFormData <- employeeFormData[-rowID, ]
+    
+    # reset data.frame's row.names, remove rowID, and save employeeFormData to
+    # global environment
+    row.names(employeeFormData) <- NULL
+    rowID <- NULL
+    employeeFormData <<- employeeFormData
     
     # Put the values of the row to be updated back into the form
     sapply(
@@ -158,8 +189,9 @@ observeEvent(
     )
     
     # Re-render table after the row to edit has been removed
-    output$employeeFormResponses <- DT::renderDataTable({
-      input$submitAddEmployee
-      loadEmployeeFormData()})
+    output$employeeFormResponses <- 
+      renderDataTable({
+        loadEmployeeFormData()
+      })
   }
 )
