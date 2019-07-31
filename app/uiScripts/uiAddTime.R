@@ -12,6 +12,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "workBy",
@@ -22,21 +24,33 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   dateInput(
     inputId = "dateOfWork", 
     label = "Work Completed On"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   dateInput(
     inputId = "dateOfEntry", 
     label = "Work Logged On"
   ),
   
-  textInput(
-    inputId = "workTime", 
-    label = "Time spend in hours (as number with decimals)"
+  
+  # These inputs are defined and modified in serverAddTime 1.6
+  div(
+    uiOutput('workTime'),
+    actionButton(
+      inputId = "timeAsCat",
+      label = "Enter As Category",
+      style = "margin-left: 20px; margin-top: 24px; height: 34px;"
+    ),
+    style = "display: flex; align-items: flex-start;"
   ),
+  
   
   selectizeInput(
     inputId = "workTimeCategory",
@@ -47,6 +61,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "workCategory",
@@ -60,6 +76,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   withTags(
     div(
@@ -73,6 +91,8 @@ tabPanel(
       )
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   actionButton(
     inputId = "submitAddTime", 

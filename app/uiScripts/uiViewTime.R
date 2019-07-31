@@ -1,4 +1,4 @@
 tabPanel(
-  "View Projects",
+  "View Time",
   "content"
 )

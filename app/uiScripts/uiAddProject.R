@@ -11,6 +11,8 @@ tabPanel(
     inputId = "projectName", 
     label = "Project Name"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "bdshLead",
@@ -21,6 +23,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "bdshSecondary",
@@ -32,6 +36,7 @@ tabPanel(
     )
   ),
   
+  
   selectizeInput(
     inputId = "projectPI",
     label = "Primary Investigator",
@@ -41,6 +46,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "projectSupport1",
@@ -63,6 +70,7 @@ tabPanel(
     )
   ),
   
+  
   selectizeInput(
     inputId = "projectSupport3",
     label = "Support Staff 3",
@@ -72,6 +80,7 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  
   
   selectizeInput(
     inputId = "projectSupport4",
@@ -83,7 +92,7 @@ tabPanel(
     )
   ),
   
-# This extra code allows for the text input box size to be customized.
+  # This extra code allows for the text input box size to be customized.
   withTags(
     div(
       h5(
@@ -97,16 +106,20 @@ tabPanel(
     )
   ),
   
+  
   selectInput(
     inputId = "projectStatus", 
     label = "Status",
     choices = c("Active", "Complete", "Inactive",  "Quiet")
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   dateInput(
     inputId = "projectDueDate", 
     label = "Due Date"
   ),
+  
   
   actionButton(
     inputId = "submitAddProject", 
