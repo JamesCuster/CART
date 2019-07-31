@@ -33,10 +33,33 @@ tabPanel(
     label = "Work Logged On"
   ),
   
-  textInput(
-    inputId = "workTime", 
-    label = "Time spend in hours (as number with decimals)"
+  
+  fluidRow(
+    column(
+      4,
+      textInput(
+        inputId = "workTime", 
+        label = "Time spend in hours (as number with decimals)"
+      )
+    ),
+    column(
+      2, 
+      actionButton(
+        inputId = "timeAsCat",
+        label = "Enter As Category",
+        style = "margin-top: 44px;"
+      )
+    ),
+    column(
+      4,
+      uiOutput("timeAsCat"),
+      style = "margin-top: 19px;"
+    )
   ),
+  
+  
+  # This helps align the above fluidRow vertically.
+  #tags$style(type='text/css', "#workTimeCategory {margin-top: 25px;}"),
   
   selectizeInput(
     inputId = "workTimeCategory",

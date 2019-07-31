@@ -147,3 +147,21 @@ observeEvent(
       })
   }
 )
+
+# 1.6 Add Time As Category --------------------------------------------------
+
+observeEvent(
+  input$timeAsCat, {
+    output$timeAsCat <- renderUI(
+      selectizeInput(
+        inputId = "workTimeCategory",
+        label = "Effort Category",
+        choices = c("Small", "Medium", "Large"),
+        options = list(
+          placeholder = NA,
+          onInitialize = I("function() {this.setValue('');}")
+        )
+      )
+    )
+  }
+)

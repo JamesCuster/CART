@@ -2,7 +2,6 @@ library(shiny)
 library(dplyr)
 library(RSQLite)
 library(DT)
-library(shinydashboard)
 
 
 # Database related functions ----------------------------------------------
