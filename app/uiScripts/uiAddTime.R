@@ -12,6 +12,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "workBy",
@@ -22,11 +24,15 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   dateInput(
     inputId = "dateOfWork", 
     label = "Work Completed On"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   dateInput(
     inputId = "dateOfEntry", 
@@ -34,32 +40,17 @@ tabPanel(
   ),
   
   
-  fluidRow(
-    column(
-      4,
-      textInput(
-        inputId = "workTime", 
-        label = "Time spend in hours (as number with decimals)"
-      )
+  # These inputs are defined and modified in serverAddTime 1.6
+  div(
+    uiOutput('workTime'),
+    actionButton(
+      inputId = "timeAsCat",
+      label = "Enter As Category",
+      style = "margin-left: 20px; margin-top: 24px; height: 34px;"
     ),
-    column(
-      2, 
-      actionButton(
-        inputId = "timeAsCat",
-        label = "Enter As Category",
-        style = "margin-top: 44px;"
-      )
-    ),
-    column(
-      4,
-      uiOutput("timeAsCat"),
-      style = "margin-top: 19px;"
-    )
+    style = "display: flex; align-items: flex-start;"
   ),
   
-  
-  # This helps align the above fluidRow vertically.
-  #tags$style(type='text/css', "#workTimeCategory {margin-top: 25px;}"),
   
   selectizeInput(
     inputId = "workTimeCategory",
@@ -70,6 +61,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   selectizeInput(
     inputId = "workCategory",
@@ -83,6 +76,8 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   withTags(
     div(
@@ -96,6 +91,8 @@ tabPanel(
       )
     )
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   actionButton(
     inputId = "submitAddTime", 

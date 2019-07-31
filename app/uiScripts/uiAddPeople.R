@@ -10,21 +10,29 @@ tabPanel(
     inputId = "researcherUteid",
     label = "Researcher's UT EID"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "researcherName",
     label = "Researcher's Name"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "researcherEmail",
     label = "Researchers Email"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "primaryDept",
     label = "Primary Department"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "secondaryDept",
@@ -60,26 +68,36 @@ tabPanel(
     inputId = "employeeUteid",
     label = "BDSH Employee's UT EID"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "employeeName",
     label = "BDSH Employee's Name"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "employeeEmail",
     label = "BDSH Employee's Email"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "degree",
     label = "BDSH Employee's Degree" 
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   textInput(
     inputId = "role",
     label = "BDSH Employee's Role"
   ),
+  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  
   
   actionButton(
     inputId = "submitAddEmployee", 

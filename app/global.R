@@ -273,9 +273,3 @@ parseDeleteEvent <- function(idstr) {
 
 
 # Functions to Modify The UI ----------------------------------------------
-
-selectizeInputRow <- function (inputId, label, value = "", choices = "", ...) {
-  div(style="display:inline-block",
-      tags$label(label, `for` = inputId), 
-      tags$input(id = inputId, type = "selectize", value = value, choices = choices, ..., class="input-small"))
-}

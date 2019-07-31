@@ -149,10 +149,18 @@ observeEvent(
 )
 
 # 1.6 Add Time As Category --------------------------------------------------
-
-observeEvent(
-  input$timeAsCat, {
-    output$timeAsCat <- renderUI(
+# This part changes the input depending on value of input$timeAsCat
+output$workTime <- renderUI({
+  if (input$timeAsCat %% 2 == 0) {
+    tagList(
+      textInput(
+        inputId = "workTime", 
+        label = "Time spent in hours as numeric"
+      ),
+      tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+    )
+  } else {
+    tagList(
       selectizeInput(
         inputId = "workTimeCategory",
         label = "Effort Category",
@@ -161,7 +169,42 @@ observeEvent(
           placeholder = NA,
           onInitialize = I("function() {this.setValue('');}")
         )
-      )
+      ),
+      tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
     )
   }
-)
+})
+
+# This part changes the button depending on value of input$timeAsCat
+observe({
+  if (input$timeAsCat %% 2 == 0) {
+    updateActionButton(
+      session,
+      inputId = "timeAsCat",
+      label = "Enter As Category"
+    )
+  } else {
+    updateActionButton(
+      session,
+      inputId = "timeAsCat",
+      label = "Enter As Hours"
+    )
+  }
+})
+
+# 
+# observeEvent(
+#   input$timeAsCat, {
+#     output$timeAsCat <- renderUI(
+#       selectizeInput(
+#         inputId = "workTimeCategory",
+#         label = "Effort Category",
+#         choices = c("Small", "Medium", "Large"),
+#         options = list(
+#           placeholder = NA,
+#           onInitialize = I("function() {this.setValue('');}")
+#         )
+#       )
+#     )
+#   }
+# )
