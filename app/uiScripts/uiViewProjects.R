@@ -7,18 +7,18 @@ tabPanel(
   div(
     selectInput(
       inputId = "viewProjectsByStatus", 
-      label = "Project Status", 
+      label = "Project Status",
       choices = c("All", "Active", "Complete", "Inactive",  "Quiet")
     ),
     div(
       selectizeInput(
         inputId = "viewProjectsByEmployee",
         label = "BDSH Staff",
-        choices = sort(employees$employeeName),
+        choices = c("All", sort(employees$employeeName)),
         options = list(
-          placeholder = NA,
-          onInitialize = I("function() {this.setValue('');}")
-        ),
+          placeholder = "All",
+          onInitialize = I("function() {this.setValue('All');}")
+        )
       ),
       style = "margin-left: 20px;"
     ),
@@ -29,3 +29,4 @@ tabPanel(
   # Projects Data
   dataTableOutput("viewProjects", width = 300)
 )
+

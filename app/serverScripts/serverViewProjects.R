@@ -1,28 +1,29 @@
-# Inital load of the projects table
+# Reactive to filter projects data based on viewProjectsByStatus and
+# viewProjectsByEmployee
+filterViewProjects <- 
+  reactive({
+    test <- employees[employees$employeeName == input$viewProjectsByEmployee, "employeeUteid"]
+    
+    filtered <- reactiveData$projects %>% 
+      {if (input$viewProjectsByStatus != "All") {
+        filter(., projectStatus == input$viewProjectsByStatus)
+      }
+        else {.}
+      } %>% 
+      {if (input$viewProjectsByEmployee != "All") {
+        filter(., 
+               bdshLead == test | 
+                 bdshSecondary == test)
+      } 
+        else {.}}
+    return(filtered)
+  })
 
-output$viewProjects <- 
+# Create datatable output
+output$viewProjects <-
   renderDataTable({
     datatable(
-      projects,
+      filterViewProjects(),
       rownames = FALSE
     )
   })
-
-# update view projects when new data is loaded. Reload is triggered by the
-# `refresh` reactiveValues defined in server.r
-observeEvent(
-  refresh$viewProjects == TRUE, {
-    
-    # Refresh datatable
-    output$viewProjects <- 
-      renderDataTable({
-        datatable(
-          projects,
-          rownames = FALSE
-        )
-      })
-    
-    # reset the viewProjects reactive
-    refresh$viewProjects <- FALSE
-  }
-)

@@ -45,8 +45,7 @@ shinyServer(
         effort = FALSE,
         employees = FALSE,
         projects = FALSE,
-        researchers = FALSE,
-        viewProjects = FALSE
+        researchers = FALSE
       )
     
     
@@ -78,7 +77,11 @@ shinyServer(
       updateSelectizeInput(
         session,
         inputId = "viewProjectsByEmployee",
-        choices = sort(employees$employeeName)
+        choices = c("All", sort(employees$employeeName)),
+        options = list(
+          placeholder = "All",
+          onInitialize = I("function() {this.setValue('All');}")
+        )
       )
       
       refresh$employees <- FALSE
@@ -87,15 +90,13 @@ shinyServer(
     
     # When new project data is fetched from database
     observeEvent(refresh$projects == TRUE, {
+
       updateSelectizeInput(
         session,
         inputId = "timeProjectID",
         choices = sort(projects$projectName)
       )
-      
-      # Turn on reactive to trigger View Projects datatable to reload
-      refresh$viewProjects <- TRUE
-      
+
       # reset the projects reactive
       refresh$projects <- FALSE
     })
