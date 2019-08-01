@@ -45,7 +45,8 @@ shinyServer(
         effort = FALSE,
         employees = FALSE,
         projects = FALSE,
-        researchers = FALSE
+        researchers = FALSE,
+        viewProjects = FALSE
       )
     
     
@@ -92,6 +93,10 @@ shinyServer(
         choices = sort(projects$projectName)
       )
       
+      # Turn on reactive to trigger View Projects datatable to reload
+      refresh$viewProjects <- TRUE
+      
+      # reset the projects reactive
       refresh$projects <- FALSE
     })
     
