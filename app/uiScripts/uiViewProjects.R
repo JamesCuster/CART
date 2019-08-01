@@ -5,29 +5,27 @@ tabPanel(
   # Filter Projects inputs
 
   div(
-    
+    selectInput(
+      inputId = "viewProjectsByStatus", 
+      label = "Project Status", 
+      choices = c("All", "Active", "Complete", "Inactive",  "Quiet")
+    ),
+    div(
+      selectizeInput(
+        inputId = "viewProjectsByEmployee",
+        label = "BDSH Staff",
+        choices = sort(employees$employeeName),
+        options = list(
+          placeholder = NA,
+          onInitialize = I("function() {this.setValue('');}")
+        ),
+      ),
+      style = "margin-left: 20px;"
+    ),
+    style = "display: flex; align-items: flex-start;"
   ),
   
-  fluidRow(
-    column(
-      3,
-      selectInput(
-        inputId = "viewProjectStatus", 
-        label = "Project Status", 
-        choices = c("Active", "Complete", "Inactive",  "Quiet")
-      )
-    ),
-    column(
-      3,
-      selectInput(
-        inputId = "viewProjectPerson", 
-        label = "BDSH Staff",
-        choices = c("Active", "Complete", "Inactive",  "Quiet")
-      )
-    )
-  ),
   
   # Projects Data
   dataTableOutput("viewProjects", width = 300)
-  
 )

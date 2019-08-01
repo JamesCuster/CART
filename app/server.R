@@ -53,6 +53,7 @@ shinyServer(
     
     # When new employee data is fetched from database
     observeEvent(refresh$employees == TRUE, {
+      # Update selection inputs in the Add Project form
       updateSelectizeInput(
         session,
         inputId = "bdshLead",
@@ -69,6 +70,13 @@ shinyServer(
       updateSelectizeInput(
         session,
         inputId = "workBy",
+        choices = sort(employees$employeeName)
+      )
+      
+      # Update selection inputs in View Projects
+      updateSelectizeInput(
+        session,
+        inputId = "viewProjectsByEmployee",
         choices = sort(employees$employeeName)
       )
       
