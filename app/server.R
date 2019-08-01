@@ -2,10 +2,17 @@
 # Define server logic required to draw a histogram
 shinyServer(
   function(input, output, session) {
-    
 
-# monitor database for changes and reload changed tables ------------------
+# Database functionalities ------------------------------------------------
+
+    # Connect to database
+    BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
     
+    # Load all database tables
+    loadDatabase()
+    
+    
+# monitor database for changes and reload changed tables
     monitorDatabase <- 
       reactivePoll(
         intervalMillis = 1000,
@@ -32,7 +39,17 @@ shinyServer(
     })
     
 
-# Update select(ize)Input's when tables from database are reloaded --------
+    # Reactives used to trigger updates to select(ize)Input when data is reloaded
+    refresh <- 
+      reactiveValues(
+        effort = FALSE,
+        employees = FALSE,
+        projects = FALSE,
+        researchers = FALSE
+      )
+    
+    
+# Update select(ize)Input's when tables from database are reloaded 
     
     # When new employee data is fetched from database
     observeEvent(refresh$employees == TRUE, {
@@ -58,6 +75,7 @@ shinyServer(
       refresh$employees <- FALSE
     })
     
+    
     # When new project data is fetched from database
     observeEvent(refresh$projects == TRUE, {
       updateSelectizeInput(
@@ -68,6 +86,7 @@ shinyServer(
       
       refresh$projects <- FALSE
     })
+    
 
     # When new researcher data is fetched from database
     observeEvent(refresh$researchers == TRUE, {
@@ -133,9 +152,6 @@ shinyServer(
     # stops the app when window is closed
     session$onSessionEnded(function() {
       dbDisconnect(BDSHProjects)
-      #rm()
-      #    stopApp()
-      #    quit("no")
     })
   }
 )

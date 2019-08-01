@@ -4,7 +4,9 @@ tabPanel(
   
   # Filter Projects inputs
 
-  
+  div(
+    
+  ),
   
   fluidRow(
     column(

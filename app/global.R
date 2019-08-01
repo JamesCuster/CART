@@ -6,8 +6,7 @@ library(DT)
 
 # Database related functions ----------------------------------------------
 
-BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
-
+# function that loads specified tables from database
 loadDatabase <- function(tables = c("projects", "employees", "effort", "researchers", "modified")) {
   if ("projects" %in% tables) {
     projects <<- tbl(BDSHProjects, "projects") %>% 
@@ -37,17 +36,7 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
   }
 }
 
-loadDatabase()
 
-
-# Reactives used to trigger updates to select(ize)Input when data is reloaded
-refresh <- 
-  reactiveValues(
-    effort = FALSE,
-    employees = FALSE,
-    projects = FALSE,
-    researchers = FALSE
-  )
 
 # List of database field names used to clean form data --------------------
 
