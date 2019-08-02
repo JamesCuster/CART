@@ -6,29 +6,38 @@ library(DT)
 
 # Database related functions ----------------------------------------------
 
+# Connect to database
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
+
+# Define the reactiveData
+reactiveData <- reactiveValues()
+
+# function that loads specified tables from database
 loadDatabase <- function(tables = c("projects", "employees", "effort", "researchers", "modified")) {
   if ("projects" %in% tables) {
     projects <<- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
+    reactiveData$projects <- projects
   }
   if ("employees" %in% tables) {
     employees <<- tbl(BDSHProjects, "employees") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
+    reactiveData$employees <- employees
   }
   if ("effort" %in% tables) {
     effort <<- tbl(BDSHProjects, "effort") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
+    reactiveData$effort <- effort
   }
   if ("researchers" %in% tables) {
     researchers <<- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    
+    reactiveData$researchers <- researchers
   }
   if ("modified" %in% tables) {
     modified <<- tbl(BDSHProjects, "modified") %>% 
@@ -38,16 +47,6 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
 }
 
 loadDatabase()
-
-
-# Reactives used to trigger updates to select(ize)Input when data is reloaded
-refresh <- 
-  reactiveValues(
-    effort = FALSE,
-    employees = FALSE,
-    projects = FALSE,
-    researchers = FALSE
-  )
 
 # List of database field names used to clean form data --------------------
 

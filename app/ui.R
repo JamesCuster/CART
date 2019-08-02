@@ -7,8 +7,20 @@ shinyUI(
         Shiny.onInputChange(variableName, null);
         });
       "),
-    
+    div(
+      tags$h1("C", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
+      tags$h6("uster", style = "font-size: 10px; margin-bottom: 20px; margin-left: -6px;"),
+      tags$h1("A", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
+      tags$h6("ctive", style = "font-size: 10px; margin-bottom: 20px;"),
+      tags$h1("R", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -3px;"),
+      tags$h6("esource", style = "font-size: 10px; margin-bottom: 20px;"),
+      tags$h1("T", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -16px;"),
+      tags$h6("racker", style = "font-size: 10px; margin-bottom: 20px; margin-left: -16px;"),
+      style = "display: flex; align-items: flex-end;"
+    ),
+
     tabsetPanel(
+      
       # Add tab panels (add project/time, view (project/time) -------------------
       
       # addProject
