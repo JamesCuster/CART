@@ -22,6 +22,20 @@ tabPanel(
       ),
       style = "margin-left: 20px;"
     ),
+    div(
+      selectizeInput(
+        inputId = "viewProjectsByResearcher",
+        label = "Reearcher",
+        choices = c("All", sort(researchers$researcherName)),
+        options = list(
+          placeholder = "All",
+          onInitialize = I("function() {this.setValue('All');}")
+        )
+      ),
+      style = "margin-left: 20px;"
+    ),
+    
+    
     style = "display: flex; align-items: flex-start;"
   ),
   

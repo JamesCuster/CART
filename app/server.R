@@ -62,7 +62,8 @@ shinyServer(
         "projectSupport1",
         "projectSupport2",
         "projectSupport3",
-        "projectSupport4"
+        "projectSupport4",
+        "viewProjectsByResearcher"
       )
     
     
