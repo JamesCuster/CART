@@ -30,111 +30,133 @@ shinyServer(
         },
         valueFunc = function() {
           loadDatabase(tables = modified$tableName)
-          refresh[[modified$tableName]] <- TRUE
         }
       )
     
+    
+# inputId's for inputs which need updating as the database gets modified
+    # Need updating when new employee data is fetched
+    employeesDependentValues <- 
+      c(# Update selection inputs in the Add Project form
+        "bdshLead",
+        "bdshSecondary",
+        # Update selection inputs in the Add Time form
+        "workBy",
+        # Update selection inputs in View Projects
+        "viewProjectsByEmployee"
+      )
+    
+    projectsDependentValues <- 
+      c(# update selection inputs in the add time form
+        "timeProjectID"
+      )
+    
+    researchersDependentValues <- 
+      c(# update selection inputs in the add project form
+        "projectPI",
+        "projectSupport1",
+        "projectSupport2",
+        "projectSupport3",
+        "projectSupport4"
+      )
+    
+    
+# Reactive values which will preserve a users inputs even if new data is loaded
+# into the database
+    dropdownMenuSelections <- reactiveValues()
+      
+      
+    
+# Reactives that trigger after new data is loaded from the database that update
+# the necessary input dropdown menus to reflect any changes in the database
+    updateSelectDropdownMenus <- 
+      reactive({
+        
+        sapply(c(employeesDependentValues, projectsDependentValues, researchersDependentValues),
+               function(x) {
+                 dropdownMenuSelections[[x]] <<- input[[x]]
+               })
+        
+      # When new employee data is fetched from database
+          # Update selection inputs in the Add Project form
+          updateSelectizeInput(
+            session,
+            inputId = "bdshLead",
+            choices = sort(reactiveData$employees$employeeName)
+          )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "bdshSecondary",
+            choices = sort(reactiveData$employees$employeeName)
+          )
+          
+          # Update selection inputs in the Add Time form
+          updateSelectizeInput(
+            session,
+            inputId = "workBy",
+            choices = sort(reactiveData$employees$employeeName)
+          )
+          
+          # Update selection inputs in View Projects
+          updateSelectizeInput(
+            session,
+            inputId = "viewProjectsByEmployee",
+            choices = c("All", sort(reactiveData$employees$employeeName)),
+            selected = dropdownMenuSelections[["viewProjectsByEmployee"]]
+            )
+          
+        
+      # When new project data is fetched from database
+          # update selection inputs in the add time form
+          updateSelectizeInput(
+            session,
+            inputId = "timeProjectID",
+            choices = sort(reactiveData$projects$projectName)
+          )
+          
+        
+      # When new researcher data is fetched from database
+          # update selection inputs in the add project form
+          updateSelectizeInput(
+            session,
+            inputId = "projectPI",
+            choices = sort(reactiveData$researchers$researcherName)
+          )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "projectSupport1",
+            choices = sort(researchers$researcherName)
+          )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "projectSupport2",
+            choices = sort(reactiveData$researchers$researcherName)
+          )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "projectSupport3",
+            choices = sort(reactiveData$researchers$researcherName)
+          )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "projectSupport4",
+            choices = sort(reactiveData$researchers$researcherName)
+          )
+      })
+    
+    
+# observe which applies the monitorDatabase and updateSelectDropdownMenus
+# reactives
     observe({
       monitorDatabase()
+      updateSelectDropdownMenus()
     })
     
-
-    # Reactives used to trigger updates to select(ize)Input when data is reloaded
-    refresh <- 
-      reactiveValues(
-        effort = FALSE,
-        employees = FALSE,
-        projects = FALSE,
-        researchers = FALSE
-      )
-    
-    
-# Update select(ize)Input's when tables from database are reloaded 
-    
-    # When new employee data is fetched from database
-    observeEvent(refresh$employees == TRUE, {
-      # Update selection inputs in the Add Project form
-      updateSelectizeInput(
-        session,
-        inputId = "bdshLead",
-        choices = sort(employees$employeeName)
-      )
-      
-      updateSelectizeInput(
-        session,
-        inputId = "bdshSecondary",
-        choices = sort(employees$employeeName)
-      )
-      
-      # Update selection inputs in the Add Time form
-      updateSelectizeInput(
-        session,
-        inputId = "workBy",
-        choices = sort(employees$employeeName)
-      )
-      
-      # Update selection inputs in View Projects
-      updateSelectizeInput(
-        session,
-        inputId = "viewProjectsByEmployee",
-        choices = c("All", sort(employees$employeeName)),
-        options = list(
-          placeholder = "All",
-          onInitialize = I("function() {this.setValue('All');}")
-        )
-      )
-      
-      refresh$employees <- FALSE
-    })
-    
-    
-    # When new project data is fetched from database
-    observeEvent(refresh$projects == TRUE, {
-
-      updateSelectizeInput(
-        session,
-        inputId = "timeProjectID",
-        choices = sort(projects$projectName)
-      )
-
-      # reset the projects reactive
-      refresh$projects <- FALSE
-    })
-    
-
-    # When new researcher data is fetched from database
-    observeEvent(refresh$researchers == TRUE, {
-      updateSelectizeInput(
-        session,
-        inputId = "projectPI",
-        choices = sort(researchers$researcherName)
-      )
-      
-      updateSelectizeInput(
-        session,
-        inputId = "projectSupport1",
-        choices = sort(researchers$researcherName)
-      )
-      
-      updateSelectizeInput(
-        session,
-        inputId = "projectSupport2",
-        choices = sort(researchers$researcherName)
-      )
-      
-      updateSelectizeInput(
-        session,
-        inputId = "projectSupport3",
-        choices = sort(researchers$researcherName)
-      )
-      
-      updateSelectizeInput(
-        session,
-        inputId = "projectSupport4",
-        choices = sort(researchers$researcherName)
-      )
-      refresh$researchers <- FALSE
-    })
 
 
 # Server Scripts ----------------------------------------------------------
