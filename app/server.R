@@ -61,10 +61,20 @@ shinyServer(
       )
     
     
-# Reactive values which will preserve a users inputs even if new data is loaded
+# reactiveValues which will preserve a users inputs even if new data is loaded
 # into the database
     dropdownMenuSelections <- reactiveValues()
-      
+    sapply(c(employeesDependentValues, projectsDependentValues, researchersDependentValues),
+           function(x) {
+             observeEvent(input[[x]], {
+               # browser()
+               if (x == "viewProjectsByEmployee" && input[[x]] == "") {
+                 dropdownMenuSelections[[x]] <- "All"
+               } else {
+                 dropdownMenuSelections[[x]] <- input[[x]]
+               }
+             })
+           })
       
     
 # Reactives that trigger after new data is loaded from the database that update
@@ -72,30 +82,28 @@ shinyServer(
     updateSelectDropdownMenus <- 
       reactive({
         
-        sapply(c(employeesDependentValues, projectsDependentValues, researchersDependentValues),
-               function(x) {
-                 dropdownMenuSelections[[x]] <<- input[[x]]
-               })
-        
       # When new employee data is fetched from database
           # Update selection inputs in the Add Project form
           updateSelectizeInput(
             session,
             inputId = "bdshLead",
-            choices = sort(reactiveData$employees$employeeName)
+            choices = sort(reactiveData$employees$employeeName),
+            selected = dropdownMenuSelections[["bdshLead"]]
           )
           
           updateSelectizeInput(
             session,
             inputId = "bdshSecondary",
-            choices = sort(reactiveData$employees$employeeName)
+            choices = sort(reactiveData$employees$employeeName),
+            selected = dropdownMenuSelections[["bdshSecondary"]]
           )
           
           # Update selection inputs in the Add Time form
           updateSelectizeInput(
             session,
             inputId = "workBy",
-            choices = sort(reactiveData$employees$employeeName)
+            choices = sort(reactiveData$employees$employeeName),
+            selected = dropdownMenuSelections[["workBy"]]
           )
           
           # Update selection inputs in View Projects
@@ -112,7 +120,8 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "timeProjectID",
-            choices = sort(reactiveData$projects$projectName)
+            choices = sort(reactiveData$projects$projectName),
+            selected = dropdownMenuSelections[["timeProjectID"]]
           )
           
         
@@ -121,31 +130,36 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "projectPI",
-            choices = sort(reactiveData$researchers$researcherName)
+            choices = sort(reactiveData$researchers$researcherName),
+            selected = dropdownMenuSelections[["projectPI"]]
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport1",
-            choices = sort(researchers$researcherName)
+            choices = sort(researchers$researcherName),
+            selected = dropdownMenuSelections[["projectSupport1"]]
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport2",
-            choices = sort(reactiveData$researchers$researcherName)
+            choices = sort(reactiveData$researchers$researcherName),
+            selected = dropdownMenuSelections[["projectSupport2"]]
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport3",
-            choices = sort(reactiveData$researchers$researcherName)
+            choices = sort(reactiveData$researchers$researcherName),
+            selected = dropdownMenuSelections[["projectSupport3"]]
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport4",
-            choices = sort(reactiveData$researchers$researcherName)
+            choices = sort(reactiveData$researchers$researcherName),
+            selected = dropdownMenuSelections[["projectSupport4"]]
           )
       })
     
