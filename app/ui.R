@@ -32,7 +32,7 @@ shinyUI(
     #   tags$h6("rogress", style = "font-size: 10px; margin-bottom: 20px; margin-left: -16px;"),
     #   style = "display: flex; align-items: flex-end;"
     # ),
-    # 
+
 
     tabsetPanel(
       

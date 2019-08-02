@@ -2,7 +2,7 @@
 # viewProjectsByEmployee
 filterViewProjects <- 
   reactive({
-    test <- employees[employees$employeeName == input$viewProjectsByEmployee, "employeeUteid"]
+    employeeUteid <- employees[employees$employeeName == input$viewProjectsByEmployee, "employeeUteid"]
     
     filtered <- reactiveData$projects %>% 
       {if (input$viewProjectsByStatus != "All") {
@@ -12,8 +12,8 @@ filterViewProjects <-
       } %>% 
       {if (input$viewProjectsByEmployee != "All") {
         filter(., 
-               bdshLead == test | 
-                 bdshSecondary == test)
+               bdshLead == employeeUteid | 
+                 bdshSecondary == employeeUteid)
       } 
         else {.}}
     return(filtered)

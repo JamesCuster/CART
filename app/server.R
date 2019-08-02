@@ -35,7 +35,8 @@ shinyServer(
     
     
 # inputId's for inputs which need updating as the database gets modified
-    # Need updating when new employee data is fetched
+    
+    # Need updating when new employees data is fetched
     employeesDependentValues <- 
       c(# Update selection inputs in the Add Project form
         "bdshLead",
@@ -43,14 +44,18 @@ shinyServer(
         # Update selection inputs in the Add Time form
         "workBy",
         # Update selection inputs in View Projects
-        "viewProjectsByEmployee"
+        "viewProjectsByEmployee",
+        "viewTimeByEmployee"
       )
     
+    # Need updating when new projects data is fetched
     projectsDependentValues <- 
       c(# update selection inputs in the add time form
-        "timeProjectID"
+        "timeProjectID",
+        "viewTimeByProject"
       )
     
+    # Need updating when new researchers data is fetched
     researchersDependentValues <- 
       c(# update selection inputs in the add project form
         "projectPI",
@@ -68,7 +73,7 @@ shinyServer(
            function(x) {
              observeEvent(input[[x]], {
                # browser()
-               if (x == "viewProjectsByEmployee" && input[[x]] == "") {
+               if (x %in% c("viewProjectsByEmployee", "viewTimeByEmployee") && input[[x]] == "") {
                  dropdownMenuSelections[[x]] <- "All"
                } else {
                  dropdownMenuSelections[[x]] <- input[[x]]
@@ -114,6 +119,14 @@ shinyServer(
             selected = dropdownMenuSelections[["viewProjectsByEmployee"]]
             )
           
+          # Update selection inputs in View Time
+          updateSelectizeInput(
+            session,
+            inputId = "viewTimeByEmployee",
+            choices = c("All", sort(reactiveData$employees$employeeName)),
+            selected = dropdownMenuSelections[["viewTimeByEmployee"]]
+          )
+          
         
       # When new project data is fetched from database
           # update selection inputs in the add time form
@@ -122,6 +135,13 @@ shinyServer(
             inputId = "timeProjectID",
             choices = sort(reactiveData$projects$projectName),
             selected = dropdownMenuSelections[["timeProjectID"]]
+          )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "viewTimeByProject",
+            choices = c("All", sort(reactiveData$projects$projectName)),
+            selected = dropdownMenuSelections[["viewTimeByProject"]]
           )
           
         
@@ -196,6 +216,12 @@ shinyServer(
     #serverViewProjects
     source(
       "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewProjects.R",
+      local = TRUE
+    )
+    
+    #serverViewTime
+    source(
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewTime.R",
       local = TRUE
     )
     
