@@ -7,6 +7,15 @@ output$researcherFormData <-
   })
 
 # 1.1 Clean Form Data -------------------------------------------------------
+# Reactive that checks if the researcher already exists in database
+checkDuplicateResearcher <- reactive({
+  if (input[["researcherUteid"]] %in% researchers$researcherUteid) {
+    TRUE
+  } else {
+    FALSE
+  }
+})
+
 # reactive that cleans form data after added to queue is pressed. Used in 1.2
 cleanResearcherFormData <- reactive({
   researcherFormResponse <- 
@@ -29,22 +38,31 @@ cleanResearcherFormData <- reactive({
 # form is pressed
 observeEvent(
   input$submitAddResearcher, {
-    saveResearcherFormData(cleanResearcherFormData())
     
-    # Clears form data
-    sapply(
-      addResearcherFields,
-      function(x) {
-        updateTextInput(session, x, value = "")
-        session$sendCustomMessage(type = "resetValue", message = x)
-      }
-    )
+    # Check if input is a duplicate if so return error in UI otherwise proceed
+    if (checkDuplicateResearcher()) {
+      output$checkDuplicateResearcher <- 
+        renderText(
+          "Warning: The researcher UTeid you input already exisit in the researchers table")
+    } else {
+      saveResearcherFormData(cleanResearcherFormData())
+      
+      # Clears form data
+      sapply(
+        addResearcherFields,
+        function(x) {
+          updateTextInput(session, x, value = "")
+          session$sendCustomMessage(type = "resetValue", message = x)
+        }
+      )
+      
+      # creates the datetable to display add researcher queue
+      output$researcherFormData <- 
+        renderDataTable({
+          loadResearcherFormData()
+        })
+    }
     
-    # creates the datetable to display add researcher queue
-    output$researcherFormData <- 
-      renderDataTable({
-        loadResearcherFormData()
-      })
   }
 )
 
@@ -144,6 +162,15 @@ output$employeeFormData <-
 
 
 # 2.1 Clean form Data -------------------------------------------------------
+# Reactive that checks if the employee already exists in database
+checkDuplicateEmployee <- reactive({
+  if (input[["employeeUteid"]] %in% employees$employeeUteid) {
+    TRUE
+  } else {
+    FALSE
+  }
+})
+
 # reactive that cleans form data after it has been added to queue. Used in 2.2
 cleanEmployeeFormData <-
   reactive({
@@ -166,23 +193,30 @@ cleanEmployeeFormData <-
 # tab is pressed
 observeEvent(
   input$submitAddEmployee, {
-    # creates and displays table of inputs
-    saveEmployeeFormData(cleanEmployeeFormData())
-    
-    # Clears data from the input forms
-    sapply(
-      addEmployeeFields, 
-      function(x) {
-        updateTextInput(session, x, value = "")
-        session$sendCustomMessage(type = "resetValue", message = x)
-      }
-    )
-    
-    # Creates the datatable to display add employee queue
-    output$employeeFormData <- 
-      renderDataTable({
-        loadEmployeeFormData()
-      })
+    # Check if input is a duplicate if so return error in UI otherwise proceed
+    if (checkDuplicateEmployee()) {
+      output$checkDuplicateEmployee <- 
+        renderText(
+          "Warning: The employee UTeid you input already exisit in the employees table")
+    } else {
+      # creates and displays table of inputs
+      saveEmployeeFormData(cleanEmployeeFormData())
+      
+      # Clears data from the input forms
+      sapply(
+        addEmployeeFields, 
+        function(x) {
+          updateTextInput(session, x, value = "")
+          session$sendCustomMessage(type = "resetValue", message = x)
+        }
+      )
+      
+      # Creates the datatable to display add employee queue
+      output$employeeFormData <- 
+        renderDataTable({
+          loadEmployeeFormData()
+        })
+    }
   }
 )
 
