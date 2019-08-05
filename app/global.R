@@ -99,6 +99,15 @@ addProjectEmployeeNames <-
   c("bdshLeadName",
     "bdshSecondaryName")
 
+addProjectRemoveForDatabase <- 
+  c("projectPIName",
+    "projectSupport1Name",
+    "projectSupport2Name",
+    "projectSupport3Name",
+    "projectSupport4Name",
+    "bdshLeadName",
+    "bdshSecondaryName")
+
 
 # addTime form inputs
 addTimeFields <- 
@@ -113,6 +122,10 @@ addTimeFields <-
     "workTimeCategory",
     "workCategory",
     "workDescription")
+
+addTimeRemoveForDatabase <- 
+  c("timeProjectName", 
+    "workByName")
 
 
 # addResearcher form inputs

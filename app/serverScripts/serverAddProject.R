@@ -82,7 +82,7 @@ observeEvent(
 observeEvent(
   input$projectToDatabase, {
     # remove variables that are not saved to database (Peoples Names)
-    projectFormData <- projectFormData[, !(names(projectFormData) %in% addProjectPeopleNames)]
+    projectFormData <- projectFormData[, !(names(projectFormData) %in% addProjectRemoveForDatabase)]
     
     # Write table to database
     dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)

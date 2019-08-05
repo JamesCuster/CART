@@ -70,7 +70,7 @@ observeEvent(
 observeEvent(
   input$timeToDatabase, {
     # remove variables that are not saved to database (Peoples names)
-    timeFormData <- timeFormData[, !(names(timeFormData) %in% "workByName")]
+    timeFormData <- timeFormData[, !(names(timeFormData) %in% addTimeRemoveForDatabase)]
     
     # Write table to database
     dbWriteTable(BDSHProjects, "effort", timeFormData, append = TRUE)
