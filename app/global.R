@@ -24,7 +24,12 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
   if ("employees" %in% tables) {
     employees <<- tbl(BDSHProjects, "employees") %>% 
       collect() %>% 
-      as.data.frame(stringsAsFactors = FALSE)
+      as.data.frame(stringsAsFactors = FALSE) %>% 
+      mutate(
+        value = bdshID,
+        label = paste0(employeeName, " (", employeeUteid, ")")
+      )
+    reactive
     reactiveData$employees <- employees
   }
   if ("effort" %in% tables) {
@@ -58,20 +63,20 @@ loadDatabase()
 addProjectFields <- 
   c("projectID",
     "projectName",
-    "bdshLeadName",
     "bdshLead",
-    "bdshSecondaryName",
+    "bdshLeadName",
     "bdshSecondary",
-    "projectPIName",
+    "bdshSecondaryName",
     "projectPI",
-    "projectSupport1Name",
+    "projectPIName",
     "projectSupport1",
-    "projectSupport2Name",
+    "projectSupport1Name",
     "projectSupport2",
-    "projectSupport3Name",
+    "projectSupport2Name",
     "projectSupport3",
-    "projectSupport4Name",
+    "projectSupport3Name",
     "projectSupport4",
+    "projectSupport4Name",
     "projectDescription",
     "projectStatus",
     "projectDueDate")
@@ -83,25 +88,27 @@ addProjectFieldsBDSH <-
     )
 
 # addProject inputs that need to get values from researchers tables
-addProjectFieldsResearchers <- 
-  c("projectPI",
-    "projectPIEmail",
-    "projectSupport1",
-    "projectSupport2",
-    "projectSupport3",
-    "projectSupport4")
+# addProjectFieldsResearchers <- 
+#   c("projectPI",
+#     "projectPIEmail",
+#     "projectSupport1",
+#     "projectSupport2",      # Don't think this is needed anymore, leaving here until further testing
+#     "projectSupport3",
+#     "projectSupport4")
 
 # This inputs are used to display the names of people entered on the addProjects
 # form, but are not saved to the database. This is used just so that the person
 # inputing the data sees the persons name for clarity sake
-addProjectPeopleNames <- 
-  c("bdshLeadName",
-    "bdshSecondaryName",
-    "projectPIName",
+addProjectResearcherNames <- 
+  c("projectPIName",
     "projectSupport1Name",
     "projectSupport2Name",
     "projectSupport3Name",
     "projectSupport4Name")
+
+addProjectEmployeeNames <- 
+  c("bdshLeadName",
+    "bdshSecondaryName")
 
 
 # addTime form inputs

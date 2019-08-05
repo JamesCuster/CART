@@ -24,7 +24,7 @@ tabPanel(
     )
   ),
   tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
-  
+  textOutput("test"),
   
   selectizeInput(
     inputId = "bdshSecondary",

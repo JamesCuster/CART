@@ -1,5 +1,5 @@
 # Add Reactives For Add Project ---------------------------------------------
-
+output$test <- renderText({paste(input$bdshPrimary)})
 # Creates the datatable to dislay add project queue
 output$projectFormData <-
   renderDataTable({
@@ -14,25 +14,38 @@ cleanProjectFormData <-
       sapply(
         addProjectFields, 
         function(x) {
+          # Dates need to be read as character to be added to the database
+          # properly, so this takes all input names with "date" in the variable
+          # name and converts it to character
           if (grepl("date", x, ignore.case = TRUE)) {
             as.character(input[[x]])
           } 
+          # projectID is assined by the database, so it needs to be missing
           else if (grepl("projectID", x)) {
             NA
           } 
-          else if (x %in% addProjectPeopleNames) {
+          # researcher inputs return researcherIDs, so viewing the queue is
+          # easier, we also want to grab their names to display, this is done
+          # here
+          else if (x %in% addProjectResearcherNames) {
             x <- gsub("Name", "", x)
-            input[[x]]
+            researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
           }
+          # This preserves the input names for employees by saving them in a different input
+          else if (x %in% addProjectEmployeeNames) {
+            x <- gsub("Name", "", x)
+            employees[employees$bdshID == input[[x]], "employeeName", drop = TRUE]
+          }
+          # this handles inputs that are left blank
           else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
             return(NA)
           }
-          else if (x %in% addProjectFieldsBDSH) {
-            employees[employees$employeeName == input[[x]], "employeeUteid", drop = TRUE]
-          } 
-          else if (x %in% addProjectFieldsResearchers) {
-            researchers[researchers$researcherName == input[[x]], "researcherUteid", drop = TRUE]
-          } 
+          # else if (x %in% addProjectFieldsBDSH) {
+          #   employees[employees$employeeName == input[[x]], "employeeUteid", drop = TRUE]
+          # } 
+          # else if (x %in% addProjectFieldsResearchers) {
+          #   researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
+          # } 
           else {
             input[[x]]
         }

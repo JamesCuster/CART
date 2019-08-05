@@ -100,15 +100,17 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "bdshLead",
-            choices = sort(reactiveData$employees$employeeName),
-            selected = dropdownMenuSelections[["bdshLead"]]
+            choices = reactiveData$employees[order(employees$employeeName), ],
+            selected = dropdownMenuSelections[["bdshLead"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
             session,
             inputId = "bdshSecondary",
-            choices = sort(reactiveData$employees$employeeName),
-            selected = dropdownMenuSelections[["bdshSecondary"]]
+            choices = reactiveData$employees[order(employees$employeeName), ],
+            selected = dropdownMenuSelections[["bdshSecondary"]],
+            server = TRUE
           )
           
           # Update selection inputs in the Add Time form
