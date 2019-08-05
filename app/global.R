@@ -36,7 +36,11 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
   if ("researchers" %in% tables) {
     researchers <<- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
-      as.data.frame(stringsAsFactors = FALSE)
+      as.data.frame(stringsAsFactors = FALSE) %>% 
+      mutate(
+        value = researcherID,
+        label = paste0(researcherName, " (", researcherEmail, ")")
+      )
     reactiveData$researchers <- researchers
   }
   if ("modified" %in% tables) {
