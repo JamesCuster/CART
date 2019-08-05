@@ -24,7 +24,7 @@ tabPanel(
     )
   ),
   tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
-  
+  textOutput("test"),
   
   selectizeInput(
     inputId = "bdshSecondary",
@@ -40,7 +40,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectPI",
     label = "Primary Investigator",
-    choices = sort(researchers$researcherName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -52,7 +52,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport1",
     label = "Support Staff 1",
-    choices = sort(researchers$researcherName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -63,7 +63,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport2",
     label = "Support Staff 2",
-    choices = sort(researchers$researcherName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -74,7 +74,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport3",
     label = "Support Staff 3",
-    choices = sort(researchers$researcherName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -85,7 +85,7 @@ tabPanel(
   selectizeInput(
     inputId = "projectSupport4",
     label = "Support Staff 4",
-    choices = sort(researchers$researcherName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")

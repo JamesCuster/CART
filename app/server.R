@@ -2,6 +2,7 @@
 # Define server logic required to draw a histogram
 shinyServer(
   function(input, output, session) {
+    
 
 # Database functionalities ------------------------------------------------
 
@@ -32,6 +33,12 @@ shinyServer(
           loadDatabase(tables = modified$tableName)
         }
       )
+    
+    # observe which applies the monitorDatabase reactives
+    observe({
+      monitorDatabase()
+    })
+    
     
     
 # inputId's for inputs which need updating as the database gets modified
@@ -82,7 +89,7 @@ shinyServer(
              })
            })
       
-    
+
 # Reactives that trigger after new data is loaded from the database that update
 # the necessary input dropdown menus to reflect any changes in the database
     updateSelectDropdownMenus <- 
@@ -93,23 +100,26 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "bdshLead",
-            choices = sort(reactiveData$employees$employeeName),
-            selected = dropdownMenuSelections[["bdshLead"]]
+            choices = reactiveData$employees[order(employees$employeeName), ],
+            selected = dropdownMenuSelections[["bdshLead"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
             session,
             inputId = "bdshSecondary",
-            choices = sort(reactiveData$employees$employeeName),
-            selected = dropdownMenuSelections[["bdshSecondary"]]
+            choices = reactiveData$employees[order(employees$employeeName), ],
+            selected = dropdownMenuSelections[["bdshSecondary"]],
+            server = TRUE
           )
           
           # Update selection inputs in the Add Time form
           updateSelectizeInput(
             session,
             inputId = "workBy",
-            choices = sort(reactiveData$employees$employeeName),
-            selected = dropdownMenuSelections[["workBy"]]
+            choices = reactiveData$employees[order(employees$employeeName), ],
+            selected = dropdownMenuSelections[["workBy"]],
+            server = TRUE
           )
           
           # Update selection inputs in View Projects
@@ -134,8 +144,9 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "timeProjectID",
-            choices = sort(reactiveData$projects$projectName),
-            selected = dropdownMenuSelections[["timeProjectID"]]
+            choices = reactiveData$projects[order(projects$projectName), ],
+            selected = dropdownMenuSelections[["timeProjectID"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
@@ -151,44 +162,48 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "projectPI",
-            choices = sort(reactiveData$researchers$researcherName),
-            selected = dropdownMenuSelections[["projectPI"]]
+            choices = reactiveData$researchers[order(researchers$researcherName), ],
+            selected = dropdownMenuSelections[["projectPI"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport1",
-            choices = sort(researchers$researcherName),
-            selected = dropdownMenuSelections[["projectSupport1"]]
+            choices = reactiveData$researchers[order(researchers$researcherName), ],
+            selected = dropdownMenuSelections[["projectSupport1"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport2",
-            choices = sort(reactiveData$researchers$researcherName),
-            selected = dropdownMenuSelections[["projectSupport2"]]
+            choices = reactiveData$researchers[order(researchers$researcherName), ],
+            selected = dropdownMenuSelections[["projectSupport2"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport3",
-            choices = sort(reactiveData$researchers$researcherName),
-            selected = dropdownMenuSelections[["projectSupport3"]]
+            choices = reactiveData$researchers[order(researchers$researcherName), ],
+            selected = dropdownMenuSelections[["projectSupport3"]],
+            server = TRUE
           )
           
           updateSelectizeInput(
             session,
             inputId = "projectSupport4",
-            choices = sort(reactiveData$researchers$researcherName),
-            selected = dropdownMenuSelections[["projectSupport4"]]
+            choices = reactiveData$researchers[order(researchers$researcherName), ],
+            selected = dropdownMenuSelections[["projectSupport4"]],
+            server = TRUE
           )
       })
     
     
-# observe which applies the monitorDatabase and updateSelectDropdownMenus
-# reactives
-    observe({
-      monitorDatabase()
+# observeEvent which applies updateSelectDropdownMenus whenever the loadDatabase
+# function is called
+    observeEvent(loadDatabase(), {
       updateSelectDropdownMenus()
     })
     
