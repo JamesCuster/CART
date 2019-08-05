@@ -81,21 +81,6 @@ addProjectFields <-
     "projectStatus",
     "projectDueDate")
 
-# addProject inputs that need to get values from employees tables
-addProjectFieldsBDSH <- 
-  c("bdshLead",
-    "bdshSecondary"
-    )
-
-# addProject inputs that need to get values from researchers tables
-# addProjectFieldsResearchers <- 
-#   c("projectPI",
-#     "projectPIEmail",
-#     "projectSupport1",
-#     "projectSupport2",      # Don't think this is needed anymore, leaving here until further testing
-#     "projectSupport3",
-#     "projectSupport4")
-
 # This inputs are used to display the names of people entered on the addProjects
 # form, but are not saved to the database. This is used just so that the person
 # inputing the data sees the persons name for clarity sake

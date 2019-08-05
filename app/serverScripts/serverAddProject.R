@@ -40,12 +40,6 @@ cleanProjectFormData <-
           else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
             return(NA)
           }
-          # else if (x %in% addProjectFieldsBDSH) {
-          #   employees[employees$employeeName == input[[x]], "employeeUteid", drop = TRUE]
-          # } 
-          # else if (x %in% addProjectFieldsResearchers) {
-          #   researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
-          # } 
           else {
             input[[x]]
         }
