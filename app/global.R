@@ -18,7 +18,11 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
   if ("projects" %in% tables) {
     projects <<- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
-      as.data.frame(stringsAsFactors = FALSE)
+      as.data.frame(stringsAsFactors = FALSE) %>% 
+      mutate(
+        value = projectID,
+        label = projectName
+      )
     reactiveData$projects <- projects
   }
   if ("employees" %in% tables) {
@@ -100,8 +104,9 @@ addProjectEmployeeNames <-
 addTimeFields <- 
   c("effortID",
     "timeProjectID",
-    "workByName",
+    "timeProjectName",
     "workBy",
+    "workByName",
     "dateOfWork",
     "dateOfEntry",
     "workTime",

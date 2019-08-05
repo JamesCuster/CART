@@ -6,7 +6,7 @@ tabPanel(
   selectizeInput(
     inputId = "timeProjectID",
     label = "Select Project",
-    choices = sort(projects$projectName),
+    choices = NULL,
     options = list(
       placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")
@@ -18,7 +18,7 @@ tabPanel(
   selectizeInput(
     inputId = "workBy",
     label = "BDSH Staff",
-    choices = sort(employees$employeeName),
+    choices = NULL,
     options = list(
       placeholder = NA,
       onInitialize = I("function() {this.setValue('');}")

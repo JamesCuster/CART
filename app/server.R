@@ -117,8 +117,9 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "workBy",
-            choices = sort(reactiveData$employees$employeeName),
-            selected = dropdownMenuSelections[["workBy"]]
+            choices = reactiveData$employees[order(employees$employeeName), ],
+            selected = dropdownMenuSelections[["workBy"]],
+            server = TRUE
           )
           
           # Update selection inputs in View Projects
@@ -143,8 +144,9 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "timeProjectID",
-            choices = sort(reactiveData$projects$projectName),
-            selected = dropdownMenuSelections[["timeProjectID"]]
+            choices = reactiveData$projects[order(projects$projectName), ],
+            selected = dropdownMenuSelections[["timeProjectID"]],
+            server = TRUE
           )
           
           updateSelectizeInput(

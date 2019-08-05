@@ -40,6 +40,7 @@ cleanProjectFormData <-
           else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
             return(NA)
           }
+          # For all other cases return the exact value of the input
           else {
             input[[x]]
         }

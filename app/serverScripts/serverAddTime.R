@@ -15,15 +15,20 @@ cleanTimeFormData <-
       if (grepl("date", x, ignore.case = TRUE)) {
         as.character(input[[x]])
       } 
+      # takes the projectID and fetches projectName from projects data.frame
+      else if (x %in% "timeProjectName") {
+        # This converts "timeProjectName" to "timeProjectID" in order to access
+        # the projectID from input
+        x <- gsub("Name", "ID", x)
+        # This uses the projectID used above to fetch projectName
+        projects[projects$projectID == input[[x]], "projectName", drop = TRUE]
+      }
       else if (x %in% "workByName") {
         x <- gsub("Name", "", x)
-        input[[x]]
+        employees[employees$bdshID == input[[x]], "employeeName", drop = TRUE]
       }
       else if (length(input[[x]]) == 0 || x == "effortID" || input[[x]] == ''|| is.na(input[[x]])) {
         return(NA)
-      }
-      else if (grepl("workBy", x)) {
-        employees[employees$employeeName == input[[x]], "employeeUteid", drop = TRUE]
       }
       else {
         input[[x]]
@@ -192,19 +197,3 @@ observe({
   }
 })
 
-# 
-# observeEvent(
-#   input$timeAsCat, {
-#     output$timeAsCat <- renderUI(
-#       selectizeInput(
-#         inputId = "workTimeCategory",
-#         label = "Effort Category",
-#         choices = c("Small", "Medium", "Large"),
-#         options = list(
-#           placeholder = NA,
-#           onInitialize = I("function() {this.setValue('');}")
-#         )
-#       )
-#     )
-#   }
-# )
