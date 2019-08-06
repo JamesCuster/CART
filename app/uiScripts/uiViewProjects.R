@@ -14,7 +14,7 @@ tabPanel(
       selectizeInput(
         inputId = "viewProjectsByEmployee",
         label = "BDSH Staff",
-        choices = c("All", sort(employees$employeeName)),
+        choices = NULL,
         options = list(
           placeholder = "All",
           onInitialize = I("function() {this.setValue('All');}")
@@ -26,7 +26,7 @@ tabPanel(
       selectizeInput(
         inputId = "viewProjectsByResearcher",
         label = "Reearcher",
-        choices = c("All", sort(researchers$researcherName)),
+        choices = NULL,
         options = list(
           placeholder = "All",
           onInitialize = I("function() {this.setValue('All');}")

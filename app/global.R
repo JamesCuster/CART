@@ -18,22 +18,21 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
   if ("projects" %in% tables) {
     projects <<- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
-      as.data.frame(stringsAsFactors = FALSE) %>% 
       mutate(
         value = projectID,
         label = projectName
-      )
+      ) %>% 
+      as.data.frame(stringsAsFactors = FALSE)
     reactiveData$projects <- projects
   }
   if ("employees" %in% tables) {
     employees <<- tbl(BDSHProjects, "employees") %>% 
-      collect() %>% 
-      as.data.frame(stringsAsFactors = FALSE) %>% 
+      collect()  %>% 
       mutate(
         value = bdshID,
         label = paste0(employeeName, " (", employeeUteid, ")")
-      )
-    reactive
+      )%>% 
+      as.data.frame(stringsAsFactors = FALSE)
     reactiveData$employees <- employees
   }
   if ("effort" %in% tables) {
@@ -45,11 +44,11 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
   if ("researchers" %in% tables) {
     researchers <<- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
-      as.data.frame(stringsAsFactors = FALSE) %>% 
       mutate(
         value = researcherID,
         label = paste0(researcherName, " (", researcherEmail, ")")
-      )
+      ) %>% 
+      as.data.frame(stringsAsFactors = FALSE)
     reactiveData$researchers <- researchers
   }
   if ("modified" %in% tables) {
@@ -106,7 +105,9 @@ addProjectRemoveForDatabase <-
     "projectSupport3Name",
     "projectSupport4Name",
     "bdshLeadName",
-    "bdshSecondaryName")
+    "bdshSecondaryName",
+    "value",
+    "label")
 
 
 # addTime form inputs

@@ -17,6 +17,7 @@ cleanProjectFormData <-
           # Dates need to be read as character to be added to the database
           # properly, so this takes all input names with "date" in the variable
           # name and converts it to character
+         # browser()
           if (grepl("date", x, ignore.case = TRUE)) {
             as.character(input[[x]])
           } 
@@ -27,18 +28,18 @@ cleanProjectFormData <-
           # researcher inputs return researcherIDs, so viewing the queue is
           # easier, we also want to grab their names to display, this is done
           # here
-          else if (x %in% addProjectResearcherNames) {
+          else if (x %in% addProjectResearcherNames && (!is.null(input[[gsub("Name", "", x)]]) | input[[gsub("Name", "", x)]] != "")) {
             x <- gsub("Name", "", x)
             researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
           }
           # This preserves the input names for employees by saving them in a different input
-          else if (x %in% addProjectEmployeeNames) {
-            x <- gsub("Name", "", x)
-            employees[employees$bdshID == input[[x]], "employeeName", drop = TRUE]
+          else if (x %in% addProjectEmployeeNames && (!is.null(input[[gsub("Name", "", x)]]) | input[[gsub("Name", "", x)]] != "")) {
+            y <- gsub("Name", "", x)
+            employees[employees$bdshID == input[[y]], "employeeName", drop = TRUE]
           }
           # this handles inputs that are left blank
           else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
-            return(NA)
+            NA
           }
           # For all other cases return the exact value of the input
           else {
@@ -82,10 +83,11 @@ observeEvent(
 observeEvent(
   input$projectToDatabase, {
     # remove variables that are not saved to database (Peoples Names)
-    projectFormData <- projectFormData[, !(names(projectFormData) %in% addProjectRemoveForDatabase)]
+    projectFormData1 <- projectFormData[, !(names(projectFormData) %in% addProjectRemoveForDatabase)]
+    projectFormData1 <- tidyr::unnest(projectFormData1)
     
     # Write table to database
-    dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)
+    dbWriteTable(BDSHProjects, "projects", projectFormData1, append = TRUE)
     
     # Clear data.frame after added to database
     projectFormData <<- projectFormData[c(), ]
