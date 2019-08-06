@@ -83,11 +83,11 @@ observeEvent(
 observeEvent(
   input$projectToDatabase, {
     # remove variables that are not saved to database (Peoples Names)
-    projectFormData1 <- projectFormData[, !(names(projectFormData) %in% addProjectRemoveForDatabase)]
-    projectFormData1 <- tidyr::unnest(projectFormData1)
+    projectFormData <- projectFormData[, !(names(projectFormData) %in% addProjectRemoveForDatabase)]
+    projectFormData <- unnest(projectFormData)
     
     # Write table to database
-    dbWriteTable(BDSHProjects, "projects", projectFormData1, append = TRUE)
+    dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)
     
     # Clear data.frame after added to database
     projectFormData <<- projectFormData[c(), ]
