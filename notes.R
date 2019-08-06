@@ -65,3 +65,15 @@ observeEvent(
     
   }
 )
+
+
+
+
+# playing with viewProjects datatable possibilites
+rmv <- c("projectID",        "bdshLead",          "bdshSecondary", 
+         "projectPI",        "projectSupport1",   "projectSupport2",
+         "projectSupport3",  "projectSupport4")
+
+
+
+tableView <- viewProjects[, c()]
