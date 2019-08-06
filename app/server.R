@@ -66,7 +66,8 @@ shinyServer(
     projectsDependentValues <- 
       c(# update selection inputs in the add time form
         "timeProjectID",
-        "viewTimeByProject"
+        "viewTimeByProject",
+        "viewProjectsByStatus"
       )
     
     # Need updating when new researchers data is fetched
@@ -88,7 +89,7 @@ shinyServer(
            function(x) {
              observeEvent(input[[x]], {
                # browser()
-               if (x %in% c("viewProjectsByEmployee", "viewProjectsByResearcher", "viewTimeByProject", "viewTimeByEmployee") && input[[x]] == "") {
+               if (x %in% c("viewProjectsByEmployee", "viewProjectsByResearcher", "viewProjectsByStatus", "viewTimeByProject", "viewTimeByEmployee") && input[[x]] == "") {
                  dropdownMenuSelections[[x]] <- "All"
                } else {
                  dropdownMenuSelections[[x]] <- input[[x]]
@@ -202,6 +203,12 @@ shinyServer(
               projects[order(projects$projectName), ]),
             selected = dropdownMenuSelections[["viewTimeByProject"]],
             server = TRUE
+          )
+          
+          updateSelectInput(
+            session,
+            inputId = "viewProjectsByStatus",
+            choices = c("All", unique(reactiveData$projects$projectStatus))
           )
           
         

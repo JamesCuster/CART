@@ -170,7 +170,7 @@ output$workTime <- renderUI({
       selectizeInput(
         inputId = "workTimeCategory",
         label = "Effort Category",
-        choices = c("Small", "Medium", "Large"),
+        choices = c("Small", "Medium", "Large", "Extra Large"),
         options = list(
           placeholder = NA,
           onInitialize = I("function() {this.setValue('');}")
