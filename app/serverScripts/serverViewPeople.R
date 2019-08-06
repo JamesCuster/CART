@@ -1,8 +1,11 @@
-output$viewResearchers <- 
-  renderDataTable(
-    researchers[, !(names(researchers) %in% c("value", "label"))],
-    rownames = FALSE
-  )
+observe({
+  output$viewResearchers <- 
+    renderDataTable(
+      reactiveData$researchers[, !(names(researchers) %in% c("value", "label"))],
+      rownames = FALSE
+    )
+})
+
 
 output$downloadResearchers <- downloadHandler(
   filename = function() {
@@ -15,11 +18,14 @@ output$downloadResearchers <- downloadHandler(
   }
 )
 
-output$viewEmployees <- 
-  renderDataTable(
-    employees[, !(names(employees) %in% c("value", "label"))],
-    rownames = FALSE
-  )
+observe({
+  output$viewEmployees <- 
+    renderDataTable(
+      reactiveData$employees[, !(names(employees) %in% c("value", "label"))],
+      rownames = FALSE
+    )
+})
+
 
 output$downloadEmployees <- downloadHandler(
   filename = function() {
