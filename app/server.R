@@ -2,7 +2,6 @@
 # Define server logic required to draw a histogram
 shinyServer(
   function(input, output, session) {
-    
 
 # Database functionalities ------------------------------------------------
 
@@ -12,6 +11,10 @@ shinyServer(
     # Load all database tables
     loadDatabase()
     
+# Reactive value that gets triggered when new data is loaded from the database
+    updateOnLoad <- reactiveValues(
+      dropdown = FALSE,
+      viewProjects = FALSE)
     
 # monitor database for changes and reload changed tables
     monitorDatabase <- 
@@ -31,6 +34,8 @@ shinyServer(
         },
         valueFunc = function() {
           loadDatabase(tables = modified$tableName)
+          updateOnLoad$dropdown <- TRUE
+          updateOnLoad$viewProjects <- TRUE
         }
       )
     
@@ -81,15 +86,16 @@ shinyServer(
            function(x) {
              observeEvent(input[[x]], {
                # browser()
-               if (x %in% c("viewProjectsByEmployee", "viewTimeByEmployee") && input[[x]] == "") {
+               if (x %in% c("viewProjectsByEmployee", "viewTimeByEmployee", "viewProjectsByResearcher") && input[[x]] == "") {
                  dropdownMenuSelections[[x]] <- "All"
                } else {
                  dropdownMenuSelections[[x]] <- input[[x]]
                }
              })
            })
-      
-
+    
+    
+    
 # Reactives that trigger after new data is loaded from the database that update
 # the necessary input dropdown menus to reflect any changes in the database
     updateSelectDropdownMenus <- 
@@ -126,9 +132,21 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "viewProjectsByEmployee",
-            choices = c("All", sort(reactiveData$employees$employeeName)),
-            selected = dropdownMenuSelections[["viewProjectsByEmployee"]]
+            choices = rbind(
+              data.frame(bdshID = NA,
+                         employeeUteid = NA,    # This is done in order to provide the all option
+                         employeeName = NA,
+                         employeeEmail = NA,
+                         degree = NA,
+                         role = NA,
+                         value = "All",
+                         label = "All",
+                         stringsAsFactors = FALSE),
+              employees[order(employees$employeeName), ]),
+            selected = dropdownMenuSelections[["viewProjectsByEmployee"]],
+            server = TRUE
             )
+          
           
           # Update selection inputs in View Time
           updateSelectizeInput(
@@ -198,13 +216,35 @@ shinyServer(
             selected = dropdownMenuSelections[["projectSupport4"]],
             server = TRUE
           )
+          
+          updateSelectizeInput(
+            session,
+            inputId = "viewProjectsByResearcher",
+            choices = rbind(
+              data.frame(researcherID = NA,
+                         researcherUteid = NA,
+                         researcherName = NA,
+                         researcherEmail = NA,
+                         primaryDept = NA,
+                         secondaryDept = NA,
+                         value = "All",
+                         label = "All",
+                         stringsAsFactors = FALSE),
+              researchers[order(researchers$researcherName), ]
+            ),
+            selected = dropdownMenuSelections[["viewProjectsByResearcher"]],
+            server = TRUE
+          )
+          
       })
     
     
 # observeEvent which applies updateSelectDropdownMenus whenever the loadDatabase
 # function is called
-    observeEvent(loadDatabase(), {
-      updateSelectDropdownMenus()
+    observeEvent(
+      updateOnLoad$dropdown == TRUE, {
+        updateSelectDropdownMenus()
+        updateOnLoad$dropdown <- FALSE
     })
     
 

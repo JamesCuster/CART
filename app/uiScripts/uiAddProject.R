@@ -11,7 +11,7 @@ tabPanel(
     inputId = "projectName", 
     label = "Project Name"
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   selectizeInput(
@@ -23,7 +23,7 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   textOutput("test"),
   
   selectizeInput(
@@ -46,7 +46,7 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   selectizeInput(
@@ -112,7 +112,7 @@ tabPanel(
     label = "Status",
     choices = c("Active", "Complete", "Inactive",  "Quiet")
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   dateInput(

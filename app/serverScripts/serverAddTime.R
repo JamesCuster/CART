@@ -71,6 +71,7 @@ observeEvent(
   input$timeToDatabase, {
     # remove variables that are not saved to database (Peoples names)
     timeFormData <- timeFormData[, !(names(timeFormData) %in% addTimeRemoveForDatabase)]
+    timeFormData <- unnest(timeFormData)
     
     # Write table to database
     dbWriteTable(BDSHProjects, "effort", timeFormData, append = TRUE)
@@ -162,7 +163,7 @@ output$workTime <- renderUI({
         inputId = "workTime", 
         label = "Time spent in hours as numeric"
       ),
-      tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
     )
   } else {
     tagList(
@@ -175,7 +176,7 @@ output$workTime <- renderUI({
           onInitialize = I("function() {this.setValue('');}")
         )
       ),
-      tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
     )
   }
 })
