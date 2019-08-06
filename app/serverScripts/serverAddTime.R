@@ -163,7 +163,7 @@ output$workTime <- renderUI({
         inputId = "workTime", 
         label = "Time spent in hours as numeric"
       ),
-      tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
     )
   } else {
     tagList(
@@ -176,7 +176,7 @@ output$workTime <- renderUI({
           onInitialize = I("function() {this.setValue('');}")
         )
       ),
-      tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
     )
   }
 })

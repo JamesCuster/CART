@@ -12,7 +12,7 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   selectizeInput(
@@ -24,14 +24,14 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   dateInput(
     inputId = "dateOfWork", 
     label = "Work Completed On"
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   dateInput(
@@ -52,17 +52,17 @@ tabPanel(
   ),
   
   
-  selectizeInput(
-    inputId = "workTimeCategory",
-    label = "Effort Category",
-    choices = c("Small", "Medium", "Large"),
-    options = list(
-      placeholder = NA,
-      onInitialize = I("function() {this.setValue('');}")
-    )
-  ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
-  
+  # selectizeInput(
+  #   inputId = "workTimeCategory",
+  #   label = "Effort Category",
+  #   choices = c("Small", "Medium", "Large"),
+  #   options = list(
+  #     placeholder = NA,
+  #     onInitialize = I("function() {this.setValue('');}")
+  #   )
+  # ),
+  # tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  # 
   
   selectizeInput(
     inputId = "workCategory",
@@ -76,7 +76,7 @@ tabPanel(
       onInitialize = I("function() {this.setValue('');}")
     )
   ),
-  tags$footer("*Required", style="color: red; margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
+  tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
   withTags(

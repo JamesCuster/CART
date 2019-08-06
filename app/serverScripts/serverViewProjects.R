@@ -37,22 +37,6 @@ viewProjectsQuery <-
     left join researchers r4 on p.projectSupport3 = r4.researcherID
     left join researchers r5 on p.projectSupport4 = r5.researcherID"
 
-observeEvent(
-  updateOnLoad$viewProjects == TRUE, {
-    viewProjectsQuery <- dbSendQuery(BDSHProjects, viewProjectsQuery)
-    viewProjects <- dbFetch(viewProjectsQuery)
-    dbClearResult(viewProjectsQuery)
-    viewProjects <<- viewProjects
-  }
-)
-
-# output$viewProjects <-
-#   renderDataTable({
-#     datatable(
-#       viewProjects,
-#       rownames = FALSE
-#     )
-#   })
 
 # Reactive to filter projects data based on viewProjectsByStatus and
 # viewProjectsByEmployee
@@ -88,7 +72,17 @@ filterViewProjects <-
     return(filtered)
   })
 
-# Create datatable output
+
+# when new data is loaded update the projects view data from database
+observeEvent(
+  updateOnLoad$viewProjects == TRUE, {
+    viewProjectsQuery <- dbSendQuery(BDSHProjects, viewProjectsQuery)
+    viewProjects <- dbFetch(viewProjectsQuery)
+    dbClearResult(viewProjectsQuery)
+    viewProjects <<- viewProjects
+    
+    
+    # Create datatable output
     output$viewProjects <-
       renderDataTable({
         datatable(
@@ -96,3 +90,8 @@ filterViewProjects <-
           rownames = FALSE
         )
       })
+    
+    updateOnLoad$viewProjects <- FALSE
+  }
+)
+
