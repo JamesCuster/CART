@@ -1,18 +1,38 @@
+# This query request the database to get the effort table and join with projects
+# and employees
+viewTimeQuery <- 
+  "select ef.effortID,
+       ef.timeProjectID,
+       p.projectName,
+       ef.workBy,
+       em.employeeName,
+       em.employeeEmail,
+       ef.dateOfWork,
+       ef.dateOfEntry,
+       ef.workTime,
+       ef.workTimeCategory,
+       ef.workCategory,
+       ef.workDescription
+from effort ef
+left join projects p on ef.timeProjectID = p.projectID
+left join employees em on ef.workBy = em.bdshID"
+
+
 # Reactive to filter projects data based on viewTimeByProject,
 # viewTimeByEmployee, and viewTimeByDate
 filterViewTime <- 
   reactive({
 #    browser()
-    employeeUteid <- employees[employees$employeeName == input$viewTimeByEmployee, "employeeUteid"]
+    #employeeUteid <- employees[employees$employeeName == input$viewTimeByEmployee, "employeeUteid"]
     
-    filtered <- reactiveData$effort %>% 
+    filtered <- viewEffort %>% 
       {if (input$viewTimeByProject != "All") {
         filter(., timeProjectID == input$viewTimeByProject)
       }
         else {.}
       } %>% 
       {if (input$viewTimeByEmployee != "All") {
-        filter(., workBy == employeeUteid)
+        filter(., workBy == input$viewTimeByEmployee)
       } 
         else {.}
       } %>% 
@@ -29,11 +49,24 @@ filterViewTime <-
     return(filtered)
   })
 
-# Create datatable output
-output$viewTime <-
-  renderDataTable({
-    datatable(
-      filterViewTime(),
-      rownames = FALSE
-    )
-  })
+
+observeEvent(
+  updateOnLoad$viewTime == TRUE, {
+    # Code to query database should go here #############################################################
+    viewTimeQuery <- dbSendQuery(BDSHProjects, viewTimeQuery)
+    viewTime <- dbFetch(viewTimeQuery)
+    dbClearResult(viewTimeQuery)
+    viewTime <<- viewTime
+    
+    # Create datatable output
+    output$viewTime <-
+      renderDataTable({
+        datatable(
+          filterViewTime(),
+          rownames = FALSE
+        )
+      })
+    
+    updateOnLoad$viewTime <- FALSE
+  }
+)

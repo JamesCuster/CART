@@ -148,7 +148,7 @@ addEmployeeFields <-
     "employeeEmail",
     "degree",
     "role"
-    )
+  )
 
 
 # Functions to save and load add____ form data ---------------------------

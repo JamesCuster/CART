@@ -14,7 +14,8 @@ shinyServer(
 # Reactive value that gets triggered when new data is loaded from the database
     updateOnLoad <- reactiveValues(
       dropdown = FALSE,
-      viewProjects = FALSE)
+      viewProjects = FALSE,
+      viewTime = FALSE)
     
 # monitor database for changes and reload changed tables
     monitorDatabase <- 
@@ -36,6 +37,7 @@ shinyServer(
           loadDatabase(tables = modified$tableName)
           updateOnLoad$dropdown <- TRUE
           updateOnLoad$viewProjects <- TRUE
+          updateOnLoad$viewTime <- TRUE
         }
       )
     
@@ -86,7 +88,7 @@ shinyServer(
            function(x) {
              observeEvent(input[[x]], {
                # browser()
-               if (x %in% c("viewProjectsByEmployee", "viewTimeByEmployee", "viewProjectsByResearcher") && input[[x]] == "") {
+               if (x %in% c("viewProjectsByEmployee", "viewProjectsByResearcher", "viewTimeByProject", "viewTimeByEmployee") && input[[x]] == "") {
                  dropdownMenuSelections[[x]] <- "All"
                } else {
                  dropdownMenuSelections[[x]] <- input[[x]]
@@ -134,7 +136,7 @@ shinyServer(
             inputId = "viewProjectsByEmployee",
             choices = rbind(
               data.frame(bdshID = NA,
-                         employeeUteid = NA,    # This is done in order to provide the all option
+                         employeeUteid = NA,    # This is done in order to provide the "All" option
                          employeeName = NA,
                          employeeEmail = NA,
                          degree = NA,
@@ -152,8 +154,19 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "viewTimeByEmployee",
-            choices = c("All", sort(reactiveData$employees$employeeName)),
-            selected = dropdownMenuSelections[["viewTimeByEmployee"]]
+            choices = rbind(
+              data.frame(bdshID = NA,
+                         employeeUteid = NA,    # This is done in order to provide the "All" option
+                         employeeName = NA,
+                         employeeEmail = NA,
+                         degree = NA,
+                         role = NA,
+                         value = "All",
+                         label = "All",
+                         stringsAsFactors = FALSE),
+              employees[order(employees$employeeName), ]),
+            selected = dropdownMenuSelections[["viewTimeByEmployee"]],
+            server = TRUE
           )
           
         
@@ -170,8 +183,25 @@ shinyServer(
           updateSelectizeInput(
             session,
             inputId = "viewTimeByProject",
-            choices = c("All", sort(reactiveData$projects$projectName)),
-            selected = dropdownMenuSelections[["viewTimeByProject"]]
+            choices = rbind(
+              data.frame(projectID = NA,
+                         projectName = NA,    # This is done in order to provide the "All" option
+                         bdshLead = NA,
+                         bdshSecondary = NA,
+                         projectPI = NA,
+                         projectSupport1 = NA,
+                         projectSupport2 = NA,
+                         projectSupport3 = NA,
+                         projectSupport4 = NA,
+                         projectDescription = NA,
+                         projectStatus = NA,
+                         projectDueDate = NA,
+                         value = "All",
+                         label = "All",
+                         stringsAsFactors = FALSE),
+              projects[order(projects$projectName), ]),
+            selected = dropdownMenuSelections[["viewTimeByProject"]],
+            server = TRUE
           )
           
         
