@@ -69,6 +69,14 @@ filterViewProjects <-
                  projectSupport4 == input$viewProjectsByResearcher)
       }
         else {.}}
+    
+    # variables we don't want displayed in the app
+    rmv <- c("projectID",        "bdshLead",          "bdshSecondary", 
+                "projectPI",        "projectSupport1",   "projectSupport2",
+                "projectSupport3",  "projectSupport4")
+    
+    # Remove columns not needed for displaying (all the ID columns)
+    filtered <- filtered[, !(names(filtered) %in% rmv)]
     return(filtered)
   })
 
