@@ -290,31 +290,37 @@ shinyServer(
 
     # serverAddProject
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/serverScripts/serverAddProject.R", 
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/serverScripts/serverAddProject.r", 
       local = TRUE
     )
     
     # serverAddTime
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddTime.R",
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddTime.r",
       local = TRUE
     )
     
-    #serverAddPeople
+    # serverAddPeople
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddPeople.R",
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddPeople.r",
       local = TRUE
     )
     
-    #serverViewProjects
+    # serverViewProjects
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewProjects.R",
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewProjects.r",
+      local = TRUE
+    )
+    
+    # serverViewTime
+    source(
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewTime.r",
       local = TRUE
     )
     
     #serverViewTime
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewTime.R",
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewPeople.r",
       local = TRUE
     )
     
