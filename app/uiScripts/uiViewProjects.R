@@ -8,7 +8,7 @@ tabPanel(
     selectInput(
       inputId = "viewProjectsByStatus", 
       label = "Project Status",
-      choices = c("All", "Active", "Complete", "Inactive",  "Quiet")
+      choices = NULL
     ),
     div(
       selectizeInput(

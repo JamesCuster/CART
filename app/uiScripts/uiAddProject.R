@@ -110,7 +110,7 @@ tabPanel(
   selectInput(
     inputId = "projectStatus", 
     label = "Status",
-    choices = c("Active", "Complete", "Inactive",  "Quiet")
+    choices = c("Active", "Closed", "Dormant")
   ),
   tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   

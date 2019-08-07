@@ -52,24 +52,13 @@ tabPanel(
   ),
   
   
-  # selectizeInput(
-  #   inputId = "workTimeCategory",
-  #   label = "Effort Category",
-  #   choices = c("Small", "Medium", "Large"),
-  #   options = list(
-  #     placeholder = NA,
-  #     onInitialize = I("function() {this.setValue('');}")
-  #   )
-  # ),
-  # tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
-  # 
-  
   selectizeInput(
     inputId = "workCategory",
     label = "Work Category",
     choices = list(
       `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
-      Analysis = c("Data Management", "Analysis", "Report/Manuscript")
+      Analysis = c("Data Management", "Analysis", "Report/Manuscript"),
+      `BDSH Other` = c("Professional Development", "Other")
     ),
     options = list(
       placeholder = NA,
