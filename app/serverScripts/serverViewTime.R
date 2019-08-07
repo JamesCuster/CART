@@ -25,7 +25,7 @@ filterViewTime <-
 #    browser()
     #employeeUteid <- employees[employees$employeeName == input$viewTimeByEmployee, "employeeUteid"]
     
-    filtered <- viewEffort %>% 
+    filtered <- viewTime %>% 
       {if (input$viewTimeByProject != "All") {
         filter(., timeProjectID == input$viewTimeByProject)
       }
