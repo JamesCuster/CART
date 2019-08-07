@@ -42,8 +42,6 @@ viewProjectsQuery <-
 # viewProjectsByEmployee
 filterViewProjects <- 
   reactive({
-    # employeeUteid <- employees[employees$employeeName == input$viewProjectsByEmployee, "employeeUteid"]
-    # researcherUteid <- researchers[researchers$researcherName == input$viewProjectsByResearcher, "researcherUteid"]
     
     filtered <- viewProjects %>% 
       # Status filter
@@ -70,15 +68,18 @@ filterViewProjects <-
       }
         else {.}}
     
-    # variables we don't want displayed in the app
-    rmv <- c("projectID",        "bdshLead",          "bdshSecondary", 
-             "projectPI",        "projectSupport1",   "projectSupport2",
-             "projectSupport3",  "projectSupport4")
-    
-    # Remove columns not needed for displaying (all the ID columns)
-    filtered <- filtered[, !(names(filtered) %in% rmv)]
     return(filtered)
   })
+
+# # variables we don't want displayed in the app
+# rmv <- c("projectID",        "bdshLead",          "bdshSecondary", 
+#          "projectPI",        "projectSupport1",   "projectSupport2",
+#          "projectSupport3",  "projectSupport4")
+# 
+# # Remove columns not needed for displaying (all the ID columns)
+# filtered <<- filtered[, !(names(filtered) %in% rmv)]
+# 
+
 
 
 # when new data is loaded update the projects view data from database
@@ -89,17 +90,159 @@ observeEvent(
     dbClearResult(viewProjectsQuery)
     viewProjects <<- viewProjects
     
+
+    
     
     # Create datatable output
     output$viewProjects <-
       renderDataTable({
-        datatable(
-          filterViewProjects(),
-          rownames = FALSE
-        )
+        addViewDetails(filterViewProjects(), "viewProjects")
       })
     
     updateOnLoad$viewProjects <- FALSE
   }
 )
 
+
+
+# Function to create view details action button
+addViewDetails <- function(df, idPrefix) {
+  # function to create view details link to be used with lapply
+  detailsLink <- function(projectID) {
+    # create the ID that will be associated with the input
+    detsID <- paste0(idPrefix, "Details")
+    
+    as.character(
+      actionLink(
+        inputId = paste(idPrefix, projectID, sep = "_"),
+        label = "View Details",
+        onclick = 
+          paste0(
+            'Shiny.setInputValue(\"',
+            detsID,
+            '\", this.id, {priority: "event"})'
+          )
+      )
+    )
+  }
+  
+  # Variables that are shown in the datatable
+  viewProjectsDisplay <- c("projectName",
+                           "bdshLeadName",
+                           "projectPIName",
+                           "projectStatus",
+                           "projectDueDate"
+                           )
+  
+  # Create datatable with given dataframe and the function above
+  datatable(
+    cbind(
+      df[, viewProjectsDisplay],
+      `View Details` = sapply(df[, "projectID"], detailsLink)
+    ),
+#    rownames = FALSE,
+    escape = FALSE
+  )
+}
+
+
+# Controls what happens when one of the view details buttons is pressed
+observeEvent(
+  input$viewProjectsDetails, {
+    # Identify the row to display details on
+    rowID <- parseDeleteEvent(input$viewProjectsDetails)
+
+    # display the modal
+    showModal(
+      modalDialog(
+        modalText(viewProjects[viewProjects$projectID == rowID, ])
+      )
+    )
+  }
+)
+
+
+modalText <- function(x) {
+  div(
+    h1(x$projectName),
+    
+    # column content div
+    div(
+      # first column div
+      div(
+        # BDSH Lead
+        div("BDSH Lead", class = "modalVariableNames"),
+        div(x$bdshLeadName, class = "modalVariableContent"),
+        
+        # Project PI
+        div("Project Primary Investigator", class = "modalVariableNames"),
+        div(x$projectPIName, class = "modalVariableContent"),
+        
+        # PI Primary Department
+        div("PI Primary Department", class = "modalVariableNames"),
+        div(x$projectPIPrimaryDept, class = "modalVariableContent"),
+        
+        # Support Staff1
+        div("Support Staff 1", class = "modalVariableNames"),
+        div(x$projectSupport1Name, class = "modalVariableContent"),
+        
+        # Support Staff2
+        div("Support Staff 2", class = "modalVariableNames"),
+        div(x$projectSupport2Name, class = "modalVariableContent"),
+        
+        # Support Staff3
+        div("Support Staff 3", class = "modalVariableNames"),
+        div(x$projectSupport3Name, class = "modalVariableContent"),
+        
+        # Support Staff4
+        div("Support Staff 4", class = "modalVariableNames"),
+        div(x$projectSupport4Name, class = "modalVariableContent")
+      ),
+      
+      # second column div
+      div(
+        # BDSH secondary
+        div("BDSH Secondary", class = "modalVariableNames"),
+        div(x$bdshSecondaryName, class = "modalVariableContent"),
+        
+        # PI Email
+        div("PI Email", class = "modalVariableNames"),
+        div(x$projectPIEmail, class = "modalVariableContent"),
+        
+        # PI Secondary Department
+        div("PI Secondary Department", class = "modalVariableNames"),
+        div(x$projectPISecondaryDept, class = "modalVariableContent"),
+        
+        # Support Staff Email 1
+        div("Support Staff 1 Email", class = "modalVariableNames"),
+        div(x$projectSupport1Email, class = "modalVariableContent"),
+        
+        # Support Staff Email 2
+        div("Support Staff 2 Email", class = "modalVariableNames"),
+        div(x$projectSupport2Email, class = "modalVariableContent"),
+        
+        # Support Staff Email 3
+        div("Support Staff 3 Email", class = "modalVariableNames"),
+        div(x$projectSupport3Email, class = "modalVariableContent"),
+        
+        # Support Staff Email 4
+        div("Support Staff 4 Email", class = "modalVariableNames"),
+        div(x$projectSupport4Email, class = "modalVariableContent"),
+        style = "margin-left: 15%"
+      ),
+      style = "display: flex; align-items: flex-start;"
+    ),
+    
+    # Description div
+    div("Project Description", class = "modalVariableNames"),
+    div(x$projectDescription, class = "modalVariableContent"),
+    
+    # Project Status
+    div("Project Status", class = "modalVariableNames"),
+    div(x$projectStatus, class = "modalVariableContent"),
+    
+    # Project Due Date
+    div("Project Due Date", class = "modalVariableNames"),
+    div(x$projectDueDate, class = "modalVariableContent")
+  )
+}
