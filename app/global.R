@@ -11,11 +11,12 @@ library(DT)
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
 
-# Define the reactiveData
+# Define the reactiveData reactive
 reactiveData <- reactiveValues()
 
-# function that loads specified tables from database
+# function that loads specified tables from database and updates reactiveData
 loadDatabase <- function(tables = c("projects", "employees", "effort", "researchers", "modified")) {
+  # projects 
   if ("projects" %in% tables) {
     projects <<- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
@@ -26,6 +27,7 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
       as.data.frame(stringsAsFactors = FALSE)
     reactiveData$projects <- projects
   }
+  # employees
   if ("employees" %in% tables) {
     employees <<- tbl(BDSHProjects, "employees") %>% 
       collect()  %>% 
@@ -36,12 +38,14 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
       as.data.frame(stringsAsFactors = FALSE)
     reactiveData$employees <- employees
   }
+  # effort
   if ("effort" %in% tables) {
     effort <<- tbl(BDSHProjects, "effort") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
     reactiveData$effort <- effort
   }
+  # researchers
   if ("researchers" %in% tables) {
     researchers <<- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
@@ -52,6 +56,7 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
       as.data.frame(stringsAsFactors = FALSE)
     reactiveData$researchers <- researchers
   }
+  # modified
   if ("modified" %in% tables) {
     modified <<- tbl(BDSHProjects, "modified") %>% 
       collect() %>% 
@@ -62,54 +67,6 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
 loadDatabase()
 
 # List of database field names used to clean form data --------------------
-
-# addProject form inputs
-addProjectFields <- 
-  c("projectID",
-    "projectName",
-    "bdshLead",
-    "bdshLeadName",
-    "bdshSecondary",
-    "bdshSecondaryName",
-    "projectPI",
-    "projectPIName",
-    "projectSupport1",
-    "projectSupport1Name",
-    "projectSupport2",
-    "projectSupport2Name",
-    "projectSupport3",
-    "projectSupport3Name",
-    "projectSupport4",
-    "projectSupport4Name",
-    "projectDescription",
-    "projectStatus",
-    "projectDueDate")
-
-# This inputs are used to display the names of people entered on the addProjects
-# form, but are not saved to the database. This is used just so that the person
-# inputing the data sees the persons name for clarity sake
-addProjectResearcherNames <- 
-  c("projectPIName",
-    "projectSupport1Name",
-    "projectSupport2Name",
-    "projectSupport3Name",
-    "projectSupport4Name")
-
-addProjectEmployeeNames <- 
-  c("bdshLeadName",
-    "bdshSecondaryName")
-
-addProjectRemoveForDatabase <- 
-  c("projectPIName",
-    "projectSupport1Name",
-    "projectSupport2Name",
-    "projectSupport3Name",
-    "projectSupport4Name",
-    "bdshLeadName",
-    "bdshSecondaryName",
-    "value",
-    "label")
-
 
 # addTime form inputs
 addTimeFields <- 
@@ -153,21 +110,7 @@ addEmployeeFields <-
 
 # Functions to save and load add____ form data ---------------------------
 
-# addProject form functions 
-saveProjectFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("projectFormData")) {
-    projectFormData <<- rbind(projectFormData, formResponse)
-  } else {
-    projectFormData <<- formResponse
-  }
-}
 
-loadProjectFormData <- function() {
-  if (exists("projectFormData")) {
-    addDeleteEditLink(projectFormData[-1], "projectFormData")
-  }
-}
 
 
 # addTime form functions 

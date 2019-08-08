@@ -66,11 +66,6 @@ shinyUI(
       # viewPeople
       source(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewPeople.r", 
-        local = TRUE)$value,
-      
-      # viewPeople
-      source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiModal.r", 
         local = TRUE)$value
     )
   )
