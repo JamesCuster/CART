@@ -182,7 +182,7 @@ observeEvent(
 )
 
 
-# Output --------------------------------------------------------------------
+# 4 Output ------------------------------------------------------------------
 output$researcherFormData <- 
   renderDataTable({
     datatable(reactiveFormData$researcherFormData[-3], escape = FALSE)
@@ -190,7 +190,7 @@ output$researcherFormData <-
 
 
 
-# 4 Add Employee Helper Objects and Functions -------------------------------
+# 5 Add Employee Helper Objects and Functions -------------------------------
 
 # Add employee form inputs
 addEmployeeInputs <- 
@@ -222,14 +222,14 @@ addEmployeeRemoveForDatabase <-
     "label")
 
 
-# 5 Add Employee Reactives --------------------------------------------------
+# 6 Add Employee Reactives --------------------------------------------------
 
-# 5.1 addEmployeeFormData reactive -------------------------------------------
+# 6.1 addEmployeeFormData reactive ------------------------------------------
 # make reactive data.frame for addEmployeeFormData
 reactiveFormData$employeeFormData <- 
   setNames(data.frame(matrix(nrow = 0, ncol = 8)), addEmployeeFields)
 
-
+# cleanEmployeeFormData reactive --------------------------------------------
 # reactive that cleans form data after it has been added to queue. Used in 2.2
 cleanEmployeeFormData <-
   reactive({
@@ -253,7 +253,7 @@ cleanEmployeeFormData <-
   })
 
 
-# 5.3 checkDuplicateEmployee reactive ---------------------------------------
+# 6.3 checkDuplicateEmployee reactive ---------------------------------------
 # Checks if employee is already in database
 checkDuplicateEmployee <- reactive({
   if (input[["employeeUteid"]] %in% employees$employeeUteid) {
@@ -265,9 +265,9 @@ checkDuplicateEmployee <- reactive({
 
 
 
-# 6 Add Employee Observers ------------------------------------------------
+# 7 Add Employee Observers ------------------------------------------------
 
-# 6.1 Add To Queue Button ---------------------------------------------------
+# 7.1 Add To Queue Button ---------------------------------------------------
 # This controls what happens when the add to queue button on the add employee
 # tab is pressed
 observeEvent(
@@ -299,7 +299,7 @@ observeEvent(
 )
 
 
-# 6.2 Save To Database button -----------------------------------------------
+# 7.2 Save To Database button -----------------------------------------------
 observeEvent(
   input$employeeToDatabase, {
     # remove variables that are not saved to database (Peoples Names,
@@ -316,7 +316,7 @@ observeEvent(
 )
 
 
-# 6.3 Table Link Delete Row -------------------------------------------------
+# 7.3 Table Link Delete Row -------------------------------------------------
 # This controls what happens when the delete buttons on the employee form
 # datatable are pressed
 observeEvent(
@@ -334,7 +334,7 @@ observeEvent(
 )
 
 
-# 6.4 Table Links Edit Row --------------------------------------------------
+# 7.4 Table Links Edit Row --------------------------------------------------
 # # This controls what happens when the edit buttons on the employee form
 # datatable are pressed
 observeEvent(
@@ -368,7 +368,7 @@ observeEvent(
 
 
 
-# Output --------------------------------------------------------------------
+# 8 Output ------------------------------------------------------------------
 output$employeeFormData <-
   renderDataTable(
     datatable(reactiveFormData$employeeFormData[-3], escape = FALSE)
