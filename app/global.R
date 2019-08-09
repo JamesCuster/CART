@@ -12,7 +12,13 @@ library(shinyjs)
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
 # reactives for the form data
-reactiveFormData <- reactiveValues()
+reactiveFormData <- 
+  reactiveValues(
+    projectFormData = NULL,
+    timeFormData = NULL,
+    researcherFormData = NULL,
+    employeeFormData = NULL
+  )
 
 # Define the reactiveData reactive
 reactiveData <- reactiveValues()
@@ -90,25 +96,6 @@ addTimeRemoveForDatabase <-
     "workByName")
 
 
-# addResearcher form inputs
-addResearcherFields <- 
-  c("researcherID",
-    "researcherUteid",
-    "researcherName",
-    "researcherEmail",
-    "primaryDept",
-    "secondaryDept"
-  )
-
-# addEmployee form inputs
-addEmployeeFields <- 
-  c("bdshID",
-    "employeeUteid",
-    "employeeName",
-    "employeeEmail",
-    "degree",
-    "role"
-  )
 
 
 # Functions to save and load add____ form data ---------------------------
@@ -133,42 +120,7 @@ loadTimeFormData <- function() {
 }
 
 
-# addResearcher form functions
-saveResearcherFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("researcherFormData")) {
-    researcherFormData <<- rbind(researcherFormData, formResponse)
-  } else {
-    researcherFormData <<- formResponse
-  }
-}
 
-loadResearcherFormData <- function() {
-  if (exists("researcherFormData")) {
-    addDeleteEditLink(researcherFormData[-1], "researcherFormData")
-  }
-}
-
-
-# addEmployee form functions
-saveEmployeeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("employeeFormData")) {
-    employeeFormData <- rbind(employeeFormData, formResponse)
-    row.names(employeeFormData) <- NULL
-    employeeFormData <<- employeeFormData
-  } else {
-    employeeFormData <- formResponse
-    row.names(employeeFormData) <- NULL
-    employeeFormData <<- employeeFormData
-  }
-}
-
-loadEmployeeFormData <- function(formResponse) {
-  if (exists("employeeFormData")) {
-    addDeleteEditLink(employeeFormData[-1], "employeeFormData")
-  }
-}
 
 
 # Functions and helpers to create/manipulate delete/edit buttons ----------

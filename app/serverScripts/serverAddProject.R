@@ -54,7 +54,6 @@ addProjectEmployeeNames <-
   c("bdshLeadName",
     "bdshSecondaryName")
 
-
 # variables that need to be removed from projectFormData before adding to
 # database
 addProjectRemoveForDatabase <- 
@@ -71,16 +70,17 @@ addProjectRemoveForDatabase <-
     "label")
 
 
-# 2 Reactives/observers Add To Queue Button ---------------------------------
+# 2 Reactives ---------------------------------------------------------------
 
+# 2.1 addProjectFormData reactive -------------------------------------------
 # make reactive data.frame for addProjectFormData
 reactiveFormData$projectFormData <- 
   setNames(data.frame(matrix(nrow = 0, ncol = 21)), addProjectFields)
 
+# 2.2 cleanProjectFormData reactive -----------------------------------------
 # Reactive that cleans the form data to be converted to dataframe
 cleanProjectFormData <-
   reactive({
-  #  browser()
     projectFormResponse <-
       sapply(
         addProjectFields,
@@ -128,7 +128,9 @@ cleanProjectFormData <-
 
 
 
-# Add To Queue button -------------------------------------------------------
+# 3 Observers ---------------------------------------------------------------
+
+# 3.1 Add To Queue button ---------------------------------------------------
 observeEvent(
   input$submitAddProject, {
     # Applies the cleanProjectFormData reactive and converts it to data.frame
@@ -151,7 +153,7 @@ observeEvent(
 
 
 
-# Save To Database button ---------------------------------------------------
+# 3.2 Save To Database button -----------------------------------------------
 observeEvent(
   input$projectToDatabase, {
     # remove variables that are not saved to database (Peoples Names,
@@ -169,8 +171,8 @@ observeEvent(
 
 
 
-# Table Link Delete Row --------------------------------------------
-# This controls what happens when the delete buttons on the employeeForm
+# 3.3 Table Link Delete Row -------------------------------------------------
+# This controls what happens when the delete buttons on the project form
 # datatable are pressed
 observeEvent(
   input$projectFormDataDelete, {
@@ -188,7 +190,7 @@ observeEvent(
 
 
 
-# 1.5 Table Links Edit Row ------------------------------------------------
+# 3.4 Table Links Edit Row --------------------------------------------------
 # # This controls what happens when the edit buttons on the projectForm
 # datatable are pressed
 observeEvent(
@@ -222,7 +224,7 @@ observeEvent(
 
 
 
-# Output --------------------------------------------------------------------
+# 4 Output ------------------------------------------------------------------
 output$projectFormData <-
   renderDataTable(
     datatable(reactiveFormData$projectFormData[-3], escape = FALSE)
