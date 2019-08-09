@@ -3,6 +3,7 @@ library(dplyr)
 library(tidyr)
 library(RSQLite)
 library(DT)
+library(shinyjs)
 
 
 # Database related functions ----------------------------------------------
@@ -10,6 +11,8 @@ library(DT)
 # Connect to database
 BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
 
+# reactives for the form data
+reactiveFormData <- reactiveValues()
 
 # Define the reactiveData reactive
 reactiveData <- reactiveValues()
@@ -210,15 +213,19 @@ addDeleteEditLink <- function(df, idPrefix) {
     )
   }
   
+  df$Delete <- sapply(row.names(df), deleteLink)
+  df$Edit <- sapply(row.names(df), editLink)
+  
   # create datatable with given data.frame and the two functions above
-  datatable(
-    cbind(
-      Delete = sapply(row.names(df), deleteLink),
-      Edit = sapply(row.names(df), editLink),
-      df
-    ),
-    escape = FALSE,
-  )
+  # datatable(
+  #   cbind(
+  #     Delete = sapply(row.names(df), deleteLink),
+  #     Edit = sapply(row.names(df), editLink),
+  #     df
+  #   ),
+  #   escape = FALSE,
+  # )
+  return(df)
 }
 
 
@@ -227,6 +234,11 @@ parseDeleteEvent <- function(idstr) {
   res <- as.integer(sub(".*_([0-9]+)", "\\1", idstr))
   if (!is.na(res)) res
 }
+
+
+
+
+
 
 
 

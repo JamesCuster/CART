@@ -1,11 +1,27 @@
 
 # 1 Helper functions and objects --------------------------------------------
 
-# 1.1 Vectors of input names used in section 2 ------------------------------
+# 1.1 Vectors of input names and variable names in addProjectFormData -------
 
-# addProject form inputs
+# Add project form inputs
+addProjectInputs <- 
+  c("projectName",
+    "bdshLead",
+    "bdshSecondary",
+    "projectPI",
+    "projectSupport1",
+    "projectSupport2",
+    "projectSupport3",
+    "projectSupport4",
+    "projectDescription",
+    "projectStatus",
+    "projectDueDate")
+
+# projectFormData variables
 addProjectFields <- 
-  c("projectID",
+  c("Delete",
+    "Edit",
+    "projectID",
     "projectName",
     "bdshLead",
     "bdshLeadName",
@@ -25,9 +41,7 @@ addProjectFields <-
     "projectStatus",
     "projectDueDate")
 
-# This inputs are used to display the names of people entered on the addProjects
-# form, but are not saved to the database. This is used just so that the person
-# inputing the data sees the persons name for clarity sake
+# Researcher name variables
 addProjectResearcherNames <- 
   c("projectPIName",
     "projectSupport1Name",
@@ -35,14 +49,18 @@ addProjectResearcherNames <-
     "projectSupport3Name",
     "projectSupport4Name")
 
+# Employee name variables
 addProjectEmployeeNames <- 
   c("bdshLeadName",
     "bdshSecondaryName")
 
 
-# 1.2 Vector of inputs used in section 3 ------------------------------------
+# variables that need to be removed from projectFormData before adding to
+# database
 addProjectRemoveForDatabase <- 
-  c("projectPIName",
+  c("Delete",
+    "Edit",
+    "projectPIName",
     "projectSupport1Name",
     "projectSupport2Name",
     "projectSupport3Name",
@@ -52,200 +70,125 @@ addProjectRemoveForDatabase <-
     "value",
     "label")
 
-# 1.3 Functions used to save and load project form data used in ________________ --------
 
-# addProject form functions 
-saveProjectFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("projectFormData")) {
-    projectFormData <<- rbind(projectFormData, formResponse)
-  } else {
-    projectFormData <<- formResponse
-  }
-}
+# 2 Reactives/observers Add To Queue Button ---------------------------------
 
-loadProjectFormData <- function() {
-  if (exists("projectFormData")) {
-    addDeleteEditLink(projectFormData[-1], "projectFormData")
-  }
-}
+# make reactive data.frame for addProjectFormData
+reactiveFormData$projectFormData <- 
+  setNames(data.frame(matrix(nrow = 0, ncol = 21)), addProjectFields)
 
-
-
-# 2 Reactives For Add Project -----------------------------------------------
-
-# Creates the datatable to dislay add project queue
-output$projectFormData <-
-  renderDataTable({
-    loadProjectFormData()
-  })
-
-# 2.1 Clean form Data Reactive ----------------------------------------------
-# reactive that cleans form data after it has been added to queue. Used in 1.2
-# cleanProjectFormData <-
-#   reactive({
-#     projectFormResponse <- 
-#       sapply(
-#         addProjectFields, 
-#         function(x) {
-#           # Dates need to be read as character to be added to the database
-#           # properly, so this takes all input names with "date" in the variable
-#           # name and converts it to character
-#          # browser()
-#           if (grepl("date", x, ignore.case = TRUE)) {
-#             as.character(input[[x]])
-#           } 
-#           # projectID is assined by the database, so it needs to be missing
-#           else if (grepl("projectID", x)) {
-#             NA
-#           } 
-#           # researcher inputs return researcherIDs, so viewing the queue is
-#           # easier, we also want to grab their names to display, this is done
-#           # here
-#           else if (x %in% addProjectResearcherNames && (!is.null(input[[gsub("Name", "", x)]]) | input[[gsub("Name", "", x)]] != "")) {
-#             x <- gsub("Name", "", x)
-#             researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
-#           }
-#           # This preserves the input names for employees by saving them in a different input
-#           else if (x %in% addProjectEmployeeNames && (!is.null(input[[gsub("Name", "", x)]]) | input[[gsub("Name", "", x)]] != "")) {
-#             y <- gsub("Name", "", x)
-#             employees[employees$bdshID == input[[y]], "employeeName", drop = TRUE]
-#           }
-#           # this handles inputs that are left blank
-#           else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
-#             NA
-#           }
-#           # For all other cases return the exact value of the input
-#           else {
-#             input[[x]]
-#         }
-#     })
-#     projectFormResponse <<- projectFormResponse
-#   })
-
+# Reactive that cleans the form data to be converted to dataframe
 cleanProjectFormData <-
-  eventReactive(input$submitAddProject, {
-    projectFormResponse <- 
+  reactive({
+  #  browser()
+    projectFormResponse <-
       sapply(
-        addProjectFields, 
+        addProjectFields,
         function(x) {
-          # Dates need to be read as character to be added to the database
-          # properly, so this takes all input names with "date" in the variable
-          # name and converts it to character
-          # browser()
-          if (grepl("date", x, ignore.case = TRUE)) {
+          # dates needs to be sent to database as character
+          if (x %in% c("projectDueDate")) {
             as.character(input[[x]])
-          } 
-          # projectID is assined by the database, so it needs to be missing
-          else if (grepl("projectID", x)) {
+          }
+          # If researcher names are used fetches name from researcher table
+          else if (x %in% addProjectResearcherNames) {
+            if (input[[gsub("Name", "", x)]] == "") {
+              NA
+            }
+            else {
+              x <- gsub("Name", "", x)
+              researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
+            }
+          }
+          # If employee names are used fetches name from employee table
+          else if (x %in% addProjectEmployeeNames) {
+            if (input[[gsub("Name", "", x)]] == "") {
+              NA
+            }
+            else {
+              x <- gsub("Name", "", x)
+              employees[employees$bdshID == input[[x]], "employeeName", drop = TRUE]
+            }
+          }
+          # projectID is handled by database. Delete/Edit are added when Add To
+          # Queue is pressed
+          else if (x %in% c("Delete", "Edit", "projectID")) {
             NA
-          } 
-          # researcher inputs return researcherIDs, so viewing the queue is
-          # easier, we also want to grab their names to display, this is done
-          # here
-          else if (x %in% addProjectResearcherNames && (!is.null(input[[gsub("Name", "", x)]]) | input[[gsub("Name", "", x)]] != "")) {
-            x <- gsub("Name", "", x)
-            researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
           }
-          # This preserves the input names for employees by saving them in a different input
-          else if (x %in% addProjectEmployeeNames && (!is.null(input[[gsub("Name", "", x)]]) | input[[gsub("Name", "", x)]] != "")) {
-            y <- gsub("Name", "", x)
-            employees[employees$bdshID == input[[y]], "employeeName", drop = TRUE]
-          }
-          # this handles inputs that are left blank
-          else if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
+          # handles inputs left blank
+          else if (input[[x]] == "") {
             NA
           }
-          # For all other cases return the exact value of the input
+          # returns input value if it was given
           else {
             input[[x]]
           }
-        })
-    projectFormResponse <<- projectFormResponse
-    saveProjectFormData(projectFormResponse) 
+        }
+      )
   })
 
 
 
-# 1.2 Add To Queue Button ---------------------------------------------------
-
-# This controls what heppens when the add to queue button on the add project
-# form is pressed
+# Add To Queue button -------------------------------------------------------
 observeEvent(
   input$submitAddProject, {
-    # creates and displays table of inputs
-#    saveProjectFormData(cleanProjectFormData())
-
-    # Clears data from the forms
+    # Applies the cleanProjectFormData reactive and converts it to data.frame
+    projectFormResponse <- as.data.frame(t(cleanProjectFormData()), stringsAsFactors = FALSE)
+    
+    # Adds projectFormResponses to the projectFormData reactive
+    reactiveFormData$projectFormData <- rbind(reactiveFormData$projectFormData, projectFormResponse)
+    
+    # adds the Delete/Edit links to projectFormData
+    reactiveFormData$projectFormData <- addDeleteEditLink(reactiveFormData$projectFormData, "projectFormData")
+    
+    # Resets the addProject form inputs to defaults
     sapply(
-      addProjectFields,
+      addProjectInputs,
       function(x) {
-        updateTextInput(session, x, value = "")
-        session$sendCustomMessage(type = "resetValue", message = x)
+        reset(x)
       }
     )
-
-    # creates the datetable to display add researcher queue
-    output$projectFormData <-
-      renderDataTable({
-        loadProjectFormData()
-      })
-  }
-)
+  })
 
 
-# 3 Save To Database Button -----------------------------------------------
-# This controls what happens when the save to database button is pressed on the
-# add project section
+
+# Save To Database button ---------------------------------------------------
 observeEvent(
   input$projectToDatabase, {
-    # remove variables that are not saved to database (Peoples Names)
-    projectFormData <- projectFormData[, !(names(projectFormData) %in% addProjectRemoveForDatabase)]
-    projectFormData <- unnest(projectFormData)
-    
+    # remove variables that are not saved to database (Peoples Names,
+    # delete/edit links, values/labels variables)
+    projectFormData <-
+      reactiveFormData$projectFormData[, !(names(reactiveFormData$projectFormData) %in% addProjectRemoveForDatabase)]
+
     # Write table to database
     dbWriteTable(BDSHProjects, "projects", projectFormData, append = TRUE)
-    
-    # Clear data.frame after added to database
-    projectFormData <<- projectFormData[c(), ]
-    
-    # render the now blank data.frame to be displayed in the UI
-    output$projectFormData <-
-      renderDataTable({
-        loadProjectFormData()
-      })
+
+    # Clear reactive data.frame after added to database
+    reactiveFormData$projectFormData <- reactiveFormData$projectFormData[c(), ]
   }
 )
 
 
-# 1.4 Delete Row Table Buttons --------------------------------------------
+
+# Table Link Delete Row --------------------------------------------
 # This controls what happens when the delete buttons on the employeeForm
 # datatable are pressed
 observeEvent(
   input$projectFormDataDelete, {
-    
     # identify row to be deleted
     rowID <- parseDeleteEvent(input$projectFormDataDelete)
     
     # delete row from data.frame
-    projectFormData <- projectFormData[-rowID, ]
+    reactiveFormData$projectFormData <- reactiveFormData$projectFormData[-rowID, ]
     
-    # reset data.frame's row.names, remove rowID, and save projectFormData to
-    # global environment
-    row.names(projectFormData) <- NULL
-    rowID <- NULL
-    projectFormData <<- projectFormData
-    
-    # Re-render the table for display in the UI
-    output$projectFormData <-
-      renderDataTable({
-        loadProjectFormData()
-      })
+    # reset data.frame's row.names and recalculate the Delete/Edit links
+    row.names(reactiveFormData$projectFormData) <- NULL
+    reactiveFormData$projectFormData <- addDeleteEditLink(reactiveFormData$projectFormData, "projectFormData")
   }
 )
 
 
-# 1.5 Edit Row Table Buttons ------------------------------------------------
+
+# 1.5 Table Links Edit Row ------------------------------------------------
 # # This controls what happens when the edit buttons on the projectForm
 # datatable are pressed
 observeEvent(
@@ -254,20 +197,18 @@ observeEvent(
     rowID <- parseDeleteEvent(input$projectFormDataEdit)
     
     # Grab row to be edited
-    edit <- projectFormData[rowID, ]
+    edit <- reactiveFormData$projectFormData[rowID, ]
     
     # Remove the row to be edited from the data.frame/table
-    projectFormData <- projectFormData[-rowID, ]
+    reactiveFormData$projectFormData <- reactiveFormData$projectFormData[-rowID, ]
     
-    # reset data.frame's row.names, remove rowID, and save projectFormData to
-    # global environment
-    row.names(projectFormData) <- NULL
-    rowID <- NULL
-    projectFormData <<- projectFormData
+    # reset data.frame's row.names and recalculate the Delete/Edit links
+    row.names(reactiveFormData$projectFormData) <- NULL
+    reactiveFormData$projectFormData <- addDeleteEditLink(reactiveFormData$projectFormData, "projectFormData")
     
-    # Put the values of the row to be updated back into the form
+    # Repopulate the form with the values of row to be edited
     sapply(
-      names(projectFormData[-1]),
+      addProjectInputs,
       function(x) {
         updateTextInput(
           session,
@@ -276,11 +217,13 @@ observeEvent(
         )
       }
     )
-    
-    # Re-render table after the row to edit has been removed
-    output$projectFormData <-
-      renderDataTable({
-        loadProjectFormData()
-      })
   }
 )
+
+
+
+# Output --------------------------------------------------------------------
+output$projectFormData <-
+  renderDataTable(
+    datatable(reactiveFormData$projectFormData[-3], escape = FALSE)
+  )

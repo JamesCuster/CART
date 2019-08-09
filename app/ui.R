@@ -2,11 +2,15 @@
 shinyUI(
   fluidPage(
     # This is JavaScript which will reset the form inputs after adding to queue
+    # used in each of the Add To Queue observeEvent
     tags$script("
         Shiny.addCustomMessageHandler('resetValue', function(variableName) {
         Shiny.onInputChange(variableName, null);
         });
       "),
+    
+    # initializes the shinyjs package
+    useShinyjs(),
     
     # Title
     div(

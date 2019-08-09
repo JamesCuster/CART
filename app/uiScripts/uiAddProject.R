@@ -93,18 +93,28 @@ tabPanel(
   ),
   
   # This extra code allows for the text input box size to be customized.
-  withTags(
-    div(
-      h5(
-        b("Brief Description")
-      ),
-      textarea(
-        id = "projectDescription", 
-        class = "form-control shiny-bound-input",
-        style = "width: 300px; height: 102px"
-      )
-    )
+  # withTags(
+  #   div(id = "projectDescription",
+  #     h5(
+  #       b("Brief Description")
+  #     ),
+  #     textarea(
+  #       id = "projectDescription", 
+  #       type = "text",
+  #       class = "form-control shiny-bound-input shiny-bound-input",
+  #       style = "width: 300px; height: 102px"
+  #     )
+  #   )
+  # ),
+  
+  textAreaInput(
+    inputId = "projectDescription",
+    label = "Brief Description",
+    width = "300px",
+    height = "102px"
   ),
+  
+  
   
   
   selectInput(
