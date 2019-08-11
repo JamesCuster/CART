@@ -75,29 +75,6 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
 
 loadDatabase()
 
-# List of database field names used to clean form data --------------------
-
-# addTime form inputs
-addTimeFields <- 
-  c("effortID",
-    "timeProjectID",
-    "timeProjectName",
-    "workBy",
-    "workByName",
-    "dateOfWork",
-    "dateOfEntry",
-    "workTime",
-    "workTimeCategory",
-    "workCategory",
-    "workDescription")
-
-addTimeRemoveForDatabase <- 
-  c("timeProjectName", 
-    "workByName")
-
-
-
-
 # Functions to save and load add____ form data ---------------------------
 
 
