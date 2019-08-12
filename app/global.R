@@ -75,29 +75,6 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
 
 loadDatabase()
 
-# Functions to save and load add____ form data ---------------------------
-
-
-
-
-# addTime form functions 
-saveTimeFormData <- function(formResponse) {
-  formResponse <- as.data.frame(t(formResponse), stringsAsFactors = FALSE)
-  if (exists("timeFormData")) {
-    timeFormData <<- rbind(timeFormData, formResponse)
-  } else {
-    timeFormData <<- formResponse
-  }
-}
-
-loadTimeFormData <- function() {
-  if (exists("timeFormData")) {
-    addDeleteEditLink(timeFormData[-1], "timeFormData")
-  } 
-}
-
-
-
 
 
 # Functions and helpers to create/manipulate delete/edit buttons ----------
@@ -144,16 +121,6 @@ addDeleteEditLink <- function(df, idPrefix) {
   
   df$Delete <- sapply(row.names(df), deleteLink)
   df$Edit <- sapply(row.names(df), editLink)
-  
-  # create datatable with given data.frame and the two functions above
-  # datatable(
-  #   cbind(
-  #     Delete = sapply(row.names(df), deleteLink),
-  #     Edit = sapply(row.names(df), editLink),
-  #     df
-  #   ),
-  #   escape = FALSE,
-  # )
   return(df)
 }
 
@@ -163,12 +130,3 @@ parseDeleteEvent <- function(idstr) {
   res <- as.integer(sub(".*_([0-9]+)", "\\1", idstr))
   if (!is.na(res)) res
 }
-
-
-
-
-
-
-
-
-# Functions to Modify The UI ----------------------------------------------

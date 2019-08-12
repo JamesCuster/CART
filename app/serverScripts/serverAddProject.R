@@ -152,7 +152,6 @@ observeEvent(
   })
 
 
-
 # 3.2 Save To Database button -----------------------------------------------
 observeEvent(
   input$projectToDatabase, {
@@ -168,7 +167,6 @@ observeEvent(
     reactiveFormData$projectFormData <- reactiveFormData$projectFormData[c(), ]
   }
 )
-
 
 
 # 3.3 Table Link Delete Row -------------------------------------------------
@@ -189,9 +187,8 @@ observeEvent(
 )
 
 
-
 # 3.4 Table Links Edit Row --------------------------------------------------
-# # This controls what happens when the edit buttons on the projectForm
+# # This controls what happens when the edit buttons on the project form
 # datatable are pressed
 observeEvent(
   input$projectFormDataEdit, {
@@ -225,6 +222,8 @@ observeEvent(
 
 
 # 4 Output ------------------------------------------------------------------
+
+# 4.1 Project Form Datatable ----------------------------------------------
 output$projectFormData <-
   renderDataTable(
     datatable(reactiveFormData$projectFormData[-3], escape = FALSE)
