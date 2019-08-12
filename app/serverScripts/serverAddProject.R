@@ -65,9 +65,7 @@ addProjectRemoveForDatabase <-
     "projectSupport3Name",
     "projectSupport4Name",
     "bdshLeadName",
-    "bdshSecondaryName",
-    "value",
-    "label")
+    "bdshSecondaryName")
 
 
 # 2 Reactives ---------------------------------------------------------------

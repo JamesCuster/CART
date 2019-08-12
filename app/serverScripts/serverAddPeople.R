@@ -33,9 +33,7 @@ addResearcherFields <-
 # database
 addResearcherRemoveForDatabase <- 
   c("Delete",
-    "Edit",
-    "value",
-    "label")
+    "Edit")
 
 
 # 2 Add Researcher Reactives ------------------------------------------------
@@ -217,9 +215,7 @@ addEmployeeFields <-
 # database
 addEmployeeRemoveForDatabase <- 
   c("Delete",
-    "Edit",
-    "value",
-    "label")
+    "Edit")
 
 
 # 6 Add Employee Reactives --------------------------------------------------
