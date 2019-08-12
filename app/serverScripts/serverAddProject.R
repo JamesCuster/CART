@@ -196,7 +196,7 @@ observeEvent(
     rowID <- parseDeleteEvent(input$projectFormDataEdit)
     
     # Grab row to be edited
-    edit <- reactiveFormData$projectFormData[rowID, ]
+    editProject <- reactiveFormData$projectFormData[rowID, ]
     
     # Remove the row to be edited from the data.frame/table
     reactiveFormData$projectFormData <- reactiveFormData$projectFormData[-rowID, ]
@@ -212,7 +212,7 @@ observeEvent(
         updateTextInput(
           session,
           inputId = x,
-          value = edit[, x]
+          value = editProject[, x]
         )
       }
     )

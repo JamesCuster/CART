@@ -158,7 +158,7 @@ observeEvent(
     rowID <- parseDeleteEvent(input$researcherFormDataEdit)
     
     # Grab row to be edited
-    edit <- reactiveFormData$researcherFormData[rowID, ]
+    editResearcher <- reactiveFormData$researcherFormData[rowID, ]
     
     # Remove the row to be edited from the data.frame/table
     reactiveFormData$researcherFormData <- reactiveFormData$researcherFormData[-rowID, ]
@@ -174,7 +174,7 @@ observeEvent(
         updateTextInput(
           session,
           inputId = x,
-          value = edit[, x]
+          value = editResearcher[, x]
         )
       }
     )
@@ -343,7 +343,7 @@ observeEvent(
     rowID <- parseDeleteEvent(input$employeeFormDataEdit)
     
     # Grab row to be edited
-    edit <- reactiveFormData$employeeFormData[rowID, ]
+    editEmployee <- reactiveFormData$employeeFormData[rowID, ]
     
     # Remove the row to be edited from the data.frame/table
     reactiveFormData$employeeFormData <- reactiveFormData$employeeFormData[-rowID, ]
@@ -359,7 +359,7 @@ observeEvent(
         updateTextInput(
           session,
           inputId = x,
-          value = edit[, x]
+          value = editEmployee[, x]
         )
       }
     )
