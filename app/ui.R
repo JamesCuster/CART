@@ -51,7 +51,7 @@ shinyUI(
     # ),
 
 
-    tabsetPanel(
+    tabsetPanel(id = "tab",
       
       # Add tab panels (add project/time, view (project/time) -------------------
       

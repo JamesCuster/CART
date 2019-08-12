@@ -1,4 +1,9 @@
-# This query request the database to get the projects table and join with employees and reasearchers
+
+# 1 Helper Objects And Functions ------------------------------------------
+
+# 1.1 Database Query ------------------------------------------------------
+# This query request the database to get the projects table and join with
+# employees and reasearchers
 viewProjectsQuery <- 
   "select  p.projectID, 
             p.projectName, 
@@ -38,74 +43,9 @@ viewProjectsQuery <-
     left join researchers r5 on p.projectSupport4 = r5.researcherID"
 
 
-# Reactive to filter projects data based on viewProjectsByStatus and
-# viewProjectsByEmployee
-filterViewProjects <- 
-  reactive({
-    
-    filtered <- viewProjects %>% 
-      # Status filter
-      {if (input$viewProjectsByStatus != "All") {
-        filter(., projectStatus == input$viewProjectsByStatus)
-      }
-        else {.}
-      } %>% 
-      # Employee filter
-      {if (input$viewProjectsByEmployee != "All") {
-        filter(., 
-               bdshLead == input$viewProjectsByEmployee | 
-                 bdshSecondary == input$viewProjectsByEmployee)
-      } 
-        else {.}
-      } %>% 
-      # Researcher filter
-      {if (input$viewProjectsByResearcher != "All") {
-        filter(., projectPI == input$viewProjectsByResearcher |
-                 projectSupport1 == input$viewProjectsByResearcher |
-                 projectSupport2 == input$viewProjectsByResearcher |
-                 projectSupport3 == input$viewProjectsByResearcher |
-                 projectSupport4 == input$viewProjectsByResearcher)
-      }
-        else {.}}
-    
-    return(filtered)
-  })
-
-# # variables we don't want displayed in the app
-# rmv <- c("projectID",        "bdshLead",          "bdshSecondary", 
-#          "projectPI",        "projectSupport1",   "projectSupport2",
-#          "projectSupport3",  "projectSupport4")
-# 
-# # Remove columns not needed for displaying (all the ID columns)
-# filtered <<- filtered[, !(names(filtered) %in% rmv)]
-# 
-
-
-
-# when new data is loaded update the projects view data from database
-observeEvent(
-  updateOnLoad$viewProjects == TRUE, {
-    viewProjectsQuery <- dbSendQuery(BDSHProjects, viewProjectsQuery)
-    viewProjects <- dbFetch(viewProjectsQuery)
-    dbClearResult(viewProjectsQuery)
-    viewProjects <<- viewProjects
-    
-
-    
-    
-    # Create datatable output
-    output$viewProjects <-
-      renderDataTable({
-        addViewDetails(filterViewProjects(), "viewProjects")
-      })
-    
-    updateOnLoad$viewProjects <- FALSE
-  }
-)
-
-
-
-# Function to create view details action button
+# 1.2 Add View Details Link -----------------------------------------------
+# This function is used to create the View Details Link in the datatable which
+# when clicked will display a modal with more details about the project
 addViewDetails <- function(df, idPrefix) {
   # function to create view details link to be used with lapply
   detailsLink <- function(projectID) {
@@ -126,42 +66,13 @@ addViewDetails <- function(df, idPrefix) {
     )
   }
   
-  # Variables that are shown in the datatable
-  viewProjectsDisplay <- c("projectName",
-                           "bdshLeadName",
-                           "projectPIName",
-                           "projectStatus",
-                           "projectDueDate"
-                           )
-  
-  # Create datatable with given dataframe and the function above
-  datatable(
-    cbind(
-      df[, viewProjectsDisplay],
-      `View Details` = sapply(df[, "projectID"], detailsLink)
-    ),
-#    rownames = FALSE,
-    escape = FALSE
-  )
+  df$`View Details` <- sapply(df[, "projectID"], detailsLink)
+  return(df)
 }
 
 
-# Controls what happens when one of the view details buttons is pressed
-observeEvent(
-  input$viewProjectsDetails, {
-    # Identify the row to display details on
-    rowID <- parseDeleteEvent(input$viewProjectsDetails)
-
-    # display the modal
-    showModal(
-      modalDialog(
-        modalText(viewProjects[viewProjects$projectID == rowID, ])
-      )
-    )
-  }
-)
-
-
+# 1.3 Modal Function --------------------------------------------------------
+# This function creates the HTML for a modal when View Details is clicked
 modalText <- function(x) {
   div(
     h1(x$projectName),
@@ -246,3 +157,108 @@ modalText <- function(x) {
     div(x$projectDueDate, class = "modalVariableContent")
   )
 }
+
+
+# 1.4 Vector of Variables To Display in Datatable -------------------------
+
+viewProjectsDisplay <- c("View Details",
+                         "projectName",
+                         "bdshLeadName",
+                         "bdshSecondaryName",
+                         "projectPIName",
+                         "projectStatus",
+                         "projectDueDate"
+                         )
+
+# 2 Reactives -------------------------------------------------------------
+
+
+# 2.1 viewProjects Reactive -----------------------------------------------
+# Make a reactive data.frame for viewProjects.
+viewTables <- reactiveValues()
+
+
+
+
+
+
+# Reactive to filter projects data based on viewProjectsByStatus,
+# viewProjectsByEmployee, and viewProjectsByResearcher
+filterViewProjects <- 
+  reactive({
+    filtered <- viewTables$projects %>% 
+      # Status filter
+      {if (input$viewProjectsByStatus != "All") {
+        filter(., projectStatus == input$viewProjectsByStatus)
+      }
+        else {.}
+      } %>% 
+      # Employee filter
+      {if (input$viewProjectsByEmployee != "All") {
+        filter(., 
+               bdshLead == input$viewProjectsByEmployee | 
+                 bdshSecondary == input$viewProjectsByEmployee)
+      } 
+        else {.}
+      } %>% 
+      # Researcher filter
+      {if (input$viewProjectsByResearcher != "All") {
+        filter(., projectPI == input$viewProjectsByResearcher |
+                 projectSupport1 == input$viewProjectsByResearcher |
+                 projectSupport2 == input$viewProjectsByResearcher |
+                 projectSupport3 == input$viewProjectsByResearcher |
+                 projectSupport4 == input$viewProjectsByResearcher)
+      }
+        else {.}}
+    
+    # add View Details link
+    filtered <- addViewDetails(filtered, "viewProjects")
+    
+    return(filtered)
+  })
+
+
+
+# 3 Observers -------------------------------------------------------------
+
+# 3.1 Fetch View Projects Data --------------------------------------------
+# This observer fetches the data for the viewTables$projects reactive using the
+# SQL query above whenever new project data is loaded from the database
+observeEvent(
+  reactiveData$projects, {
+    viewProjectsQuery <- dbSendQuery(BDSHProjects, viewProjectsQuery)
+    viewTables$projects <- dbFetch(viewProjectsQuery)
+    dbClearResult(viewProjectsQuery)
+  }
+)
+
+
+# Controls what happens when one of the view details buttons is pressed
+observeEvent(
+  input$viewProjectsDetails, {
+    # Identify the row to display details on
+    rowID <- parseDeleteEvent(input$viewProjectsDetails)
+
+    # display the modal
+    showModal(
+      modalDialog(
+        modalText(
+          viewTables$projects[viewTables$projects$projectID == rowID, ])
+      )
+    )
+  }
+)
+
+
+
+# Output ------------------------------------------------------------------
+
+# Create datatable output
+output$viewProjects <-
+  renderDataTable({
+    datatable(
+      filterViewProjects()[, viewProjectsDisplay],
+      escape = FALSE,
+      rownames = FALSE
+    )
+  })
