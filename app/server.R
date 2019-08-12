@@ -3,7 +3,7 @@
 shinyServer(
   function(input, output, session) {
 
-# Database functionalities ------------------------------------------------
+# 1 Database functionalities ------------------------------------------------
 
     # Connect to database
     BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
@@ -11,11 +11,14 @@ shinyServer(
     # Load all database tables
     loadDatabase()
     
+    
 # Reactive value that gets triggered when new data is loaded from the database
+# in the monitorDatabase reactivePoll
     updateOnLoad <- reactiveValues(
       dropdown = FALSE,
       viewProjects = FALSE,
       viewTime = FALSE)
+    
     
 # monitor database for changes and reload changed tables
     monitorDatabase <- 
@@ -41,14 +44,23 @@ shinyServer(
         }
       )
     
+    
     # observe which applies the monitorDatabase reactives
     observe({
       monitorDatabase()
     })
     
     
+
+# 2 Update Dropdown Selections ----------------------------------------------
+# This section allows for the dropdown menus to be updated as new data from the
+# database is loaded
     
-# inputId's for inputs which need updating as the database gets modified
+
+# 2.1 Input IDs To Update -------------------------------------------------
+# All of the inputs listed in the vectors below depend on the values in the
+# respective table of the database. Therefore, if new data is loaded from the
+# database these inputs need to have their choices updated as well.
     
     # Need updating when new employees data is fetched
     employeesDependentValues <- 
@@ -62,6 +74,7 @@ shinyServer(
         "viewTimeByEmployee"
       )
     
+    
     # Need updating when new projects data is fetched
     projectsDependentValues <- 
       c(# update selection inputs in the add time form
@@ -69,6 +82,7 @@ shinyServer(
         "viewTimeByProject",
         "viewProjectsByStatus"
       )
+    
     
     # Need updating when new researchers data is fetched
     researchersDependentValues <- 
@@ -82,9 +96,15 @@ shinyServer(
       )
     
     
-# reactiveValues which will preserve a users inputs even if new data is loaded
-# into the database
+
+# 2.2 Preserve Form Data ----------------------------------------------------
+# This reactive helps to preserve data that a user may have already entered into
+# a form but not added to queue if new data from the database is loaded
+    # Defines reactive to presere form data a user has input but has not added
+    # to queue
     dropdownMenuSelections <- reactiveValues()
+    
+    # Fill in the dropdownMenuSelections as a user inputs form data
     sapply(c(employeesDependentValues, projectsDependentValues, researchersDependentValues),
            function(x) {
              observeEvent(input[[x]], {
@@ -98,13 +118,12 @@ shinyServer(
            })
     
     
-    
+# 2.3 Update Dropdown Menu Reactive ---------------------------------------
     # Reactives that trigger after new data is loaded from the database that update
     # the necessary input dropdown menus to reflect any changes in the database
     updateSelectDropdownMenus <- 
       reactive({
-        
-        # When new employee data is fetched from database
+      # When new employee data is fetched from database
         # Update selection inputs in the Add Project form
         updateSelectizeInput(
           session,
@@ -150,7 +169,6 @@ shinyServer(
           server = TRUE
         )
         
-        
         # Update selection inputs in View Time
         updateSelectizeInput(
           session,
@@ -171,7 +189,7 @@ shinyServer(
         )
         
         
-        # When new project data is fetched from database
+      # When new project data is fetched from database
         # update selection inputs in the add time form
         updateSelectizeInput(
           session,
@@ -212,7 +230,7 @@ shinyServer(
         )
         
         
-        # When new researcher data is fetched from database
+      # When new researcher data is fetched from database
         # update selection inputs in the add project form
         updateSelectizeInput(
           session,
@@ -272,12 +290,12 @@ shinyServer(
           selected = dropdownMenuSelections[["viewProjectsByResearcher"]],
           server = TRUE
         )
-        
       })
     
-    
+
+# 2.4 Observer for updateSelectDropdownMenus ------------------------------
     # observeEvent which applies updateSelectDropdownMenus whenever the loadDatabase
-    # function is called
+    # function is called by monitoring updateOnLoad$dropdown reactive value 
     observeEvent(
       updateOnLoad$dropdown == TRUE, {
         updateSelectDropdownMenus()
@@ -286,8 +304,7 @@ shinyServer(
     
     
     
-    # Server Scripts ----------------------------------------------------------
-    
+# 3 Server Scripts ----------------------------------------------------------
     # serverAddProject
     source(
       "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/serverScripts/serverAddProject.r", 
@@ -324,6 +341,8 @@ shinyServer(
       local = TRUE
     )
     
+
+# 4. On App Disconnect ----------------------------------------------------
     # stops the app when window is closed
     session$onSessionEnded(function() {
       dbDisconnect(BDSHProjects)
