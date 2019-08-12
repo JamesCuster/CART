@@ -12,6 +12,19 @@ shinyUI(
     # initializes the shinyjs package
     useShinyjs(),
     
+    # CSS for the viewProjects modals
+    tags$style(HTML("
+      .modalVariableNames {
+        font-size: 15px;
+        font-weight: bold;
+      }
+    
+    .modalVariableContent {
+        margin-bottom: 10px;
+      }
+    ")),
+    
+    
     # Title
     div(
       tags$h1("C", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
