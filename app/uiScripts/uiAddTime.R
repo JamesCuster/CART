@@ -40,9 +40,36 @@ tabPanel(
   ),
   
   
-  # These inputs are defined and modified in serverAddTime 1.6
+  
   div(
-    uiOutput('workTime'),
+    # Controls when time as hours is displayed
+    conditionalPanel(
+      condition = "input.timeAsCat % 2 == 0",
+      textInput(
+        inputId = "workTime",
+        label = "Time Spent In Hours",
+        #value = inputValue
+      ),
+      tags$footer("*Required", style="margin-top: -12px; font-size: 12px; padding-bottom: 8px;")
+    ),
+    
+    # Controls when time as category is displayed
+    conditionalPanel(
+      condition = "input.timeAsCat % 2 == 1",
+      selectizeInput(
+        inputId = "workTimeCategory",
+        label = "Effort Category",
+        choices = c("Small", "Medium", "Large", "Extra Large"),
+        #selected = inputValue,
+        options = list(
+          placeholder = NA,
+          onInitialize = I("function() {this.setValue('');}")
+        )
+      ),
+      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+    ),
+    
+    # Button to toggle between time as hours/category
     actionButton(
       inputId = "timeAsCat",
       label = "Enter As Category",
@@ -68,17 +95,11 @@ tabPanel(
   tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;"),
   
   
-  withTags(
-    div(
-      h5(
-        b("Work Description")
-      ),
-      textarea(
-        id = "workDescription", 
-        class = "form-control shiny-bound-input",
-        style = "width: 300px; height: 102px"
-      )
-    )
+  textAreaInput(
+    inputId = "workDescription",
+    label = "Work Description",
+    width = "300px",
+    height = "102px"
   ),
   
   

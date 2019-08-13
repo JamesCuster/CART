@@ -2,11 +2,28 @@
 shinyUI(
   fluidPage(
     # This is JavaScript which will reset the form inputs after adding to queue
+    # used in each of the Add To Queue observeEvent
     tags$script("
         Shiny.addCustomMessageHandler('resetValue', function(variableName) {
         Shiny.onInputChange(variableName, null);
         });
       "),
+    
+    # initializes the shinyjs package
+    useShinyjs(),
+    
+    # CSS for the viewProjects modals
+    tags$style(HTML("
+      .modalVariableNames {
+        font-size: 15px;
+        font-weight: bold;
+      }
+    
+    .modalVariableContent {
+        margin-bottom: 10px;
+      }
+    ")),
+    
     
     # Title
     div(
@@ -34,7 +51,7 @@ shinyUI(
     # ),
 
 
-    tabsetPanel(
+    tabsetPanel(id = "tab",
       
       # Add tab panels (add project/time, view (project/time) -------------------
       
@@ -68,9 +85,9 @@ shinyUI(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewPeople.r", 
         local = TRUE)$value,
       
-      # viewPeople
+      # rawData
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiModal.r", 
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiRaw.R", 
         local = TRUE)$value
     )
   )

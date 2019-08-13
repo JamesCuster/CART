@@ -1,13 +1,74 @@
-# Add Reactives for add Researcher ----------------------------------------
+#310
+# todos ---------------------------------------------------------------------
+# modify checkDuplicateResearcher/Employee to have checks on names as well?
 
-# creates the datetable to display add researcher queue
-output$researcherFormData <- 
-  renderDataTable({
-    loadResearcherFormData()
-  })
+# 1 Add Researcher Helper functions and objects --------------------------------
 
-# 1.1 Clean Form Data -------------------------------------------------------
-# Reactive that checks if the researcher already exists in database
+# 1.1 Vectors of input names and variable names in addResearcherFormData -------
+# addResearcher form inputs
+addResearcherInputs <- 
+  c("Delete",
+    "Edit",
+    "researcherID",
+    "researcherUteid",
+    "researcherName",
+    "researcherEmail",
+    "primaryDept",
+    "secondaryDept"
+  )
+
+# researcherFromData variables
+addResearcherFields <- 
+  c("Delete",
+    "Edit",
+    "researcherID",
+    "researcherUteid",
+    "researcherName",
+    "researcherEmail",
+    "primaryDept",
+    "secondaryDept"
+  )
+
+# variables that need to be removed from reseearcherFormData before adding to
+# database
+addResearcherRemoveForDatabase <- 
+  c("Delete",
+    "Edit")
+
+
+# 2 Add Researcher Reactives ------------------------------------------------
+
+# 2.1 addResearcherFormData reactive ----------------------------------------
+# make reactive data.frame for addResearcherFormData
+reactiveFormData$researcherFormData <- 
+  setNames(data.frame(matrix(nrow = 0, ncol = 8)), addResearcherFields)
+
+
+# 2.2 cleanResearcherFormData -----------------------------------------------
+# reactive that cleans form data after added to queue is pressed. Used in 1.2
+cleanResearcherFormData <- reactive({
+  #browser()
+  researcherFormResponse <- 
+    sapply(
+      addResearcherFields,
+      function(x) {
+        # researcherID is handled by database. Delete/Edit are added when Add To
+        # Queue is pressed
+        if (x %in% c("Delete", "Edit", "researcherID")) {
+          NA
+        }
+        else if (input[[x]] == "") {
+          NA
+        } else {
+          input[[x]]
+        }
+      }
+    )
+})
+
+
+# 2.3 checkDuplicateResearcher reactive -------------------------------------
+# Checks if researcher is already in database
 checkDuplicateResearcher <- reactive({
   if (input[["researcherUteid"]] %in% researchers$researcherUteid) {
     TRUE
@@ -16,153 +77,180 @@ checkDuplicateResearcher <- reactive({
   }
 })
 
-# reactive that cleans form data after added to queue is pressed. Used in 1.2
-cleanResearcherFormData <- reactive({
-  researcherFormResponse <- 
-    sapply(
-      addResearcherFields,
-      function(x) {
-        if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
-          return(NA)
-        } else {
-          input[[x]]
-        }
-      }
-    )
-  researcherFormResponse <<- researcherFormResponse
-})
 
 
-# 1.2 Add To Queue Button ---------------------------------------------------
-# This controls what happens when the add to queue button on the add researcher
-# form is pressed
+# 3 Add Researcher Observers ------------------------------------------------
+
+# 3.1 Add To Queue Button ---------------------------------------------------
 observeEvent(
   input$submitAddResearcher, {
-    
     # Check if input is a duplicate if so return error in UI otherwise proceed
     if (checkDuplicateResearcher()) {
       output$checkDuplicateResearcher <- 
         renderText(
           "Warning: The researcher UTeid you input already exisit in the researchers table")
     } else {
-      saveResearcherFormData(cleanResearcherFormData())
+      # Applies the cleanResearcherFormData reactive and converts it to data.frame
+      researcherFormResponse <- as.data.frame(t(cleanResearcherFormData()), stringsAsFactors = FALSE)
       
-      # Clears form data
+      # Adds researcherFormResponses to the researcherFormData reactive
+      reactiveFormData$researcherFormData <- rbind(reactiveFormData$researcherFormData, researcherFormResponse)
+      
+      # adds the Delete/Edit links to researcherFormData
+      reactiveFormData$researcherFormData <- addDeleteEditLink(reactiveFormData$researcherFormData, "researcherFormData")
+      
+      # Resets the addProject form inputs to defaults
       sapply(
         addResearcherFields,
         function(x) {
-          updateTextInput(session, x, value = "")
-          session$sendCustomMessage(type = "resetValue", message = x)
+          reset(x)
         }
       )
-      
-      # creates the datetable to display add researcher queue
-      output$researcherFormData <- 
-        renderDataTable({
-          loadResearcherFormData()
-        })
     }
     
   }
 )
 
 
-# 1.3 Save to Database Button -----------------------------------------------
-# This controls what happens when the save to database button is pressed on the
-# add researcher section
+# 3.2 Save To Database button ---------------------------------------------
 observeEvent(
   input$researcherToDatabase, {
-    dbWriteTable(BDSHProjects, "researchers", researcherFormData, append = TRUE)
-    researcherFormData <<- researcherFormData[c(), ]
+    # remove variables that are not saved to database (delete/edit links,
+    # values/labels variables)
+    researcherFormData <-
+      reactiveFormData$researcherFormData[, !(names(reactiveFormData$researcherFormData) %in% addResearcherRemoveForDatabase)]
     
-    output$researcherFormData <- 
-      renderDataTable({
-        loadResearcherFormData()
-      })
+    # Write table to database
+    dbWriteTable(BDSHProjects, "researchers", researcherFormData, append = TRUE)
+    
+    # Clear reactive data.frame after added to database
+    reactiveFormData$researcherFormData <- reactiveFormData$researcherFormData[c(), ]
   }
 )
 
 
-
-# 1.4 Delete Row Table Buttons ----------------------------------------------
-# This controls what happens when the delete buttons on the employeeForm
+# 3.3 Table Link Delete Row -----------------------------------------------
+# This controls what happens when the delete buttons on the researcherForm
 # datatable are pressed
 observeEvent(
   input$researcherFormDataDelete, {
     # identify row to be deleted
     rowID <- parseDeleteEvent(input$researcherFormDataDelete)
-
+    
     # delete row from data.frame
-    researcherFormData <- researcherFormData[-rowID, ]
-
-    # reset data.frame's row.names, remove rowID, and save researcherFormData to
-    # global environment
-    row.names(researcherFormData) <- NULL
-    rowID <- NULL
-    researcherFormData <<- researcherFormData
-
-    # Re-render the table for display in the UI
-    output$researcherFormData <-
-      renderDataTable({
-        loadResearcherFormData()
-      })
+    reactiveFormData$researcherFormData <- reactiveFormData$researcherFormData[-rowID, ]
+    
+    # reset data.frame's row.names and recalculate the Delete/Edit links
+    row.names(reactiveFormData$researcherFormData) <- NULL
+    reactiveFormData$researcherFormData <- addDeleteEditLink(reactiveFormData$researcherFormData, "researcherFormData")
   }
 )
 
 
-# 1.5 Edit Row Table Buttons ------------------------------------------------
-# # This controls what happens when the edit buttons on the employeeForm
+# 3.4 Table Link Edit Row -------------------------------------------------
+# # This controls what happens when the edit buttons on the researcherForm
 # datatable are pressed
 observeEvent(
   input$researcherFormDataEdit, {
     # identify row to be edited
     rowID <- parseDeleteEvent(input$researcherFormDataEdit)
-
+    
     # Grab row to be edited
-    edit <- researcherFormData[rowID, ]
-
+    editResearcher <- reactiveFormData$researcherFormData[rowID, ]
+    
     # Remove the row to be edited from the data.frame/table
-    researcherFormData <- researcherFormData[-rowID, ]
-
-    # reset data.frame's row.names, remove rowID, and save researcherFormData to
-    # global environment
-    row.names(researcherFormData) <- NULL
-    rowID <- NULL
-    researcherFormData <<- researcherFormData
-
-    # Put the values of the row to be updated back into the form
+    reactiveFormData$researcherFormData <- reactiveFormData$researcherFormData[-rowID, ]
+    
+    # reset data.frame's row.names and recalculate the Delete/Edit links
+    row.names(reactiveFormData$researcherFormData) <- NULL
+    reactiveFormData$researcherFormData <- addDeleteEditLink(reactiveFormData$researcherFormData, "researcherFormData")
+    
+    # Repopulate the form with the values of row to be edited
     sapply(
-      names(researcherFormData[-1]),
+      addResearcherInputs,
       function(x) {
         updateTextInput(
           session,
           inputId = x,
-          value = edit[, x]
+          value = editResearcher[, x]
         )
       }
     )
-
-    # Re-render table after the row to edit has been removed
-    output$researcherFormData <-
-      renderDataTable({
-        loadResearcherFormData()
-      })
   }
 )
 
 
-
-# 2 Add Employee Reactives --------------------------------------------------
-
-# Creates the datatable to display add employee queue
-output$employeeFormData <- 
+# 4 Output ------------------------------------------------------------------
+output$researcherFormData <- 
   renderDataTable({
-    loadEmployeeFormData()
+    datatable(reactiveFormData$researcherFormData[-3], escape = FALSE)
   })
 
 
-# 2.1 Clean form Data -------------------------------------------------------
-# Reactive that checks if the employee already exists in database
+
+# 5 Add Employee Helper Objects and Functions -------------------------------
+
+# Add employee form inputs
+addEmployeeInputs <- 
+  c("employeeUteid",
+    "employeeName",
+    "employeeEmail",
+    "degree",
+    "role"
+  )
+
+# addEmployeeFormData variables
+addEmployeeFields <- 
+  c("Delete", 
+    "Edit",
+    "bdshID",
+    "employeeUteid",
+    "employeeName",
+    "employeeEmail",
+    "degree",
+    "role"
+  )
+
+# variables that need to be removed from employeeFormData before adding to
+# database
+addEmployeeRemoveForDatabase <- 
+  c("Delete",
+    "Edit")
+
+
+# 6 Add Employee Reactives --------------------------------------------------
+
+# 6.1 addEmployeeFormData reactive ------------------------------------------
+# make reactive data.frame for addEmployeeFormData
+reactiveFormData$employeeFormData <- 
+  setNames(data.frame(matrix(nrow = 0, ncol = 8)), addEmployeeFields)
+
+# cleanEmployeeFormData reactive --------------------------------------------
+# reactive that cleans form data after it has been added to queue. Used in 2.2
+cleanEmployeeFormData <-
+  reactive({
+    employeeFormResponse <- 
+      sapply(
+        addEmployeeFields, 
+        function(x) {
+          # researcherID is handled by database. Delete/Edit are added when Add To
+          # Queue is pressed
+          if (x %in% c("Delete", "Edit", "bdshID")) {
+            NA
+          }
+          else if (input[[x]] == "") {
+            return(NA)
+          } else {
+            input[[x]]
+          }
+        }
+      )
+    employeeFormResponse
+  })
+
+
+# 6.3 checkDuplicateEmployee reactive ---------------------------------------
+# Checks if employee is already in database
 checkDuplicateEmployee <- reactive({
   if (input[["employeeUteid"]] %in% employees$employeeUteid) {
     TRUE
@@ -171,24 +259,11 @@ checkDuplicateEmployee <- reactive({
   }
 })
 
-# reactive that cleans form data after it has been added to queue. Used in 2.2
-cleanEmployeeFormData <-
-  reactive({
-    employeeFormResponse <- 
-      sapply(
-        addEmployeeFields, 
-        function(x) {
-          if (length(input[[x]]) == 0 || input[[x]] == ''|| is.na(input[[x]])) {
-            return(NA)
-          } else {
-            input[[x]]
-          }
-        }
-      )
-    employeeFormResponse <<- employeeFormResponse
-  })
 
-# 2.2 Add To Queue Button ---------------------------------------------------
+
+# 7 Add Employee Observers ------------------------------------------------
+
+# 7.1 Add To Queue Button ---------------------------------------------------
 # This controls what happens when the add to queue button on the add employee
 # tab is pressed
 observeEvent(
@@ -199,112 +274,98 @@ observeEvent(
         renderText(
           "Warning: The employee UTeid you input already exisit in the employees table")
     } else {
-      # creates and displays table of inputs
-      saveEmployeeFormData(cleanEmployeeFormData())
+      # Applies the cleanEmployeeFormData reactive and converts it to data.frame
+      employeeFormResponse <- as.data.frame(t(cleanEmployeeFormData()), stringsAsFactors = FALSE)
       
-      # Clears data from the input forms
+      # Adds employeeFormResponses to the employeeFormData reactive
+      reactiveFormData$employeeFormData <- rbind(reactiveFormData$employeeFormData, employeeFormResponse)
+      
+      # adds the Delete/Edit links to employeeFormData
+      reactiveFormData$employeeFormData <- addDeleteEditLink(reactiveFormData$employeeFormData, "employeeFormData")
+      
+      # Resets the addEmployee form inputs to defaults
       sapply(
-        addEmployeeFields, 
+        addEmployeeInputs,
         function(x) {
-          updateTextInput(session, x, value = "")
-          session$sendCustomMessage(type = "resetValue", message = x)
+          reset(x)
         }
       )
-      
-      # Creates the datatable to display add employee queue
-      output$employeeFormData <- 
-        renderDataTable({
-          loadEmployeeFormData()
-        })
     }
   }
 )
 
 
-# 2.3 Save To Database Button -----------------------------------------------
-# This controls what happens when the save to database button is pressed on the
-# add employee section
+# 7.2 Save To Database button -----------------------------------------------
 observeEvent(
   input$employeeToDatabase, {
+    # remove variables that are not saved to database (Peoples Names,
+    # delete/edit links, values/labels variables)
+    employeeFormData <-
+      reactiveFormData$employeeFormData[, !(names(reactiveFormData$employeeFormData) %in% addEmployeeRemoveForDatabase)]
     
-    dbWriteTable(
-      BDSHProjects, 
-      "employees", 
-      employeeFormData, 
-      append = TRUE)
+    # Write table to database
+    dbWriteTable(BDSHProjects, "employees", employeeFormData, append = TRUE)
     
-    employeeFormData <<- employeeFormData[c(), ]
-    
-    output$employeeFormData <- 
-      renderDataTable({
-        loadEmployeeFormData()
-      })
+    # Clear reactive data.frame after added to database
+    reactiveFormData$employeeFormData <- reactiveFormData$employeeFormData[c(), ]
   }
 )
 
 
-# 2.4 Delete Row Table Buttons ----------------------------------------------
-# This controls what happens when the delete buttons on the employeeForm
+# 7.3 Table Link Delete Row -------------------------------------------------
+# This controls what happens when the delete buttons on the employee form
 # datatable are pressed
 observeEvent(
   input$employeeFormDataDelete, {
     # identify row to be deleted
     rowID <- parseDeleteEvent(input$employeeFormDataDelete)
-
+    
     # delete row from data.frame
-    employeeFormData <- employeeFormData[-rowID, ]
-
-    # reset data.frame's row.names, remove rowID, and save employeeFormData to
-    # global environment
-    row.names(employeeFormData) <- NULL
-    rowID <- NULL
-    employeeFormData <<- employeeFormData
-
-    # Re-render the table for display in the UI
-    output$employeeFormData <-
-      renderDataTable({
-        loadEmployeeFormData()
-      })
+    reactiveFormData$employeeFormData <- reactiveFormData$employeeFormData[-rowID, ]
+    
+    # reset data.frame's row.names and recalculate the Delete/Edit links
+    row.names(reactiveFormData$employeeFormData) <- NULL
+    reactiveFormData$employeeFormData <- addDeleteEditLink(reactiveFormData$employeeFormData, "employeeFormData")
   }
 )
 
 
-# 2.5 Edit Row Table Buttons ------------------------------------------------
-# This controls what happens when the edit buttons on the employeeForm
+# 7.4 Table Links Edit Row --------------------------------------------------
+# # This controls what happens when the edit buttons on the employee form
 # datatable are pressed
 observeEvent(
   input$employeeFormDataEdit, {
     # identify row to be edited
     rowID <- parseDeleteEvent(input$employeeFormDataEdit)
-
+    
     # Grab row to be edited
-    edit <- employeeFormData[rowID, ]
-
+    editEmployee <- reactiveFormData$employeeFormData[rowID, ]
+    
     # Remove the row to be edited from the data.frame/table
-    employeeFormData <- employeeFormData[-rowID, ]
-
-    # reset data.frame's row.names, remove rowID, and save employeeFormData to
-    # global environment
-    row.names(employeeFormData) <- NULL
-    rowID <- NULL
-    employeeFormData <<- employeeFormData
-
-    # Put the values of the row to be updated back into the form
+    reactiveFormData$employeeFormData <- reactiveFormData$employeeFormData[-rowID, ]
+    
+    # reset data.frame's row.names and recalculate the Delete/Edit links
+    row.names(reactiveFormData$employeeFormData) <- NULL
+    reactiveFormData$employeeFormData <- addDeleteEditLink(reactiveFormData$employeeFormData, "employeeFormData")
+    
+    # Repopulate the form with the values of row to be edited
     sapply(
-      names(employeeFormData[-1]),
+      addEmployeeInputs,
       function(x) {
         updateTextInput(
           session,
           inputId = x,
-          value = edit[, x]
+          value = editEmployee[, x]
         )
       }
     )
-
-    # Re-render table after the row to edit has been removed
-    output$employeeFormData <-
-      renderDataTable({
-        loadEmployeeFormData()
-      })
   }
 )
+
+
+
+# 8 Output ------------------------------------------------------------------
+output$employeeFormData <-
+  renderDataTable(
+    datatable(reactiveFormData$employeeFormData[-3], escape = FALSE)
+  )
