@@ -20,6 +20,12 @@ reactiveFormData <-
     employeeFormData = NULL
   )
 
+# Reactives for the view tabs
+viewTables <- reactiveValues(
+  projects = NULL
+)
+
+
 # Define the reactiveData reactive
 reactiveData <- reactiveValues()
 

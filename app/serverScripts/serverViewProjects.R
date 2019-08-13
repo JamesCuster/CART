@@ -170,18 +170,11 @@ viewProjectsDisplay <- c("View Details",
                          "projectDueDate"
                          )
 
+
+
 # 2 Reactives -------------------------------------------------------------
 
-
-# 2.1 viewProjects Reactive -----------------------------------------------
-# Make a reactive data.frame for viewProjects.
-viewTables <- reactiveValues()
-
-
-
-
-
-
+# 2.1 filterViewProjects Reactive -----------------------------------------------
 # Reactive to filter projects data based on viewProjectsByStatus,
 # viewProjectsByEmployee, and viewProjectsByResearcher
 filterViewProjects <- 
@@ -233,6 +226,7 @@ observeEvent(
 )
 
 
+# 3.2 View Details Link -----------------------------------------------------
 # Controls what happens when one of the view details buttons is pressed
 observeEvent(
   input$viewProjectsDetails, {
@@ -251,7 +245,7 @@ observeEvent(
 
 
 
-# Output ------------------------------------------------------------------
+# 4 Output ------------------------------------------------------------------
 
 # Create datatable output
 output$viewProjects <-
