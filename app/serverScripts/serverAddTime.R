@@ -187,20 +187,21 @@ observeEvent(
 
 
 # 3.5 Time As Category/Hours buttons --------------------------------------
-observe({
-  if (input$timeAsCat %% 2 == 0) {
-    updateActionButton(
-      session,
-      inputId = "timeAsCat",
-      label = "Enter As Category"
-    )
-  } else {
-    updateActionButton(
-      session,
-      inputId = "timeAsCat",
-      label = "Enter As Hours"
-    )
-  }
+observeEvent(
+  input$timeAsCat, {
+    if (input$timeAsCat %% 2 == 0) {
+      updateActionButton(
+        session,
+        inputId = "timeAsCat",
+        label = "Enter As Category"
+      )
+    } else {
+      updateActionButton(
+        session,
+        inputId = "timeAsCat",
+        label = "Enter As Hours"
+      )
+    }
 })
 
 

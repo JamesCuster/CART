@@ -50,7 +50,7 @@ tabPanel(
         label = "Time Spent In Hours",
         #value = inputValue
       ),
-      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+      tags$footer("*Required", style="margin-top: -12px; font-size: 12px; padding-bottom: 8px;")
     ),
     
     # Controls when time as category is displayed
