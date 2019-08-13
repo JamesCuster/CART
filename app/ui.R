@@ -83,6 +83,11 @@ shinyUI(
       # viewPeople
       source(
         "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewPeople.r", 
+        local = TRUE)$value,
+      
+      # rawData
+      source(
+        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiRaw.R", 
         local = TRUE)$value
     )
   )

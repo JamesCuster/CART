@@ -268,9 +268,15 @@ observeEvent(
       local = TRUE
     )
     
-    #serverViewTime
+    # serverViewPeople
     source(
       "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewPeople.r",
+      local = TRUE
+    )
+    
+    # serverRaw
+    source(
+      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverRaw.R",
       local = TRUE
     )
     
