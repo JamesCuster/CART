@@ -22,7 +22,8 @@ reactiveFormData <-
 
 # Reactives for the view tabs
 viewTables <- reactiveValues(
-  projects = NULL
+  projects = NULL,
+  time = NULL
 )
 
 

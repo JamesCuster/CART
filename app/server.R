@@ -15,9 +15,7 @@ shinyServer(
 # Reactive value that gets triggered when new data is loaded from the database
 # in the monitorDatabase reactivePoll
     updateOnLoad <- reactiveValues(
-      dropdown = FALSE,
-      viewProjects = FALSE,
-      viewTime = FALSE)
+      dropdown = FALSE)
     
     
 # monitor database for changes and reload changed tables
