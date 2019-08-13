@@ -8,13 +8,15 @@ tabPanel(
     selectInput(
       inputId = "viewProjectsByStatus", 
       label = "Project Status",
-      choices = NULL
+      choices = "All",
+      selected = "All"
     ),
     div(
       selectizeInput(
         inputId = "viewProjectsByEmployee",
         label = "BDSH Staff",
-        choices = NULL,
+        choices = "All",
+        selected = "All",
         options = list(
           placeholder = "All",
           onInitialize = I("function() {this.setValue('All');}")
@@ -26,7 +28,8 @@ tabPanel(
       selectizeInput(
         inputId = "viewProjectsByResearcher",
         label = "Reearcher",
-        choices = NULL,
+        choices = "All",
+        selected = "All",
         options = list(
           placeholder = "All",
           onInitialize = I("function() {this.setValue('All');}")

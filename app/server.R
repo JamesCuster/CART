@@ -5,6 +5,8 @@ shinyServer(
 
 # 1 Database functionalities ------------------------------------------------
 
+# 1.1 Database Connection and Initial Load --------------------------------
+
     # Connect to database
     BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
     
@@ -12,13 +14,11 @@ shinyServer(
     loadDatabase()
     
     
-# Reactive value that gets triggered when new data is loaded from the database
-# in the monitorDatabase reactivePoll
-    updateOnLoad <- reactiveValues(
-      dropdown = FALSE)
-    
-    
-# monitor database for changes and reload changed tables
+
+# 1.2 Monitor Database ------------------------------------------------------
+# This reactive checks the modified table in the database against the one loaded
+# into the app every second. If the modified table has been updated in the
+# database then the table that was modifed is reloaded into the app
     monitorDatabase <- 
       reactivePoll(
         intervalMillis = 1000,
@@ -36,12 +36,11 @@ shinyServer(
         },
         valueFunc = function() {
           loadDatabase(tables = modified$tableName)
-          updateOnLoad$dropdown <- TRUE
         }
       )
     
     
-    # observe which applies the monitorDatabase reactives
+    # observe which applies the monitorDatabase reactive
     observe({
       monitorDatabase()
     })
@@ -51,72 +50,8 @@ shinyServer(
 # 2 Update Dropdown Selections ----------------------------------------------
 # This section allows for the dropdown menus to be updated as new data from the
 # database is loaded
-    
-
-# 2.1 Input IDs To Update -------------------------------------------------
-# All of the inputs listed in the vectors below depend on the values in the
-# respective table of the database. Therefore, if new data is loaded from the
-# database these inputs need to have their choices updated as well.
-    
-    # Need updating when new employees data is fetched
-    employeesDependentValues <- 
-      c(# Update selection inputs in the Add Project form
-        "bdshLead",
-        "bdshSecondary",
-        # Update selection inputs in the Add Time form
-        "workBy",
-        # Update selection inputs in View Projects
-        "viewProjectsByEmployee",
-        "viewTimeByEmployee"
-      )
-    
-    
-    # Need updating when new projects data is fetched
-    projectsDependentValues <- 
-      c(# update selection inputs in the add time form
-        "timeProjectID",
-        "viewTimeByProject",
-        "viewProjectsByStatus"
-      )
-    
-    
-    # Need updating when new researchers data is fetched
-    researchersDependentValues <- 
-      c(# update selection inputs in the add project form
-        "projectPI",
-        "projectSupport1",
-        "projectSupport2",
-        "projectSupport3",
-        "projectSupport4",
-        "viewProjectsByResearcher"
-      )
-    
-    
-
-# 2.2 Preserve Form Data ----------------------------------------------------
-# This reactive helps to preserve data that a user may have already entered into
-# a form but not added to queue if new data from the database is loaded
-    # Defines reactive to presere form data a user has input but has not added
-    # to queue
-    dropdownMenuSelections <- reactiveValues()
-    
-    # Fill in the dropdownMenuSelections as a user inputs form data
-    sapply(c(employeesDependentValues, projectsDependentValues, researchersDependentValues),
-           function(x) {
-             observeEvent(input[[x]], {
-               # browser()
-               if (x %in% c("viewProjectsByEmployee", "viewProjectsByResearcher", "viewProjectsByStatus", "viewTimeByProject", "viewTimeByEmployee") && input[[x]] == "") {
-                 dropdownMenuSelections[[x]] <- "All"
-               } else {
-                 dropdownMenuSelections[[x]] <- input[[x]]
-               }
-             })
-           })
-    
-    
-    
-
-# update employee dependent inputs ----------------------------------------
+ 
+# 2.1 update employee dependent inputs --------------------------------------
     observeEvent(
       reactiveData$employees, {
         # Update selection inputs in the Add Project form
@@ -124,7 +59,7 @@ shinyServer(
           session,
           inputId = "bdshLead",
           choices = reactiveData$employees[order(employees$employeeName), ],
-          selected = dropdownMenuSelections[["bdshLead"]],
+          selected = input[["bdshLead"]],
           server = TRUE
         )
         
@@ -132,7 +67,7 @@ shinyServer(
           session,
           inputId = "bdshSecondary",
           choices = reactiveData$employees[order(employees$employeeName), ],
-          selected = dropdownMenuSelections[["bdshSecondary"]],
+          selected = input[["bdshSecondary"]],
           server = TRUE
         )
         
@@ -141,7 +76,7 @@ shinyServer(
           session,
           inputId = "workBy",
           choices = reactiveData$employees[order(employees$employeeName), ],
-          selected = dropdownMenuSelections[["workBy"]],
+          selected = input[["workBy"]],
           server = TRUE
         )
         
@@ -160,7 +95,7 @@ shinyServer(
                        label = "All",
                        stringsAsFactors = FALSE),
             employees[order(employees$employeeName), ]),
-          selected = dropdownMenuSelections[["viewProjectsByEmployee"]],
+          selected = input[["viewProjectsByEmployee"]],
           server = TRUE
         )
         
@@ -179,14 +114,14 @@ shinyServer(
                        label = "All",
                        stringsAsFactors = FALSE),
             employees[order(employees$employeeName), ]),
-          selected = dropdownMenuSelections[["viewTimeByEmployee"]],
+          selected = input[["viewTimeByEmployee"]],
           server = TRUE
         )
       }
     )
     
 
-# update researcher dependent inputs --------------------------------------
+# 2.1 update researcher dependent inputs ------------------------------------
 observeEvent(
   reactiveData$researchers, {
     # update selection inputs in the add project form
@@ -194,7 +129,7 @@ observeEvent(
       session,
       inputId = "projectPI",
       choices = reactiveData$researchers[order(researchers$researcherName), ],
-      selected = dropdownMenuSelections[["projectPI"]],
+      selected = input[["projectPI"]],
       server = TRUE
     )
     
@@ -202,7 +137,7 @@ observeEvent(
       session,
       inputId = "projectSupport1",
       choices = reactiveData$researchers[order(researchers$researcherName), ],
-      selected = dropdownMenuSelections[["projectSupport1"]],
+      selected = input[["projectSupport1"]],
       server = TRUE
     )
     
@@ -210,7 +145,7 @@ observeEvent(
       session,
       inputId = "projectSupport2",
       choices = reactiveData$researchers[order(researchers$researcherName), ],
-      selected = dropdownMenuSelections[["projectSupport2"]],
+      selected = input[["projectSupport2"]],
       server = TRUE
     )
     
@@ -218,7 +153,7 @@ observeEvent(
       session,
       inputId = "projectSupport3",
       choices = reactiveData$researchers[order(researchers$researcherName), ],
-      selected = dropdownMenuSelections[["projectSupport3"]],
+      selected = input[["projectSupport3"]],
       server = TRUE
     )
     
@@ -226,10 +161,11 @@ observeEvent(
       session,
       inputId = "projectSupport4",
       choices = reactiveData$researchers[order(researchers$researcherName), ],
-      selected = dropdownMenuSelections[["projectSupport4"]],
+      selected = input[["projectSupport4"]],
       server = TRUE
     )
     
+    # Update selection inputs in view projects
     updateSelectizeInput(
       session,
       inputId = "viewProjectsByResearcher",
@@ -245,7 +181,7 @@ observeEvent(
                    stringsAsFactors = FALSE),
         researchers[order(researchers$researcherName), ]
       ),
-      selected = dropdownMenuSelections[["viewProjectsByResearcher"]],
+      selected = input[["viewProjectsByResearcher"]],
       server = TRUE
     )
   }
@@ -261,10 +197,11 @@ observeEvent(
       session,
       inputId = "timeProjectID",
       choices = reactiveData$projects[order(projects$projectName), ],
-      selected = dropdownMenuSelections[["timeProjectID"]],
+      selected = input[["timeProjectID"]],
       server = TRUE
     )
     
+    # update selection inputs in view time
     updateSelectizeInput(
       session,
       inputId = "viewTimeByProject",
@@ -285,10 +222,11 @@ observeEvent(
                    label = "All",
                    stringsAsFactors = FALSE),
         projects[order(projects$projectName), ]),
-      selected = dropdownMenuSelections[["viewTimeByProject"]],
+      selected = input[["viewTimeByProject"]],
       server = TRUE
     )
     
+    # update selection inputs in view projects
     updateSelectInput(
       session,
       inputId = "viewProjectsByStatus",
@@ -297,7 +235,6 @@ observeEvent(
   }
 )
     
-
     
     
 # 3 Server Scripts ----------------------------------------------------------

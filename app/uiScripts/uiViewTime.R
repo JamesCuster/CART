@@ -7,7 +7,8 @@ tabPanel(
     selectizeInput(
       inputId = "viewTimeByProject",
       label = "Project",
-      choices = NULL,
+      choices = "All",
+      selected = "All",
       options = list(
         placeholder = "All",
         onInitialize = I("function() {this.setValue('All');}")
@@ -19,7 +20,8 @@ tabPanel(
       selectizeInput(
         inputId = "viewTimeByEmployee",
         label = "BDSH Staff",
-        choices = NULL,
+        choices = "All",
+        selected = "All",
         options = list(
           placeholder = "All",
           onInitialize = I("function() {this.setValue('All');}")
