@@ -8,7 +8,7 @@ shinyServer(
 # 1.1 Database Connection and Initial Load --------------------------------
 
     # Connect to database
-    BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
+    BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
     
     # Load all database tables
     loadDatabase()
@@ -240,43 +240,37 @@ observeEvent(
 # 3 Server Scripts ----------------------------------------------------------
     # serverAddProject
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/serverScripts/serverAddProject.r", 
+      paste0(dirPath, "/app/serverScripts/serverAddProject.r"), 
       local = TRUE
     )
     
     # serverAddTime
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddTime.r",
+      paste0(dirPath, "/app/serverScripts/serverAddTime.r"),
       local = TRUE
     )
     
     # serverAddPeople
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverAddPeople.r",
+      paste0(dirPath, "/app/serverScripts/serverAddPeople.r"),
       local = TRUE
     )
     
     # serverViewProjects
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewProjects.r",
+      paste0(dirPath, "/app/serverScripts/serverViewProjects.r"),
       local = TRUE
     )
     
     # serverViewTime
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewTime.r",
+      paste0(dirPath, "/app/serverScripts/serverViewTime.r"),
       local = TRUE
     )
     
     # serverViewPeople
     source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverViewPeople.r",
-      local = TRUE
-    )
-    
-    # serverRaw
-    source(
-      "C:/Users/jmc6538/Desktop/BDSHProjectTracking//app/serverScripts/serverRaw.R",
+      paste0(dirPath, "/app/serverScripts/serverViewPeople.r"),
       local = TRUE
     )
     

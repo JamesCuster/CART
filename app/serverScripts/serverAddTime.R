@@ -3,7 +3,7 @@
 
 # Add time form inputs
 addTimeInputs <- 
-  c("effortID",
+  c("timeID",
     "timeProjectID",
     "workBy",
     "dateOfWork",
@@ -17,7 +17,7 @@ addTimeInputs <-
 addTimeFields <- 
   c("Delete",
     "Edit",
-    "effortID",
+    "timeID",
     "timeProjectID",
     "timeProjectName",
     "workBy",
@@ -66,7 +66,7 @@ cleanTimeFormData <-
       
       # projectID is handled by database. Delete/Edit are added when Add To
       # Queue is pressed
-      else if (x %in% c("Delete", "Edit", "effortID")) {
+      else if (x %in% c("Delete", "Edit", "timeID")) {
         NA
       }
       else if (input[[x]] == "" || is.null(input[[x]])) {
@@ -113,7 +113,7 @@ observeEvent(
       reactiveFormData$timeFormData[, !(names(reactiveFormData$timeFormData) %in% addTimeRemoveForDatabase)]
     
     # Write table to database
-    dbWriteTable(BDSHProjects, "effort", timeFormData, append = TRUE)
+    dbWriteTable(BDSHProjects, "time", timeFormData, append = TRUE)
     
     # Clear reactive data.frame after added to database
     reactiveFormData$timeFormData <- reactiveFormData$timeFormData[c(), ]

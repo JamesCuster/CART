@@ -2,24 +2,24 @@
 # 1 Helper Functions and Objects --------------------------------------------
 
 # 1.1 Database Query ------------------------------------------------------
-# This query request the database to get the effort table and join with projects
+# This query request the database to get the time table and join with projects
 # and employees
 viewTimeQuery <- 
-  "select ef.effortID,
-       ef.timeProjectID,
+  "select t.timeID,
+       t.timeProjectID,
        p.projectName,
-       ef.workBy,
-       em.employeeName,
-       em.employeeEmail,
-       ef.dateOfWork,
-       ef.dateOfEntry,
-       ef.workTime,
-       ef.workTimeCategory,
-       ef.workCategory,
-       ef.workDescription
-from effort ef
-left join projects p on ef.timeProjectID = p.projectID
-left join employees em on ef.workBy = em.bdshID"
+       t.workBy,
+       e.employeeName,
+       e.employeeEmail,
+       t.dateOfWork,
+       t.dateOfEntry,
+       t.workTime,
+       t.workTimeCategory,
+       t.workCategory,
+       t.workDescription
+from time t
+left join projects p on t.timeProjectID = p.projectID
+left join employees e on t.workBy = e.bdshID"
 
 
 # 1.2 Vector of Variables to Display in Datatable ---------------------------
@@ -74,7 +74,7 @@ filtered <- viewTables$time %>%
 # This observer fetches the data for the viewTables$time reactive using the
 # SQL query above whenever new time data is loaded from the database
 observeEvent(
-  reactiveData$effort, {
+  reactiveData$time, {
     viewTimeQuery <- dbSendQuery(BDSHProjects, viewTimeQuery)
     viewTables$time <- dbFetch(viewTimeQuery)
     dbClearResult(viewTimeQuery)

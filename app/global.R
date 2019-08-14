@@ -7,9 +7,10 @@ library(shinyjs)
 
 
 # Database related functions ----------------------------------------------
+dirPath <- "C:/Users/jmc6538/Desktop/BDSHProjectTracking"
 
 # Connect to database
-BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
+BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
 
 # reactives for the form data
 reactiveFormData <- 
@@ -31,7 +32,7 @@ viewTables <- reactiveValues(
 reactiveData <- reactiveValues()
 
 # function that loads specified tables from database and updates reactiveData
-loadDatabase <- function(tables = c("projects", "employees", "effort", "researchers", "modified")) {
+loadDatabase <- function(tables = c("projects", "employees", "time", "researchers", "modified")) {
   # projects 
   if ("projects" %in% tables) {
     projects <<- tbl(BDSHProjects, "projects") %>% 
@@ -54,12 +55,12 @@ loadDatabase <- function(tables = c("projects", "employees", "effort", "research
       as.data.frame(stringsAsFactors = FALSE)
     reactiveData$employees <- employees
   }
-  # effort
-  if ("effort" %in% tables) {
-    effort <<- tbl(BDSHProjects, "effort") %>% 
+  # time
+  if ("time" %in% tables) {
+    time <<- tbl(BDSHProjects, "time") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$effort <- effort
+    reactiveData$time <- time
   }
   # researchers
   if ("researchers" %in% tables) {

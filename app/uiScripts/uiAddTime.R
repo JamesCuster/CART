@@ -58,7 +58,7 @@ tabPanel(
       condition = "input.timeAsCat % 2 == 1",
       selectizeInput(
         inputId = "workTimeCategory",
-        label = "Effort Category",
+        label = "Time Category",
         choices = c("Small", "Medium", "Large", "Extra Large"),
         #selected = inputValue,
         options = list(
