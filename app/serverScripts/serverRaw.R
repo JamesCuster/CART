@@ -9,11 +9,15 @@
 #     )
 #   })
 
-editResearchers <- eventReactive(
-  input$tab == "View/Edit Raw Data", {
+editResearchers <- reactive({
     reactiveData$researchers
   }
 )
 
 output$editResearchers <- 
-  renderDataTable(editResearchers())
+  renderDataTable(
+    datatable(
+      editResearchers(),
+      selection = "single"
+    )
+  )
