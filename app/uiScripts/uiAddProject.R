@@ -17,7 +17,7 @@ tabPanel(
   selectizeInput(
     inputId = "bdshLead",
     label = "BDSH Lead",
-    choices = sort(employees$employeeName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -29,7 +29,7 @@ tabPanel(
   selectizeInput(
     inputId = "bdshSecondary",
     label = "BDSH Secondary",
-    choices = sort(employees$employeeName),
+    choices = NULL,
     options = list(
       placeholder = "",
       onInitialize = I("function() {this.setValue('');}")
@@ -92,20 +92,6 @@ tabPanel(
     )
   ),
   
-  # This extra code allows for the text input box size to be customized.
-  # withTags(
-  #   div(id = "projectDescription",
-  #     h5(
-  #       b("Brief Description")
-  #     ),
-  #     textarea(
-  #       id = "projectDescription", 
-  #       type = "text",
-  #       class = "form-control shiny-bound-input shiny-bound-input",
-  #       style = "width: 300px; height: 102px"
-  #     )
-  #   )
-  # ),
   
   textAreaInput(
     inputId = "projectDescription",
@@ -113,8 +99,6 @@ tabPanel(
     width = "300px",
     height = "102px"
   ),
-  
-  
   
   
   selectInput(
@@ -147,18 +131,3 @@ tabPanel(
     inputId = "projectToDatabase", 
     label = "Save To Database")
 )
-
-
-
-
-# button to add new researcher
-#   conditionalPanel(
-#     condition = "input.projectPI != 'Add Researcher'",
-#   
-#   actionButton(
-#     "submitNewResearcher", 
-#     "Input new researcher data"
-#   )),
-# 
-# ui update to happen when add new researcher button is pressed.
-#   uiOutput("submitNewResearcher")

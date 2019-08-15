@@ -1,6 +1,5 @@
 library(shiny)
 library(dplyr)
-library(tidyr)
 library(RSQLite)
 library(DT)
 library(shinyjs)
@@ -35,43 +34,39 @@ reactiveData <- reactiveValues()
 loadDatabase <- function(tables = c("projects", "employees", "time", "researchers", "modified")) {
   # projects 
   if ("projects" %in% tables) {
-    projects <<- tbl(BDSHProjects, "projects") %>% 
+    reactiveData$projects <- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
       mutate(
         value = projectID,
         label = projectName
       ) %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$projects <- projects
   }
   # employees
   if ("employees" %in% tables) {
-    employees <<- tbl(BDSHProjects, "employees") %>% 
+    reactiveData$employees <- tbl(BDSHProjects, "employees") %>% 
       collect()  %>% 
       mutate(
         value = bdshID,
         label = paste0(employeeName, " (", employeeUteid, ")")
       )%>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$employees <- employees
   }
   # time
   if ("time" %in% tables) {
-    time <<- tbl(BDSHProjects, "time") %>% 
+    reactiveData$time <- tbl(BDSHProjects, "time") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$time <- time
   }
   # researchers
   if ("researchers" %in% tables) {
-    researchers <<- tbl(BDSHProjects, "researchers") %>% 
+    reactiveData$researchers <- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
       mutate(
         value = researcherID,
         label = paste0(researcherName, " (", researcherEmail, ")")
       ) %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$researchers <- researchers
   }
   # modified
   if ("modified" %in% tables) {

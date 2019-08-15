@@ -8,10 +8,10 @@ shinyServer(
 # 1.1 Database Connection and Initial Load --------------------------------
 
     # Connect to database
-    BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
+    #BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
     
     # Load all database tables
-    loadDatabase()
+    #loadDatabase()
     
     
 
@@ -58,7 +58,7 @@ shinyServer(
         updateSelectizeInput(
           session,
           inputId = "bdshLead",
-          choices = reactiveData$employees[order(employees$employeeName), ],
+          choices = reactiveData$employees[order(reactiveData$employees$employeeName), ],
           selected = input[["bdshLead"]],
           server = TRUE
         )
@@ -66,7 +66,7 @@ shinyServer(
         updateSelectizeInput(
           session,
           inputId = "bdshSecondary",
-          choices = reactiveData$employees[order(employees$employeeName), ],
+          choices = reactiveData$employees[order(reactiveData$employees$employeeName), ],
           selected = input[["bdshSecondary"]],
           server = TRUE
         )
@@ -75,7 +75,7 @@ shinyServer(
         updateSelectizeInput(
           session,
           inputId = "workBy",
-          choices = reactiveData$employees[order(employees$employeeName), ],
+          choices = reactiveData$employees[order(reactiveData$employees$employeeName), ],
           selected = input[["workBy"]],
           server = TRUE
         )
@@ -94,7 +94,7 @@ shinyServer(
                        value = "All",
                        label = "All",
                        stringsAsFactors = FALSE),
-            employees[order(employees$employeeName), ]),
+            reactiveData$employees[order(reactiveData$employees$employeeName), ]),
           selected = input[["viewProjectsByEmployee"]],
           server = TRUE
         )
@@ -113,7 +113,7 @@ shinyServer(
                        value = "All",
                        label = "All",
                        stringsAsFactors = FALSE),
-            employees[order(employees$employeeName), ]),
+            reactiveData$employees[order(reactiveData$employees$employeeName), ]),
           selected = input[["viewTimeByEmployee"]],
           server = TRUE
         )
@@ -128,7 +128,7 @@ observeEvent(
     updateSelectizeInput(
       session,
       inputId = "projectPI",
-      choices = reactiveData$researchers[order(researchers$researcherName), ],
+      choices = reactiveData$researchers[order(reactiveData$researchers$researcherName), ],
       selected = input[["projectPI"]],
       server = TRUE
     )
@@ -136,7 +136,7 @@ observeEvent(
     updateSelectizeInput(
       session,
       inputId = "projectSupport1",
-      choices = reactiveData$researchers[order(researchers$researcherName), ],
+      choices = reactiveData$researchers[order(reactiveData$researchers$researcherName), ],
       selected = input[["projectSupport1"]],
       server = TRUE
     )
@@ -144,7 +144,7 @@ observeEvent(
     updateSelectizeInput(
       session,
       inputId = "projectSupport2",
-      choices = reactiveData$researchers[order(researchers$researcherName), ],
+      choices = reactiveData$researchers[order(reactiveData$researchers$researcherName), ],
       selected = input[["projectSupport2"]],
       server = TRUE
     )
@@ -152,7 +152,7 @@ observeEvent(
     updateSelectizeInput(
       session,
       inputId = "projectSupport3",
-      choices = reactiveData$researchers[order(researchers$researcherName), ],
+      choices = reactiveData$researchers[order(reactiveData$researchers$researcherName), ],
       selected = input[["projectSupport3"]],
       server = TRUE
     )
@@ -160,7 +160,7 @@ observeEvent(
     updateSelectizeInput(
       session,
       inputId = "projectSupport4",
-      choices = reactiveData$researchers[order(researchers$researcherName), ],
+      choices = reactiveData$researchers[order(reactiveData$researchers$researcherName), ],
       selected = input[["projectSupport4"]],
       server = TRUE
     )
@@ -179,7 +179,7 @@ observeEvent(
                    value = "All",
                    label = "All",
                    stringsAsFactors = FALSE),
-        researchers[order(researchers$researcherName), ]
+        reactiveData$researchers[order(reactiveData$researchers$researcherName), ]
       ),
       selected = input[["viewProjectsByResearcher"]],
       server = TRUE
@@ -196,7 +196,7 @@ observeEvent(
     updateSelectizeInput(
       session,
       inputId = "timeProjectID",
-      choices = reactiveData$projects[order(projects$projectName), ],
+      choices = reactiveData$projects[order(reactiveData$projects$projectName), ],
       selected = input[["timeProjectID"]],
       server = TRUE
     )
@@ -221,7 +221,7 @@ observeEvent(
                    value = "All",
                    label = "All",
                    stringsAsFactors = FALSE),
-        projects[order(projects$projectName), ]),
+        reactiveData$projects[order(reactiveData$projects$projectName), ]),
       selected = input[["viewTimeByProject"]],
       server = TRUE
     )

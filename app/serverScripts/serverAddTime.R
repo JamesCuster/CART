@@ -48,20 +48,28 @@ reactiveFormData$timeFormData <-
 # Reactive that cleans form data to be converted to data.frame
 cleanTimeFormData <-
   reactive({
-    #browser()
     timeFormResponse <- sapply(addTimeFields, function(x) {
       if (x %in% c("dateOfWork", "dateOfEntry")) {
         as.character(input[[x]])
       }
       # takes the projectID and fetches projectName from projects data.frame
       else if (x %in% "timeProjectName") {
-        y <- gsub("Name", "ID", x)
-        # This uses the projectID used above to fetch projectName
-        projects[projects$projectID == input[[y]], "projectName", drop = TRUE]
+        if (input[[gsub("Name", "ID", x)]] == "") {
+          NA
+        }
+        else {
+          x <- gsub("Name", "ID", x)
+          reactiveData$projects[reactiveData$projects$projectID == input[[x]], "projectName", drop = TRUE]
+        }
       }
       else if (x %in% "workByName") {
-        y <- gsub("Name", "", x)
-        employees[employees$bdshID == input[[y]], "employeeName", drop = TRUE]
+        if (input[[gsub("Name", "", x)]] == "") {
+          NA
+        }
+        else {
+          x <- gsub("Name", "", x)
+          reactiveData$employees[reactiveData$employees$bdshID == input[[x]], "employeeName", drop = TRUE]
+        }
       }
       
       # projectID is handled by database. Delete/Edit are added when Add To
@@ -148,7 +156,7 @@ observeEvent(
     rowID <- parseDeleteEvent(input$timeFormDataEdit)
     
     # Grab row to be edited
-    editTime <<- reactiveFormData$timeFormData[rowID, ]
+    editTime <- reactiveFormData$timeFormData[rowID, ]
     
     # Remove the row to be edited from the data.frame/table
     reactiveFormData$timeFormData <- reactiveFormData$timeFormData[-rowID, ]
