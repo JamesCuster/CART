@@ -5,17 +5,7 @@ shinyServer(
 
 # 1 Database functionalities ------------------------------------------------
 
-# 1.1 Database Connection and Initial Load --------------------------------
-
-    # Connect to database
-    #BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
-    
-    # Load all database tables
-    #loadDatabase()
-    
-    
-
-# 1.2 Monitor Database ------------------------------------------------------
+# 1.1 Monitor Database ------------------------------------------------------
 # This reactive checks the modified table in the database against the one loaded
 # into the app every second. If the modified table has been updated in the
 # database then the table that was modifed is reloaded into the app
