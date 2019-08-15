@@ -70,7 +70,7 @@ cleanResearcherFormData <- reactive({
 # 2.3 checkDuplicateResearcher reactive -------------------------------------
 # Checks if researcher is already in database
 checkDuplicateResearcher <- reactive({
-  if (input[["researcherUteid"]] %in% researchers$researcherUteid) {
+  if (input[["researcherUteid"]] %in% reactiveData$researchers$researcherUteid) {
     TRUE
   } else {
     FALSE
@@ -252,7 +252,7 @@ cleanEmployeeFormData <-
 # 6.3 checkDuplicateEmployee reactive ---------------------------------------
 # Checks if employee is already in database
 checkDuplicateEmployee <- reactive({
-  if (input[["employeeUteid"]] %in% employees$employeeUteid) {
+  if (input[["employeeUteid"]] %in% reactiveData$employees$employeeUteid) {
     TRUE
   } else {
     FALSE

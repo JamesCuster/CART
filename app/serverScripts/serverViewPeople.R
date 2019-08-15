@@ -4,7 +4,7 @@
 # creates the datatable output to view researchers
   output$viewResearchers <- 
     renderDataTable(
-      reactiveData$researchers[, !(names(researchers) %in% c("value", "label"))],
+      reactiveData$researchers[, !(names(reactiveData$researchers) %in% c("value", "label"))],
       rownames = FALSE
     )
 
@@ -16,7 +16,7 @@ output$downloadResearchers <- downloadHandler(
     paste("researchers_", Sys.Date(), ".csv", sep = "")
   },
   content = function(file) {
-    write.csv(researchers[, !(names(researchers) %in% c("value", "label"))], 
+    write.csv(reactiveData$researchers[, !(names(reactiveData$researchers) %in% c("value", "label"))], 
               file, 
               row.names = FALSE)
   }
@@ -30,7 +30,7 @@ output$downloadResearchers <- downloadHandler(
 # creates the datatable output to view employees
   output$viewEmployees <- 
     renderDataTable(
-      reactiveData$employees[, !(names(employees) %in% c("value", "label"))],
+      reactiveData$employees[, !(names(reactiveData$employees) %in% c("value", "label"))],
       rownames = FALSE
     )
 
@@ -42,7 +42,7 @@ output$downloadEmployees <- downloadHandler(
     paste("employees_", Sys.Date(), ".csv", sep = "")
   },
   content = function(file) {
-    write.csv(employees[, !(names(employees) %in% c("value", "label"))],
+    write.csv(reactiveData$employees[, !(names(reactiveData$employees) %in% c("value", "label"))],
               file,
               row.names = FALSE)
   }

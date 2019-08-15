@@ -94,7 +94,7 @@ cleanProjectFormData <-
             }
             else {
               x <- gsub("Name", "", x)
-              researchers[researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
+              reactiveData$researchers[reactiveData$researchers$researcherID == input[[x]], "researcherName", drop = TRUE]
             }
           }
           # If employee names are used fetches name from employee table
@@ -104,7 +104,7 @@ cleanProjectFormData <-
             }
             else {
               x <- gsub("Name", "", x)
-              employees[employees$bdshID == input[[x]], "employeeName", drop = TRUE]
+              reactiveData$employees[reactiveData$employees$bdshID == input[[x]], "employeeName", drop = TRUE]
             }
           }
           # projectID is handled by database. Delete/Edit are added when Add To

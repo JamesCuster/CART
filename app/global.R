@@ -1,15 +1,15 @@
 library(shiny)
 library(dplyr)
-library(tidyr)
 library(RSQLite)
 library(DT)
 library(shinyjs)
 
 
 # Database related functions ----------------------------------------------
+dirPath <- "C:/Users/jmc6538/Desktop/BDSHProjectTracking"
 
 # Connect to database
-BDSHProjects <- dbConnect(SQLite(), "C:/Users/jmc6538/Desktop/BDSHProjectTracking/BDSHProjects.sqlite")
+BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
 
 # reactives for the form data
 reactiveFormData <- 
@@ -31,46 +31,42 @@ viewTables <- reactiveValues(
 reactiveData <- reactiveValues()
 
 # function that loads specified tables from database and updates reactiveData
-loadDatabase <- function(tables = c("projects", "employees", "effort", "researchers", "modified")) {
+loadDatabase <- function(tables = c("projects", "employees", "time", "researchers", "modified")) {
   # projects 
   if ("projects" %in% tables) {
-    projects <<- tbl(BDSHProjects, "projects") %>% 
+    reactiveData$projects <- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
       mutate(
         value = projectID,
         label = projectName
       ) %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$projects <- projects
   }
   # employees
   if ("employees" %in% tables) {
-    employees <<- tbl(BDSHProjects, "employees") %>% 
+    reactiveData$employees <- tbl(BDSHProjects, "employees") %>% 
       collect()  %>% 
       mutate(
         value = bdshID,
         label = paste0(employeeName, " (", employeeUteid, ")")
       )%>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$employees <- employees
   }
-  # effort
-  if ("effort" %in% tables) {
-    effort <<- tbl(BDSHProjects, "effort") %>% 
+  # time
+  if ("time" %in% tables) {
+    reactiveData$time <- tbl(BDSHProjects, "time") %>% 
       collect() %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$effort <- effort
   }
   # researchers
   if ("researchers" %in% tables) {
-    researchers <<- tbl(BDSHProjects, "researchers") %>% 
+    reactiveData$researchers <- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
       mutate(
         value = researcherID,
         label = paste0(researcherName, " (", researcherEmail, ")")
       ) %>% 
       as.data.frame(stringsAsFactors = FALSE)
-    reactiveData$researchers <- researchers
   }
   # modified
   if ("modified" %in% tables) {

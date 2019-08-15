@@ -57,37 +57,32 @@ shinyUI(
       
       # addProject
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddProject.r", 
+        paste0(dirPath, "/app/uiScripts/uiAddProject.r"), 
         local = TRUE)$value,
       
       # addTime
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddTime.r", 
+        paste0(dirPath, "/app/uiScripts/uiAddTime.r"), 
         local = TRUE)$value,
       
       # addPeople
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiAddPeople.r", 
+        paste0(dirPath, "/app/uiScripts/uiAddPeople.r"), 
         local = TRUE)$value,
       
       # viewProjects
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewProjects.r", 
+        paste0(dirPath, "/app/uiScripts/uiViewProjects.r"), 
         local = TRUE)$value,
       
       # viewTime
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewTime.r", 
+        paste0(dirPath, "/app/uiScripts/uiViewTime.r"), 
         local = TRUE)$value,
       
       # viewPeople
       source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiViewPeople.r", 
-        local = TRUE)$value,
-      
-      # rawData
-      source(
-        "C:/Users/jmc6538/Desktop/BDSHProjectTracking/app/uiScripts/uiRaw.R", 
+        paste0(dirPath, "/app/uiScripts/uiViewPeople.r"), 
         local = TRUE)$value
     )
   )
