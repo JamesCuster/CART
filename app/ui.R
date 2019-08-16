@@ -25,6 +25,18 @@ shinyUI(
     ")),
     
     
+    # CSS used to control search and "show X entries" in datatables
+    tags$style(HTML(
+      ".top {
+        width: 800px;
+      }
+      
+      .bottom{
+        width: 500px;
+      }"
+    )),
+
+    
     # Title
     div(
       tags$h1("C", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
