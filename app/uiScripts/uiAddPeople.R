@@ -17,7 +17,7 @@ tabPanel(
   ),
   
   actionButton(
-    "deleteResearcher",
+    "removeResearcher",
     "Delete"
   ),
   

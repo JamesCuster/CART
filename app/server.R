@@ -5,6 +5,8 @@ shinyServer(
 
 # 1 Database functionalities ------------------------------------------------
 
+    BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
+    
 # 1.1 Monitor Database ------------------------------------------------------
 # This reactive checks the modified table in the database against the one loaded
 # into the app every second. If the modified table has been updated in the

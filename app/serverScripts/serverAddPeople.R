@@ -25,6 +25,8 @@ researcherInputs <-
 
 
 
+# Modal Functions ---------------------------------------------------------
+
 # Function that creates the inputs for the researcher modal
 modalInputs <- function(ids, labels, type, values) {
   fields <- list()
@@ -43,23 +45,25 @@ modalInputs <- function(ids, labels, type, values) {
 }
 
 
-# funtions that create database querys
-insertResearcherCallback <- function(ids) {
-  query <- paste0(
-    "insert into researchers (researcherID, researcherUteid, researcherName, researcherEmail, primaryDept, secondaryDept) values (",
-    collectInputs(ids),
-    ")"
-  )
-  dbExecute(BDSHProjects, query)
-}
 
-# this function gathers the given inputs and paste them to form the values statement of the SQL insert call
-collectInputs <- function(ids) {
-  paste(
+
+
+# Database Callback Functions ---------------------------------------------
+
+# function that create insert SQL query
+insertCallback <- function(ids, tab) {
+  insert <- paste0(
+    "insert into ",
+    tab,
+    " (",
+    paste0(ids, collapse = ", "),
+    ") values ("
+  )
+  fields <- paste(
     lapply(
-      researcherInputs$ids, 
+      ids, 
       function(x) {
-        if (is.null(input[[x]]) || is.na(input[[x]])) {
+        if (is.null(input[[x]]) || is.na(input[[x]]) || input[[x]] == "") {
           "null"
         }
         else {
@@ -69,30 +73,53 @@ collectInputs <- function(ids) {
     ),
     collapse = ", "
   )
+  query <- paste0(insert, fields, ")")
+  dbExecute(BDSHProjects, query)
 }
 
 
 
-# fieldValues <- function(fields, df, row) {
-#   paste0(
-#     lapply(
-#       fields,
-#       function(x) {
-#         if (is.na(input[[paste0(x, "_updates")]])) {
-#           paste0(x, " = ", "null")
-#         }
-#         else {
-#           paste0(x, " = ", input[[paste0(x, "_updates")]])
-#         }
-#       }
-#     ),
-#     collapse = ", "
-#   )
-# }
+# Delete researcher callback
+deleteCallback <- function(df, row, idVar, tab) {
+  rowid <- reactiveData$researchers[row, idVar]
+  query <- paste0(
+    "delete from ",
+    tab, 
+    " where ",
+    idVar,
+    " = ",
+    rowid
+  )
+   dbExecute(BDSHProjects, query)
+}
 
+updateCallback <- function(ids, df, row, idVar, tab) {
+  ids <- ids[!ids %in% idVar]
+  update <- paste0(
+    "update ",
+    tab,
+    " set "
+  )
+  fields <- paste(
+    lapply(
+      ids, 
+      function(x) {
+        if (input[[x]] == "") {
+          paste0(x, " = ", "null")
+        }
+        else {
+          paste0(x, " = ", paste0("'", input[[x]], "'"))
+        }
+      }
+    ),
+    collapse = ", "
+  )
+  where <- paste0(" where ", idVar, " = ", df[row, idVar])
+  query <- paste0(update, fields, where)
+  dbExecute(BDSHProjects, query)
+}
 
-
-# Add Researcher
+# Add Researcher -----------------------------------------------------
 observeEvent(
   input$addResearcher, {
     fields <- 
@@ -119,21 +146,21 @@ observeEvent(
 
 observeEvent(
   input$insertResearcher, {
-    insertResearcherCallback(researcherInputs$ids)
+    insertCallback(researcherInputs$ids, "researchers")
     removeModal()
   }
 )
 
 
 
-# Edit Researcher
+# Edit Researcher ------------------------------------------------------------
 observeEvent(
   input$editResearcher, {
-    row <- input[["editResearchers_rows_selected"]]
+    row <- input[["researchers_rows_selected"]]
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
-          researchersModal(
+          modalInputs(
             researcherInputs$ids, 
             researcherInputs$labels, 
             researcherInputs$type,
@@ -146,8 +173,8 @@ observeEvent(
             fields,
             footer = 
               div(
-                modalButton('Cancel'),
-                actionButton("save", "Save")
+                modalButton("Cancel"),
+                actionButton("updateResearcher", "Save")
               )
           )
         )
@@ -157,10 +184,60 @@ observeEvent(
 )
 
 
+observeEvent(
+  input$updateResearcher, {
+    row <- input[["researchers_rows_selected"]]
+    updateCallback(
+      researcherInputs$ids, 
+      reactiveData$researchers, 
+      row, 
+      "researcherID",
+      "researchers")
+    removeModal()
+  }
+)
 
 
+# Delete Researcher -------------------------------------------------------
+observeEvent(
+  input$removeResearcher, {
+    row <- input[["researchers_rows_selected"]]
+    if (!is.null(row) && row > 0) {
+      rowid <- reactiveData$researchers[input[["researchers_rows_selected"]], "researcherID"]
+      fields <- list()
+      for (i in researcherInputs$ids) {
+        fields[[i]] <- div(paste0(i, " = ", reactiveData$researchers[rowid, i]))
+      }
+
+      showModal(
+        modalDialog(
+          title = "Delete Researcher",
+          tags$p("Are you sure you want to delete this record?"),
+          fields,
+          footer = 
+            div(
+              modalButton("Cancel"),
+              actionButton("deleteResearcher", "Delete")
+            )
+        )
+      )
+    }
+  }
+)
 
 
+observeEvent(
+  input$deleteResearcher, {
+    browser()
+    row <- input[["researchers_rows_selected"]]
+    deleteCallback(
+      reactiveData$researchers,
+      row,
+      "researcherID",
+      "researchers")
+    removeModal()
+  }
+)
 
 
 

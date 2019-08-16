@@ -36,20 +36,20 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
   if ("projects" %in% tables) {
     reactiveData$projects <- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
-      mutate(
-        value = projectID,
-        label = projectName
-      ) %>% 
+#      mutate(
+#        value = projectID,
+#        label = projectName
+#      ) %>% 
       as.data.frame(stringsAsFactors = FALSE)
   }
   # employees
   if ("employees" %in% tables) {
     reactiveData$employees <- tbl(BDSHProjects, "employees") %>% 
       collect()  %>% 
-      mutate(
-        value = bdshID,
-        label = paste0(employeeName, " (", employeeUteid, ")")
-      )%>% 
+#      mutate(
+#        value = bdshID,
+#        label = paste0(employeeName, " (", employeeUteid, ")")
+#      )%>% 
       as.data.frame(stringsAsFactors = FALSE)
   }
   # time
@@ -62,10 +62,10 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
   if ("researchers" %in% tables) {
     reactiveData$researchers <- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
-      mutate(
-        value = researcherID,
-        label = paste0(researcherName, " (", researcherEmail, ")")
-      ) %>% 
+#      mutate(
+#        value = researcherID,
+#        label = paste0(researcherName, " (", researcherEmail, ")")
+#      ) %>% 
       as.data.frame(stringsAsFactors = FALSE)
   }
   # modified
