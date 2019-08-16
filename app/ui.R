@@ -55,35 +55,35 @@ shinyUI(
       
       # Add tab panels (add project/time, view (project/time) -------------------
       
-      # addProject
-      source(
-        paste0(dirPath, "/app/uiScripts/uiAddProject.r"), 
-        local = TRUE)$value,
-      
-      # addTime
-      source(
-        paste0(dirPath, "/app/uiScripts/uiAddTime.r"), 
-        local = TRUE)$value,
-      
+      # # addProject
+      # source(
+      #   paste0(dirPath, "/app/uiScripts/uiAddProject.r"), 
+      #   local = TRUE)$value,
+      # 
+      # # addTime
+      # source(
+      #   paste0(dirPath, "/app/uiScripts/uiAddTime.r"), 
+      #   local = TRUE)$value,
+      # 
       # addPeople
       source(
         paste0(dirPath, "/app/uiScripts/uiAddPeople.r"), 
-        local = TRUE)$value,
+        local = TRUE)$value#,
       
-      # viewProjects
-      source(
-        paste0(dirPath, "/app/uiScripts/uiViewProjects.r"), 
-        local = TRUE)$value,
-      
-      # viewTime
-      source(
-        paste0(dirPath, "/app/uiScripts/uiViewTime.r"), 
-        local = TRUE)$value,
-      
-      # viewPeople
-      source(
-        paste0(dirPath, "/app/uiScripts/uiViewPeople.r"), 
-        local = TRUE)$value
+      # # viewProjects
+      # source(
+      #   paste0(dirPath, "/app/uiScripts/uiViewProjects.r"), 
+      #   local = TRUE)$value,
+      # 
+      # # viewTime
+      # source(
+      #   paste0(dirPath, "/app/uiScripts/uiViewTime.r"), 
+      #   local = TRUE)$value,
+      # 
+      # # viewPeople
+      # source(
+      #   paste0(dirPath, "/app/uiScripts/uiViewPeople.r"), 
+      #   local = TRUE)$value
     )
   )
 )
