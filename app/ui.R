@@ -28,7 +28,19 @@ shinyUI(
     # CSS used to control search and "show X entries" in datatables
     tags$style(HTML(
       ".top {
+        display: flex;
+        justify-content: space-between;
         width: 800px;
+      }
+      
+      .dataTables_wrapper
+      .dataTables_filter {
+        float: none;
+      }
+      
+      .dataTables_wrapper
+      .dataTables_length {
+        float: none;
       }
       
       .bottom{

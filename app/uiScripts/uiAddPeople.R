@@ -34,8 +34,28 @@ tabPanel(
   tags$hr(style="border-color: black;"),
   tags$br(),
   
-  tags$h1("Add New BDSH Staff")
+  tags$h1("BDSH Staff"),
   
+  # Buttons to modify the Researchers table
+  actionButton(
+    "addEmployee",
+    "Add"
+  ),
+  
+  actionButton(
+    "editEmployee",
+    "Edit"
+  ),
+  
+  actionButton(
+    "removeEmployee",
+    "Delete"
+  ),
+  
+  tags$br(),
+  tags$br(),
+  
+  dataTableOutput("employees")
   
   
 )

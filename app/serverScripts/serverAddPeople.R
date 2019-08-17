@@ -1,3 +1,17 @@
+
+# controls the edit/delete buttons being grayed out
+observe({
+  if (is.null(input[["researchers_rows_selected"]]) || input[["researchers_rows_selected"]] == "") {
+    disable("editResearcher")
+    disable("removeResearcher")
+  }
+  else {
+    enable("editResearcher")
+    enable("removeResearcher")
+  }
+})
+
+
 # Create Input data.frame
 # this data.frame stores information about what inputs are used for researchers 
 researcherInputs <- 
@@ -81,7 +95,7 @@ insertCallback <- function(ids, tab) {
 
 # Delete researcher callback
 deleteCallback <- function(df, row, idVar, tab) {
-  rowid <- reactiveData$researchers[row, idVar]
+  rowid <- df[row, idVar]
   query <- paste0(
     "delete from ",
     tab, 
@@ -119,6 +133,7 @@ updateCallback <- function(ids, df, row, idVar, tab) {
   dbExecute(BDSHProjects, query)
 }
 
+
 # Add Researcher -----------------------------------------------------
 observeEvent(
   input$addResearcher, {
@@ -131,7 +146,7 @@ observeEvent(
     
     showModal(
       modalDialog(
-        title = "Edit Researcher",
+        title = "Add Researcher",
         fields,
         footer = 
           div(
@@ -228,7 +243,6 @@ observeEvent(
 
 observeEvent(
   input$deleteResearcher, {
-    browser()
     row <- input[["researchers_rows_selected"]]
     deleteCallback(
       reactiveData$researchers,
@@ -248,12 +262,191 @@ output$researchers <-
       selection='single', 
       rownames=FALSE,
       options = list(
-        dom = '<"top" <"left"f> <"right"l> > t <"bottom"ip>'
+        dom = '<"top"fl> t <"bottom"ip>'
       )
     ),
     server=TRUE
   )
 
+
+
+
+
+
+# Employees ---------------------------------------------------------------
+
+# controls the edit/delete buttons being grayed out
+observe({
+  if (is.null(input[["employees_rows_selected"]]) || input[["employees_rows_selected"]] == "") {
+    disable("editEmployee")
+    disable("removeEmployee")
+  }
+  else {
+    enable("editEmployee")
+    enable("removeEmployee")
+  }
+})
+
+employeeInputs <- 
+  data.frame(
+    ids = c("bdshID",
+            "employeeUteid",
+            "employeeName",
+            "employeeEmail",
+            "degree",
+            "role"),
+    labels = c("bdshIDID",
+               "Employees's UT EID",
+               "Employees's Name",
+               "Emplyees Email",
+               "Degree",
+               "Role"),
+    type = c("skip",
+             "textInput",
+             "textInput",
+             "textInput",
+             "textInput",
+             "textInput"),
+    stringsAsFactors = FALSE
+  )
+
+
+# Add Employee -----------------------------------------------------
+observeEvent(
+  input$addEmployee, {
+    fields <- 
+      modalInputs(
+        employeeInputs$ids, 
+        employeeInputs$labels, 
+        employeeInputs$type
+      )
+    
+    showModal(
+      modalDialog(
+        title = "Add BDSH Employee",
+        fields,
+        footer = 
+          div(
+            modalButton("Cancel"),
+            actionButton("insertEmployee", "Save")
+          )
+      )
+    )
+  }
+)
+
+
+observeEvent(
+  input$insertEmployee, {
+    insertCallback(employeeInputs$ids, "employees")
+    removeModal()
+  }
+)
+
+
+
+# edit Employee -----------------------------------------------------------
+observeEvent(
+  input$editEmployee, {
+    row <- input[["employees_rows_selected"]]
+    if(!is.null(row)) {
+      if (row > 0) {
+        fields <- 
+          modalInputs(
+            employeeInputs$ids, 
+            employeeInputs$labels, 
+            employeeInputs$type,
+            reactiveData$employees[row, ]
+          )
+        
+        showModal(
+          modalDialog(
+            title = "Edit Employee",
+            fields,
+            footer = 
+              div(
+                modalButton("Cancel"),
+                actionButton("updateEmployee", "Save")
+              )
+          )
+        )
+      }
+    }
+  }
+)
+
+
+observeEvent(
+  input$updateEmployee, {
+    row <- input[["employees_rows_selected"]]
+    updateCallback(
+      employeeInputs$ids, 
+      reactiveData$employees, 
+      row, 
+      "bdshID",
+      "employees")
+    removeModal()
+  }
+)
+
+
+
+# Delete Employee -------------------------------------------------------
+observeEvent(
+  input$removeEmployee, {
+    row <- input[["employees_rows_selected"]]
+    if (!is.null(row) && row > 0) {
+      rowid <- reactiveData$employees[input[["employees_rows_selected"]], "bdshID"]
+      fields <- list()
+      for (i in employeeInputs$ids) {
+        fields[[i]] <- div(paste0(i, " = ", reactiveData$employees[rowid, i]))
+      }
+      
+      showModal(
+        modalDialog(
+          title = "Delete Employee",
+          tags$p("Are you sure you want to delete this record?"),
+          fields,
+          footer = 
+            div(
+              modalButton("Cancel"),
+              actionButton("deleteEmployee", "Delete")
+            )
+        )
+      )
+    }
+  }
+)
+
+
+observeEvent(
+  input$deleteEmployee, {
+    row <- input[["employees_rows_selected"]]
+    deleteCallback(
+      reactiveData$employees,
+      row,
+      "bdshID",
+      "employees")
+    removeModal()
+  }
+)
+
+
+
+# output ------------------------------------------------------------------
+
+output$employees <- 
+  renderDataTable(
+    datatable(
+      reactiveData$employees[, !names(reactiveData$employees) %in% c("value", "label")],
+      selection='single', 
+      rownames=FALSE,
+      options = list(
+        dom = '<"top"fl> t <"bottom"ip>'
+      )
+    ),
+    server=TRUE
+  )
 
 
 
