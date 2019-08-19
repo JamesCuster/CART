@@ -38,6 +38,81 @@ shinyServer(
     })
     
     
+    # Database Callback Functions ---------------------------------------------
+    # These functions are used to create SQL queries which manipulate the database
+    
+    # function that create insert SQL query
+    insertCallback <- function(ids, tab) {
+      browser()
+      insert <- paste0(
+        "insert into ",
+        tab,
+        " (",
+        paste0(ids, collapse = ", "),
+        ") values ("
+      )
+      fields <- paste(
+        lapply(
+          ids, 
+          function(x) {
+            browser()
+            if (is.null(input[[x]]) || is.na(input[[x]]) || input[[x]] == "") {
+              "null"
+            }
+            else {
+              paste0("'", input[[x]], "'")
+            }
+          }
+        ),
+        collapse = ", "
+      )
+      query <- paste0(insert, fields, ")")
+      dbExecute(BDSHProjects, query)
+    }
+    
+    
+    # function that create delete SQL query
+    deleteCallback <- function(df, row, idVar, tab) {
+      rowid <- df[row, idVar]
+      query <- paste0(
+        "delete from ",
+        tab, 
+        " where ",
+        idVar,
+        " = ",
+        rowid
+      )
+      dbExecute(BDSHProjects, query)
+    }
+    
+    
+    # function that create update SQL query
+    updateCallback <- function(ids, df, row, idVar, tab) {
+      ids <- ids[!ids %in% idVar]
+      update <- paste0(
+        "update ",
+        tab,
+        " set "
+      )
+      fields <- paste(
+        lapply(
+          ids, 
+          function(x) {
+            if (input[[x]] == "") {
+              paste0(x, " = ", "null")
+            }
+            else {
+              paste0(x, " = ", paste0("'", input[[x]], "'"))
+            }
+          }
+        ),
+        collapse = ", "
+      )
+      where <- paste0(" where ", idVar, " = ", df[row, idVar])
+      query <- paste0(update, fields, where)
+      dbExecute(BDSHProjects, query)
+    }
+    
 
 # 2 Update Dropdown Selections ----------------------------------------------
 # This section allows for the dropdown menus to be updated as new data from the
@@ -54,7 +129,7 @@ shinyServer(
 #           selected = input[["bdshLead"]],
 #           server = TRUE
 #         )
-#         
+# 
 #         updateSelectizeInput(
 #           session,
 #           inputId = "bdshSecondary",
@@ -62,7 +137,7 @@ shinyServer(
 #           selected = input[["bdshSecondary"]],
 #           server = TRUE
 #         )
-#         
+# 
 #         # Update selection inputs in the Add Time form
 #         updateSelectizeInput(
 #           session,
@@ -71,7 +146,7 @@ shinyServer(
 #           selected = input[["workBy"]],
 #           server = TRUE
 #         )
-#         
+# 
 #         # Update selection inputs in View Projects
 #         updateSelectizeInput(
 #           session,
@@ -90,7 +165,7 @@ shinyServer(
 #           selected = input[["viewProjectsByEmployee"]],
 #           server = TRUE
 #         )
-#         
+# 
 #         # Update selection inputs in View Time
 #         updateSelectizeInput(
 #           session,
@@ -111,7 +186,7 @@ shinyServer(
 #         )
 #       }
 #     )
-#     
+# 
 # 
 # # 2.1 update researcher dependent inputs ------------------------------------
 # observeEvent(
@@ -124,7 +199,7 @@ shinyServer(
 #       selected = input[["projectPI"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     updateSelectizeInput(
 #       session,
 #       inputId = "projectSupport1",
@@ -132,7 +207,7 @@ shinyServer(
 #       selected = input[["projectSupport1"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     updateSelectizeInput(
 #       session,
 #       inputId = "projectSupport2",
@@ -140,7 +215,7 @@ shinyServer(
 #       selected = input[["projectSupport2"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     updateSelectizeInput(
 #       session,
 #       inputId = "projectSupport3",
@@ -148,7 +223,7 @@ shinyServer(
 #       selected = input[["projectSupport3"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     updateSelectizeInput(
 #       session,
 #       inputId = "projectSupport4",
@@ -156,7 +231,7 @@ shinyServer(
 #       selected = input[["projectSupport4"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     # Update selection inputs in view projects
 #     updateSelectizeInput(
 #       session,
@@ -178,8 +253,7 @@ shinyServer(
 #     )
 #   }
 # )
-#     
-#     
+# 
 # 
 # # update project dependent inputs -----------------------------------------
 # observeEvent(
@@ -192,7 +266,7 @@ shinyServer(
 #       selected = input[["timeProjectID"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     # update selection inputs in view time
 #     updateSelectizeInput(
 #       session,
@@ -217,7 +291,7 @@ shinyServer(
 #       selected = input[["viewTimeByProject"]],
 #       server = TRUE
 #     )
-#     
+# 
 #     # update selection inputs in view projects
 #     updateSelectInput(
 #       session,

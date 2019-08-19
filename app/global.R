@@ -36,20 +36,20 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
   if ("projects" %in% tables) {
     reactiveData$projects <- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
-#      mutate(
-#        value = projectID,
-#        label = projectName
-#      ) %>% 
+     mutate(
+       value = projectID,
+       label = projectName
+     ) %>%
       as.data.frame(stringsAsFactors = FALSE)
   }
   # employees
   if ("employees" %in% tables) {
     reactiveData$employees <- tbl(BDSHProjects, "employees") %>% 
       collect()  %>% 
-#      mutate(
-#        value = bdshID,
-#        label = paste0(employeeName, " (", employeeUteid, ")")
-#      )%>% 
+     mutate(
+       value = bdshID,
+       label = paste0(employeeName, " (", employeeUteid, ")")
+     )%>%
       as.data.frame(stringsAsFactors = FALSE)
   }
   # time
@@ -62,10 +62,10 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
   if ("researchers" %in% tables) {
     reactiveData$researchers <- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
-#      mutate(
-#        value = researcherID,
-#        label = paste0(researcherName, " (", researcherEmail, ")")
-#      ) %>% 
+     mutate(
+       value = researcherID,
+       label = paste0(researcherName, " (", researcherEmail, ")")
+     ) %>%
       as.data.frame(stringsAsFactors = FALSE)
   }
   # modified
@@ -79,78 +79,6 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
 loadDatabase()
 
 
-# Database Callback Functions ---------------------------------------------
-# These functions are used to create SQL queries which manipulate the database
-
-# function that create insert SQL query
-insertCallback <- function(ids, tab) {
-  insert <- paste0(
-    "insert into ",
-    tab,
-    " (",
-    paste0(ids, collapse = ", "),
-    ") values ("
-  )
-  fields <- paste(
-    lapply(
-      ids, 
-      function(x) {
-        if (is.null(input[[x]]) || is.na(input[[x]]) || input[[x]] == "") {
-          "null"
-        }
-        else {
-          paste0("'", input[[x]], "'")
-        }
-      }
-    ),
-    collapse = ", "
-  )
-  query <- paste0(insert, fields, ")")
-  dbExecute(BDSHProjects, query)
-}
-
-
-# function that create delete SQL query
-deleteCallback <- function(df, row, idVar, tab) {
-  rowid <- df[row, idVar]
-  query <- paste0(
-    "delete from ",
-    tab, 
-    " where ",
-    idVar,
-    " = ",
-    rowid
-  )
-  dbExecute(BDSHProjects, query)
-}
-
-
-# function that create update SQL query
-updateCallback <- function(ids, df, row, idVar, tab) {
-  ids <- ids[!ids %in% idVar]
-  update <- paste0(
-    "update ",
-    tab,
-    " set "
-  )
-  fields <- paste(
-    lapply(
-      ids, 
-      function(x) {
-        if (input[[x]] == "") {
-          paste0(x, " = ", "null")
-        }
-        else {
-          paste0(x, " = ", paste0("'", input[[x]], "'"))
-        }
-      }
-    ),
-    collapse = ", "
-  )
-  where <- paste0(" where ", idVar, " = ", df[row, idVar])
-  query <- paste0(update, fields, where)
-  dbExecute(BDSHProjects, query)
-}
 
 
 
@@ -168,11 +96,21 @@ modalInputs <- function(ids, labels, type, values) {
                                value = value)
     }
     else if (type[i] == "selectizeInput") {
+      if (ids[i] %in% c("bdshLead", "bdshSecondary")) {
+        opt <- reactiveData$employees$employeeName
+      }
+      else if (ids[i] %in% c("projectPI", "projectSupport1", "projectSupport2", "projectSupport3", "projectSupport4")) {
+        opt <- reactiveData$researchers$researcherName
+      }
       value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
       fields[[i]] <- selectizeInput(inputId = ids[i],
                                     label = labels[i],
-                                    choices = NULL,
-                                    selected = value)
+                                    choices = opt,
+                                    selected = value,
+                                    options = list(
+                                      placeholder = "",
+                                      onInitialize = I("function() {this.setValue('');}")
+                                    ))
     }
     else if (type[i] == "selectInput") {
       value <- ifelse(missing(values) || is.na(values[i]), "", values[i])

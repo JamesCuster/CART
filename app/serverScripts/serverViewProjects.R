@@ -64,7 +64,6 @@ observeEvent(
           )
       )
     )
-    browser()
   })
 
 
