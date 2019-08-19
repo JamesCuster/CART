@@ -26,6 +26,7 @@ tabPanel(
   
   dataTableOutput("researchers", width = 300),
   
+  downloadButton("downloadResearchers", "Download Researchers"),
   
   
   
@@ -55,9 +56,9 @@ tabPanel(
   tags$br(),
   tags$br(),
   
-  dataTableOutput("employees")
+  dataTableOutput("employees"),
   
-  
+  downloadButton("downloadEmployees", "Download Employees")
 )
 
 
