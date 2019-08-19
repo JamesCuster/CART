@@ -1,27 +1,70 @@
 # 1 Helper Objects And Functions ------------------------------------------
 
-# projectInputs <- 
-#   data.frame(
-#     ids = c("projectID", 
-#             "projectName", 
-#             "bdshLead", 
-#             "bdshSecondary", 
-#             "projectPI", 
-#             "projectSupport1", 
-#             "projectSupport2", 
-#             "projectSupport3", 
-#             "projectSupport4", 
-#             "projectDescription", 
-#             "projectStatus", 
-#             "projectDueDate"),
-#     labels = c(),
-#     type = c()
-#   )
+# this data.frame stores information about what inputs are used for projects
+projectInputs <-
+  data.frame(
+    ids = c("projectID",
+            "projectName",
+            "bdshLead",
+            "bdshSecondary",
+            "projectPI",
+            "projectSupport1",
+            "projectSupport2",
+            "projectSupport3",
+            "projectSupport4",
+            "projectDescription",
+            "projectStatus",
+            "projectDueDate"),
+    labels = c("projectID",
+               "Project Name",
+               "BDSH Lead",
+               "BDSH Secondary",
+               "Primary Investigator",
+               "Support Staff 1",
+               "Support Staff 2",
+               "Support Staff 3",
+               "Support Staff 4",
+               "Brief Description",
+               "Status",
+               "Due Date"),
+    type = c("skip",
+             "textInput",
+             "selectizeInput",
+             "selectizeInput",
+             "selectizeInput",
+             "selectizeInput",
+             "selectizeInput",
+             "selectizeInput",
+             "selectizeInput",
+             "textAreaInput",
+             "selectInput",
+             "dateInput"),
+    stringsAsFactors = FALSE
+  )
+
 
 
 observeEvent(
   input$addProject, {
-    browswer()
+    browser()
+    fields <- 
+      modalInputs(
+        projectInputs$ids, 
+        projectInputs$labels, 
+        projectInputs$type
+      )
+    
+    showModal(
+      modalDialog(
+        title = "Add Project",
+        fields,
+        footer = 
+          div(
+            modalButton("Cancel"),
+            actionButton("insertProject", "Save")
+          )
+      )
+    )
   })
 
 

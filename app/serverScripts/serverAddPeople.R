@@ -54,6 +54,13 @@ modalInputs <- function(ids, labels, type, values) {
                                label = labels[i],
                                value = value)
     }
+    else if (type[i] == "selectizeInput") {
+      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      fields[[i]] <- selectizeInput(inputId = ids[i],
+                                    label = labels[i],
+                                    choices = NULL,
+                                    selected = value)
+    }
   }
   fields
 }
@@ -150,7 +157,7 @@ observeEvent(
         fields,
         footer = 
           div(
-            modalButton('Cancel'),
+            modalButton("Cancel"),
             actionButton("insertResearcher", "Save")
           )
       )
