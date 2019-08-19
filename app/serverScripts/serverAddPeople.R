@@ -69,76 +69,7 @@ modalInputs <- function(ids, labels, type, values) {
 
 
 
-# Database Callback Functions ---------------------------------------------
 
-# function that create insert SQL query
-insertCallback <- function(ids, tab) {
-  insert <- paste0(
-    "insert into ",
-    tab,
-    " (",
-    paste0(ids, collapse = ", "),
-    ") values ("
-  )
-  fields <- paste(
-    lapply(
-      ids, 
-      function(x) {
-        if (is.null(input[[x]]) || is.na(input[[x]]) || input[[x]] == "") {
-          "null"
-        }
-        else {
-          paste0("'", input[[x]], "'")
-        }
-      }
-    ),
-    collapse = ", "
-  )
-  query <- paste0(insert, fields, ")")
-  dbExecute(BDSHProjects, query)
-}
-
-
-
-# Delete researcher callback
-deleteCallback <- function(df, row, idVar, tab) {
-  rowid <- df[row, idVar]
-  query <- paste0(
-    "delete from ",
-    tab, 
-    " where ",
-    idVar,
-    " = ",
-    rowid
-  )
-   dbExecute(BDSHProjects, query)
-}
-
-updateCallback <- function(ids, df, row, idVar, tab) {
-  ids <- ids[!ids %in% idVar]
-  update <- paste0(
-    "update ",
-    tab,
-    " set "
-  )
-  fields <- paste(
-    lapply(
-      ids, 
-      function(x) {
-        if (input[[x]] == "") {
-          paste0(x, " = ", "null")
-        }
-        else {
-          paste0(x, " = ", paste0("'", input[[x]], "'"))
-        }
-      }
-    ),
-    collapse = ", "
-  )
-  where <- paste0(" where ", idVar, " = ", df[row, idVar])
-  query <- paste0(update, fields, where)
-  dbExecute(BDSHProjects, query)
-}
 
 
 # Add Researcher -----------------------------------------------------

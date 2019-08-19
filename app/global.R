@@ -79,6 +79,144 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
 loadDatabase()
 
 
+# Database Callback Functions ---------------------------------------------
+# These functions are used to create SQL queries which manipulate the database
+
+# function that create insert SQL query
+insertCallback <- function(ids, tab) {
+  insert <- paste0(
+    "insert into ",
+    tab,
+    " (",
+    paste0(ids, collapse = ", "),
+    ") values ("
+  )
+  fields <- paste(
+    lapply(
+      ids, 
+      function(x) {
+        if (is.null(input[[x]]) || is.na(input[[x]]) || input[[x]] == "") {
+          "null"
+        }
+        else {
+          paste0("'", input[[x]], "'")
+        }
+      }
+    ),
+    collapse = ", "
+  )
+  query <- paste0(insert, fields, ")")
+  dbExecute(BDSHProjects, query)
+}
+
+
+# function that create delete SQL query
+deleteCallback <- function(df, row, idVar, tab) {
+  rowid <- df[row, idVar]
+  query <- paste0(
+    "delete from ",
+    tab, 
+    " where ",
+    idVar,
+    " = ",
+    rowid
+  )
+  dbExecute(BDSHProjects, query)
+}
+
+
+# function that create update SQL query
+updateCallback <- function(ids, df, row, idVar, tab) {
+  ids <- ids[!ids %in% idVar]
+  update <- paste0(
+    "update ",
+    tab,
+    " set "
+  )
+  fields <- paste(
+    lapply(
+      ids, 
+      function(x) {
+        if (input[[x]] == "") {
+          paste0(x, " = ", "null")
+        }
+        else {
+          paste0(x, " = ", paste0("'", input[[x]], "'"))
+        }
+      }
+    ),
+    collapse = ", "
+  )
+  where <- paste0(" where ", idVar, " = ", df[row, idVar])
+  query <- paste0(update, fields, where)
+  dbExecute(BDSHProjects, query)
+}
+
+
+
+# Function That Builds Inputs for Modals ----------------------------------
+modalInputs <- function(ids, labels, type, values) {
+  fields <- list()
+  for (i in seq_along(ids)) {
+    if (type[i] == "skip") {
+      fields[[i]] <- NULL
+    }
+    else if (type[i] == "textInput") {
+      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      fields[[i]] <- textInput(inputId = ids[i],
+                               label = labels[i],
+                               value = value)
+    }
+    else if (type[i] == "selectizeInput") {
+      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      fields[[i]] <- selectizeInput(inputId = ids[i],
+                                    label = labels[i],
+                                    choices = NULL,
+                                    selected = value)
+    }
+  }
+  fields
+}
+
+
+
+
+
+# projects notes ----------------------------------------------------------
+
+# This function takes a data frame and creates a value/label data.frame for use
+# in selectInputs
+valueLabel <- function(df, value, label) {
+  x <- data.frame(
+    value = df[[value]],
+    label = df[[label]]
+  )
+  return(x)
+}
+
+
+# selectInputChoices <- 
+#   list(
+#     bdshLead = valueLabel(reactiveData$employees, "bdshID", "employeeName"),
+#     bdshSecondary = valueLabel(reactiveData$employees, "bdshID", "employeeName"),
+#     projectPI = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
+#     projectSupport1 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
+#     projectSupport2 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
+#     projectSupport3 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
+#     projectSupport4 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
+#     projectStatus = c("Active", "Closed", "Dormant")
+#   )
+
+
+
+
+
+
+
+
+
+
+
 
 # Functions and helpers to create/manipulate delete/edit buttons ----------
 
