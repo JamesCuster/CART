@@ -46,7 +46,6 @@ projectInputs <-
 
 observeEvent(
   input$addProject, {
-    browser()
     fields <- 
       modalInputs(
         projectInputs$ids, 
@@ -65,6 +64,7 @@ observeEvent(
           )
       )
     )
+    browser()
   })
 
 

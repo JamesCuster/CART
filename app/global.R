@@ -174,6 +174,24 @@ modalInputs <- function(ids, labels, type, values) {
                                     choices = NULL,
                                     selected = value)
     }
+    else if (type[i] == "selectInput") {
+      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      fields[[i]] <- selectInput(inputId = ids[i],
+                                 label = labels[i],
+                                 choices = NULL)
+    }
+    else if (type[i] == "textAreaInput") {
+      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      fields[[i]] <- textAreaInput(inputId = ids[i],
+                                   label = labels[i],
+                                   width = "300px",
+                                   height = "102px")
+    }
+    else if (type[i] == "dateInput") {
+      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      fields[[i]] <- dateInput(inputId = ids[i],
+                               label = labels[i])
+    }
   }
   fields
 }

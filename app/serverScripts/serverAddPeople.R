@@ -39,39 +39,6 @@ researcherInputs <-
 
 
 
-# Modal Functions ---------------------------------------------------------
-
-# Function that creates the inputs for the researcher modal
-modalInputs <- function(ids, labels, type, values) {
-  fields <- list()
-  for (i in seq_along(ids)) {
-    if (type[i] == "skip") {
-      fields[[i]] <- NULL
-    }
-    else if (type[i] == "textInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
-      fields[[i]] <- textInput(inputId = ids[i],
-                               label = labels[i],
-                               value = value)
-    }
-    else if (type[i] == "selectizeInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
-      fields[[i]] <- selectizeInput(inputId = ids[i],
-                                    label = labels[i],
-                                    choices = NULL,
-                                    selected = value)
-    }
-  }
-  fields
-}
-
-
-
-
-
-
-
-
 # Add Researcher -----------------------------------------------------
 observeEvent(
   input$addResearcher, {
