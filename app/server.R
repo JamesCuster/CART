@@ -249,11 +249,11 @@ shinyServer(
     )
     
     # serverViewProjects
-    # source(
-    #   paste0(dirPath, "/app/serverScripts/serverViewProjects.r"),
-    #   local = TRUE
-    # )
-    # 
+    source(
+      paste0(dirPath, "/app/serverScripts/serverViewProjects.r"),
+      local = TRUE
+    )
+
     # # serverViewTime
     # source(
     #   paste0(dirPath, "/app/serverScripts/serverViewTime.r"),

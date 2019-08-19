@@ -2,11 +2,29 @@ tabPanel(
   
   "View Projects",
   
+  tags$h1("Projects"),
+  
+  # Buttons to modify the Researchers table
+  actionButton(
+    "addProject",
+    "Add"
+  ),
+  
+  actionButton(
+    "editProject",
+    "Edit"
+  ),
+  
+  actionButton(
+    "removeProject",
+    "Delete"
+  ),
+  
+  
   # Filter Projects inputs
-
   div(
     selectInput(
-      inputId = "viewProjectsByStatus", 
+      inputId = "viewProjectsByStatus",
       label = "Project Status",
       choices = "All",
       selected = "All"
@@ -37,13 +55,12 @@ tabPanel(
       ),
       style = "margin-left: 20px;"
     ),
-    
-    
+
+
     style = "display: flex; align-items: flex-start;"
   ),
-  
-  
+
+
   # Projects Data
   dataTableOutput("viewProjects", width = 300)
 )
-
