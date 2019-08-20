@@ -91,12 +91,12 @@ shinyUI(
 
       # viewProjects
       source(
-        paste0(dirPath, "/app/uiScripts/uiViewProjects.r"),
+        paste0(dirPath, "/app/uiScripts/uiProjects.r"),
         local = TRUE)$value,
       
       # addPeople
       source(
-        paste0(dirPath, "/app/uiScripts/uiAddPeople.r"), 
+        paste0(dirPath, "/app/uiScripts/uiPeople.r"), 
         local = TRUE)$value#,
       
       # # viewTime

@@ -307,12 +307,6 @@ shinyServer(
 #     
 #     
 # # 3 Server Scripts ----------------------------------------------------------
-#     # serverAddProject
-#     source(
-#       paste0(dirPath, "/app/serverScripts/serverAddProject.r"), 
-#       local = TRUE
-#     )
-#     
 #     # serverAddTime
 #     source(
 #       paste0(dirPath, "/app/serverScripts/serverAddTime.r"),
@@ -321,29 +315,24 @@ shinyServer(
     
     # serverAddPeople
     source(
-      paste0(dirPath, "/app/serverScripts/serverAddPeople.r"),
+      paste0(dirPath, "/app/serverScripts/serverPeople.r"),
       local = TRUE
     )
     
-    # serverViewProjects
+    # ViewProjects
     source(
-      paste0(dirPath, "/app/serverScripts/serverViewProjects.r"),
+      paste0(dirPath, "/app/serverScripts/serverProjects.r"),
       local = TRUE
     )
-
+    
     # # serverViewTime
     # source(
     #   paste0(dirPath, "/app/serverScripts/serverViewTime.r"),
     #   local = TRUE
     # )
-    # 
-    # # serverViewPeople
-    # source(
-    #   paste0(dirPath, "/app/serverScripts/serverViewPeople.r"),
-    #   local = TRUE
-    # )
-    # 
-
+    
+    
+    
 # 4. On App Disconnect ----------------------------------------------------
     # stops the app when window is closed
     session$onSessionEnded(function() {
