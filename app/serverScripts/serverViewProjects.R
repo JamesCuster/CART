@@ -43,14 +43,58 @@ projectInputs <-
   )
 
 
+# This reactive creates the object which stores the choices for the selection
+# inputs
+choicesProjects <- reactive({
+  x <- list()
+  
+  # Project inputs
+  x[["bdshLead"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
+  x[["bdshSecondary"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
+  x[["projectPI"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
+  x[["projectSupport1"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
+  x[["projectSupport2"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
+  x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
+  x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
+  x[["projectStatus"]] <- c("Active", "Closed", "Dormant")
+  
+  # Project Filters
+  x[["viewProjectsByStatus"]] <- c("All", "Active", "Closed", "Dormant")
+  x[["viewProjectsByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
+  x[["viewProjectsByResearcher"]] <- c("All", valueLabel(reactiveData$researchers, "researcherID", "researcherName"))
+  x
+})
 
+
+
+
+
+
+
+
+# controls the edit/delete buttons being grayed out
+observe({
+  if (is.null(input[["projects_rows_selected"]]) || input[["projects_rows_selected"]] == "") {
+    disable("editProject")
+  }
+  else {
+    enable("editProject")
+  }
+})
+
+
+
+# Add Project -------------------------------------------------------------
 observeEvent(
   input$addProject, {
+    # browser()
+    choices <- choicesProjects()
     fields <- 
       modalInputs(
         projectInputs$ids, 
         projectInputs$labels, 
-        projectInputs$type
+        projectInputs$type,
+        choices = choices
       )
     
     showModal(
@@ -67,10 +111,107 @@ observeEvent(
   })
 
 
+observeEvent(
+  input$insertProject, {
+    insertCallback(projectInputs$ids, "projects")
+    removeModal()
+  }
+)
+
+
+
+# Edit Project ------------------------------------------------------------
+observeEvent(
+  input$editProject, {
+    #browser()
+    choices <- choicesProjects()
+    row <- input[["projects_rows_selected"]]
+    if(!is.null(row)) {
+      if (row > 0) {
+        fields <- 
+          modalInputs(
+            projectInputs$ids, 
+            projectInputs$labels, 
+            projectInputs$type,
+            reactiveData$projects[row, ],
+            choices = choices
+          )
+        
+        showModal(
+          modalDialog(
+            title = "Edit Project",
+            fields,
+            footer = 
+              div(
+                modalButton("Cancel"),
+                actionButton("updateProject", "Save")
+              )
+          )
+        )
+      }
+    }
+  }
+)
+
+
+observeEvent(
+  input$updateProject, {
+    row <- input[["projects_rows_selected"]]
+    updateCallback(
+      projectInputs$ids, 
+      reactiveData$projects, 
+      row, 
+      "projectID",
+      "projects")
+    removeModal()
+  }
+)
+
+
 
 # Output ------------------------------------------------------------------
 
-output$viewProjects <- renderDataTable(
+# Controls the project filter UI components
+output$projectFilters <- renderUI({
+  choices <- choicesProjects()
+  div(
+    selectInput(
+      inputId = "viewProjectsByStatus",
+      label = "Project Status",
+      choices = choices[["viewProjectsByStatus"]],
+      selected = input$viewProjectsByStatus
+    ),
+    div(
+      selectizeInput(
+        inputId = "viewProjectsByEmployee",
+        label = "BDSH Staff",
+        choices = choices[["viewProjectsByEmployee"]],
+        selected = input$viewProjectsByEmployee,
+        options = list(
+          placeholder = "All"
+        )
+      ),
+      style = "margin-left: 20px;"
+    ),
+    div(
+      selectizeInput(
+        inputId = "viewProjectsByResearcher",
+        label = "Reearcher",
+        choices = choices[["viewProjectsByResearcher"]],
+        selected = input$viewProjectsByResearcher,
+        options = list(
+          placeholder = "All"
+        )
+      ),
+      style = "margin-left: 20px;"
+    ),
+    style = "display: flex; align-items: flex-start;"
+  )
+})
+
+
+
+output$projects <- renderDataTable(
   datatable(
     reactiveData$projects,
     selection='single', 
@@ -81,6 +222,16 @@ output$viewProjects <- renderDataTable(
   ),
   server=TRUE
 )
+
+
+
+
+
+
+
+
+
+
 
 
 

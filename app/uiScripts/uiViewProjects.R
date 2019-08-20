@@ -22,45 +22,46 @@ tabPanel(
   
   
   # Filter Projects inputs
-  div(
-    selectInput(
-      inputId = "viewProjectsByStatus",
-      label = "Project Status",
-      choices = "All",
-      selected = "All"
-    ),
-    div(
-      selectizeInput(
-        inputId = "viewProjectsByEmployee",
-        label = "BDSH Staff",
-        choices = "All",
-        selected = "All",
-        options = list(
-          placeholder = "All",
-          onInitialize = I("function() {this.setValue('All');}")
-        )
-      ),
-      style = "margin-left: 20px;"
-    ),
-    div(
-      selectizeInput(
-        inputId = "viewProjectsByResearcher",
-        label = "Reearcher",
-        choices = "All",
-        selected = "All",
-        options = list(
-          placeholder = "All",
-          onInitialize = I("function() {this.setValue('All');}")
-        )
-      ),
-      style = "margin-left: 20px;"
-    ),
-
-
-    style = "display: flex; align-items: flex-start;"
-  ),
+  uiOutput("projectFilters"),
+  # div(
+  #   selectInput(
+  #     inputId = "viewProjectsByStatus",
+  #     label = "Project Status",
+  #     choices = c("All", "Active", "Closed", "Dormant"),
+  #     selected = "All"
+  #   ),
+  #   div(
+  #     selectizeInput(
+  #       inputId = "viewProjectsByEmployee",
+  #       label = "BDSH Staff",
+  #       choices = NULL,
+  #       selected = "All",
+  #       options = list(
+  #         placeholder = "All",
+  #         onInitialize = I("function() {this.setValue('All');}")
+  #       )
+  #     ),
+  #     style = "margin-left: 20px;"
+  #   ),
+  #   div(
+  #     selectizeInput(
+  #       inputId = "viewProjectsByResearcher",
+  #       label = "Reearcher",
+  #       choices = NULL,
+  #       selected = "All",
+  #       options = list(
+  #         placeholder = "All",
+  #         onInitialize = I("function() {this.setValue('All');}")
+  #       )
+  #     ),
+  #     style = "margin-left: 20px;"
+  #   ),
+  # 
+  # 
+  #   style = "display: flex; align-items: flex-start;"
+  # ),
 
 
   # Projects Data
-  dataTableOutput("viewProjects", width = 300)
+  dataTableOutput("projects", width = 300)
 )

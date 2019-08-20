@@ -38,12 +38,12 @@ shinyServer(
     })
     
     
-    # Database Callback Functions ---------------------------------------------
+    
+# Database Callback Functions ---------------------------------------------
     # These functions are used to create SQL queries which manipulate the database
     
     # function that create insert SQL query
     insertCallback <- function(ids, tab) {
-      browser()
       insert <- paste0(
         "insert into ",
         tab,
@@ -55,8 +55,7 @@ shinyServer(
         lapply(
           ids, 
           function(x) {
-            browser()
-            if (is.null(input[[x]]) || is.na(input[[x]]) || input[[x]] == "") {
+            if (is.null(input[[x]]) || is.na(input[[x]]) || class(input[[x]]) == "Date" ||input[[x]] == "") {
               "null"
             }
             else {
@@ -98,7 +97,7 @@ shinyServer(
         lapply(
           ids, 
           function(x) {
-            if (input[[x]] == "") {
+            if (class(input[[x]]) == "Date" || input[[x]] == "") {
               paste0(x, " = ", "null")
             }
             else {
@@ -114,13 +113,17 @@ shinyServer(
     }
     
 
+
+
+    
 # 2 Update Dropdown Selections ----------------------------------------------
 # This section allows for the dropdown menus to be updated as new data from the
 # database is loaded
  
 # 2.1 update employee dependent inputs --------------------------------------
-#     observeEvent(
-#       reactiveData$employees, {
+#     observe({#c(input$addProject, input$editProject), {
+#       #browser()
+# #      reactiveData$employees, {
 #         # Update selection inputs in the Add Project form
 #         updateSelectizeInput(
 #           session,

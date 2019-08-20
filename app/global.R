@@ -30,26 +30,27 @@ viewTables <- reactiveValues(
 # Define the reactiveData reactive
 reactiveData <- reactiveValues()
 
+
 # function that loads specified tables from database and updates reactiveData
 loadDatabase <- function(tables = c("projects", "employees", "time", "researchers", "modified")) {
   # projects 
   if ("projects" %in% tables) {
     reactiveData$projects <- tbl(BDSHProjects, "projects") %>% 
       collect() %>% 
-     mutate(
-       value = projectID,
-       label = projectName
-     ) %>%
-      as.data.frame(stringsAsFactors = FALSE)
+     # mutate(
+     #   value = projectID,
+     #   label = projectName
+     # ) %>%
+      as.data.frame(stringsAsFactors = FALSE) 
   }
   # employees
   if ("employees" %in% tables) {
     reactiveData$employees <- tbl(BDSHProjects, "employees") %>% 
       collect()  %>% 
-     mutate(
-       value = bdshID,
-       label = paste0(employeeName, " (", employeeUteid, ")")
-     )%>%
+     # mutate(
+     #   value = bdshID,
+     #   label = paste0(employeeName, " (", employeeUteid, ")")
+     # ) %>%
       as.data.frame(stringsAsFactors = FALSE)
   }
   # time
@@ -62,10 +63,10 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
   if ("researchers" %in% tables) {
     reactiveData$researchers <- tbl(BDSHProjects, "researchers") %>% 
       collect() %>% 
-     mutate(
-       value = researcherID,
-       label = paste0(researcherName, " (", researcherEmail, ")")
-     ) %>%
+     # mutate(
+     #   value = researcherID,
+     #   label = paste0(researcherName, " (", researcherEmail, ")")
+     # ) %>%
       as.data.frame(stringsAsFactors = FALSE)
   }
   # modified
@@ -80,10 +81,8 @@ loadDatabase()
 
 
 
-
-
 # Function That Builds Inputs for Modals ----------------------------------
-modalInputs <- function(ids, labels, type, values) {
+modalInputs <- function(ids, labels, type, values, df, choices) {
   fields <- list()
   for (i in seq_along(ids)) {
     if (type[i] == "skip") {
@@ -96,21 +95,12 @@ modalInputs <- function(ids, labels, type, values) {
                                value = value)
     }
     else if (type[i] == "selectizeInput") {
-      if (ids[i] %in% c("bdshLead", "bdshSecondary")) {
-        opt <- reactiveData$employees$employeeName
-      }
-      else if (ids[i] %in% c("projectPI", "projectSupport1", "projectSupport2", "projectSupport3", "projectSupport4")) {
-        opt <- reactiveData$researchers$researcherName
-      }
       value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
       fields[[i]] <- selectizeInput(inputId = ids[i],
                                     label = labels[i],
-                                    choices = opt,
-                                    selected = value,
-                                    options = list(
-                                      placeholder = "",
-                                      onInitialize = I("function() {this.setValue('');}")
-                                    ))
+                                    choices = c("", choices[[ids[[i]]]]),
+                                    selected = value
+                                    )
     }
     else if (type[i] == "selectInput") {
       value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
@@ -143,25 +133,16 @@ modalInputs <- function(ids, labels, type, values) {
 # This function takes a data frame and creates a value/label data.frame for use
 # in selectInputs
 valueLabel <- function(df, value, label) {
-  x <- data.frame(
-    value = df[[value]],
-    label = df[[label]]
+  x <- setNames(
+    as.character(df[[value]]),
+    df[[label]]
   )
+  x <- x[sort(names(x))]
   return(x)
 }
 
 
-# selectInputChoices <- 
-#   list(
-#     bdshLead = valueLabel(reactiveData$employees, "bdshID", "employeeName"),
-#     bdshSecondary = valueLabel(reactiveData$employees, "bdshID", "employeeName"),
-#     projectPI = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
-#     projectSupport1 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
-#     projectSupport2 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
-#     projectSupport3 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
-#     projectSupport4 = valueLabel(reactiveData$researchers, "researcherID", "researcherName"),
-#     projectStatus = c("Active", "Closed", "Dormant")
-#   )
+
 
 
 
