@@ -291,12 +291,12 @@ shinyServer(
 #     
 #     
 #     
-# # 3 Server Scripts ----------------------------------------------------------
-#     # serverAddTime
-#     source(
-#       paste0(dirPath, "/app/serverScripts/serverAddTime.r"),
-#       local = TRUE
-#     )
+# 3 Server Scripts ----------------------------------------------------------
+    # serverAddTime
+    source(
+      paste0(dirPath, "/app/serverScripts/serverAddTime.r"),
+      local = TRUE
+    )
     
     # serverAddPeople
     source(

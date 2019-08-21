@@ -84,10 +84,10 @@ shinyUI(
       #   paste0(dirPath, "/app/uiScripts/uiAddProject.r"), 
       #   local = TRUE)$value,
       # 
-      # # addTime
-      # source(
-      #   paste0(dirPath, "/app/uiScripts/uiAddTime.r"), 
-      #   local = TRUE)$value,
+      # addTime
+      source(
+        paste0(dirPath, "/app/uiScripts/uiAddTime.r"),
+        local = TRUE)$value,
 
       # viewProjects
       source(
