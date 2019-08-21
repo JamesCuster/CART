@@ -61,7 +61,7 @@ output$timeFilters <- renderUI({
 
 
 
-output$projects <- renderDataTable(
+output$time <- renderDataTable(
   datatable(
  reactiveData$time,
     selection='single', 
@@ -89,6 +89,7 @@ timeInputs <- data.frame(
           "dateOfEntry",
           "workTime",
           "workTimeCategory",
+          "timeAsCat",
           "workCategory",
           "workDescription"),
   labels = c("timeID",
@@ -98,6 +99,7 @@ timeInputs <- data.frame(
              "Work Logged On",
              "Time Spent",
              "Time Category",
+             "Enter As Category",
              "Work Category",
              "Work Description"),
   type = c("skip",
@@ -107,11 +109,12 @@ timeInputs <- data.frame(
            "dateInput",
            "textInput",
            "selectizeInput",
+           "actionButton",
            "selectizeInput",
            "textAreaInput"),
   stringsAsFactors = FALSE
 )
-  
+
 
 
 # Add Time ----------------------------------------------------------------
@@ -137,6 +140,15 @@ observeEvent(
           )
       )
     )
+  }
+)
+
+
+observeEvent(
+  input$insertTime, {
+    # browser()
+    insertCallback(timeInputs[!timeInputs$ids == "timeAsCat", "ids"], "time")
+    removeModal()
   }
 )
 
