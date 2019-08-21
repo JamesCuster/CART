@@ -1,5 +1,15 @@
 
+# 1 UI Components ---------------------------------------------------------
 
+# controls the edit buttons being grayed out
+observe({
+  if (is.null(input[["time_rows_selected"]]) || input[["time_rows_selected"]] == "") {
+    disable("editTime")
+  }
+  else {
+    enable("editTime")
+  }
+})
 
 
 

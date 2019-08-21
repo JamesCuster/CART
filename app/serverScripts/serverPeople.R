@@ -1,13 +1,11 @@
 
-# controls the edit/delete buttons being grayed out
+# controls the edit button being grayed out
 observe({
   if (is.null(input[["researchers_rows_selected"]]) || input[["researchers_rows_selected"]] == "") {
     disable("editResearcher")
-    disable("removeResearcher")
   }
   else {
     enable("editResearcher")
-    enable("removeResearcher")
   }
 })
 
@@ -111,47 +109,6 @@ observeEvent(
       researcherInputs$ids, 
       reactiveData$researchers, 
       row, 
-      "researcherID",
-      "researchers")
-    removeModal()
-  }
-)
-
-
-# Delete Researcher -------------------------------------------------------
-observeEvent(
-  input$removeResearcher, {
-    row <- input[["researchers_rows_selected"]]
-    if (!is.null(row) && row > 0) {
-      rowid <- reactiveData$researchers[input[["researchers_rows_selected"]], "researcherID"]
-      fields <- list()
-      for (i in researcherInputs$ids) {
-        fields[[i]] <- div(paste0(i, " = ", reactiveData$researchers[rowid, i]))
-      }
-
-      showModal(
-        modalDialog(
-          title = "Delete Researcher",
-          tags$p("Are you sure you want to delete this record?"),
-          fields,
-          footer = 
-            div(
-              modalButton("Cancel"),
-              actionButton("deleteResearcher", "Delete")
-            )
-        )
-      )
-    }
-  }
-)
-
-
-observeEvent(
-  input$deleteResearcher, {
-    row <- input[["researchers_rows_selected"]]
-    deleteCallback(
-      reactiveData$researchers,
-      row,
       "researcherID",
       "researchers")
     removeModal()
