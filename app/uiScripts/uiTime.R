@@ -14,6 +14,9 @@ tabPanel(
     "Edit"
   ),
   
+  # Filter time inputs
+  uiOutput("timeFilters"),
+  
   tags$br(),
   tags$br(),
   
