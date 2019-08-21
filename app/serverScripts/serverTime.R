@@ -169,6 +169,51 @@ observeEvent(
 
 
 
+# Edit Time ---------------------------------------------------------------
+
+observeEvent(
+  input$editTime, {
+    choices <- choicesTime()
+    row <- input[["time_rows_selected"]]
+    if(!is.null(row)) {
+      if (row > 0) {
+        fields <- 
+          modalInputs(
+            timeInputs$ids, 
+            timeInputs$labels, 
+            timeInputs$type,
+            reactiveData$time[row, ],
+            choices = choices
+          )
+        
+        showModal(
+          modalDialog(
+            title = "Edit Time",
+            fields,
+            footer = 
+              div(
+                modalButton("Cancel"),
+                actionButton("updateTime", "Save")
+              )
+          )
+        )
+      }
+    }
+  }
+)
+
+observeEvent(
+  input$updateTime, {
+    row <- input[["time_rows_selected"]]
+    updateCallback(
+      timeInputs[!timeInputs$ids == "timeAsCat", "ids"], 
+      reactiveData$time, 
+      row, 
+      "timeID",
+      "time")
+    removeModal()
+  }
+)
 
 
 
