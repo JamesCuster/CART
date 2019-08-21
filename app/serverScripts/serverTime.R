@@ -76,6 +76,74 @@ output$projects <- renderDataTable(
 
 
 
+# 2 Manipulate Time Data -----------------------------------------------
+
+# 2.1 Helper Objects And Functions ----------------------------------------
+
+# this data.frame stores information about what inputs are used for time
+timeInputs <- data.frame(
+  ids = c("timeID",
+          "timeProjectID",
+          "workBy",
+          "dateOfWork",
+          "dateOfEntry",
+          "workTime",
+          "workTimeCategory",
+          "workCategory",
+          "workDescription"),
+  labels = c("timeID",
+             "Select Project",
+             "BDSH Staff",
+             "Work Completed On",
+             "Work Logged On",
+             "Time Spent",
+             "Time Category",
+             "Work Category",
+             "Work Description"),
+  type = c("skip",
+           "selectizeInput",
+           "selectizeInput",
+           "dateInput",
+           "dateInput",
+           "textInput",
+           "selectizeInput",
+           "selectizeInput",
+           "textAreaInput"),
+  stringsAsFactors = FALSE
+)
+  
+
+
+# Add Time ----------------------------------------------------------------
+
+observeEvent(
+  input$addTime, {
+    fields <- 
+      modalInputs(
+        timeInputs$ids, 
+        timeInputs$labels, 
+        timeInputs$type,
+        choices = NULL
+      )
+    
+    showModal(
+      modalDialog(
+        title = "Add Time",
+        fields,
+        footer = 
+          div(
+            modalButton("Cancel"),
+            actionButton("insertTime", "Save")
+          )
+      )
+    )
+  }
+)
+
+
+
+
+
 
 
 
@@ -83,15 +151,15 @@ output$projects <- renderDataTable(
 # 
 # # Add time form inputs
 # addTimeInputs <- 
-#   c("timeID",
-#     "timeProjectID",
-#     "workBy",
-#     "dateOfWork",
-#     "dateOfEntry",
-#     "workTime",
-#     "workTimeCategory",
-#     "workCategory",
-#     "workDescription")
+  # c("timeID",
+  #   "timeProjectID",
+  #   "workBy",
+  #   "dateOfWork",
+  #   "dateOfEntry",
+  #   "workTime",
+  #   "workTimeCategory",
+  #   "workCategory",
+  #   "workDescription")
 # 
 # # addTimeFormData variables
 # addTimeFields <- 
