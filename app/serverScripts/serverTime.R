@@ -56,7 +56,7 @@ output$timeFilters <- renderUI({
 
 output$time <- renderDataTable(
   datatable(
- reactiveData$time,
+    filterViewTime()[, viewTimeDisplay],
     selection='single', 
     rownames=FALSE,
     escape = FALSE,
@@ -131,6 +131,67 @@ choicesTime <- reactive({
 
 
 
+# time toggle function
+# This function is used to write the conditionalPanel inputs required to be able
+# to toggle between entering work as a number or as a category. This is a unique
+# problem to the Time modal UI. Takes the output produced from modalInputs as
+# argument
+toggleTime <- function(fields) {
+  timeFields <- div(
+    # Controls when time as hours is displayed
+    conditionalPanel(
+      condition = "input.timeAsCat % 2 == 0",
+      fields[["workTime"]],
+      tags$footer("*Required", style="margin-top: -12px; font-size: 12px; padding-bottom: 8px;")
+    ),
+    
+    # Controls when time as category is displayed
+    conditionalPanel(
+      condition = "input.timeAsCat % 2 == 1",
+      fields[["workTimeCategory"]],
+      tags$footer("*Required", style="margin-top: -16px; font-size: 12px; padding-bottom: 8px;")
+    ),
+    
+    # Button to toggle between time as hours/category
+    fields[["timeAsCat"]],
+    style = "display: flex; align-items: flex-start;"
+  )
+  l1 <- list(timeFields = timeFields)
+  fields <- c(lapply(c("timeID",
+                       "timeProjectID",
+                       "workBy",
+                       "dateOfWork",
+                       "dateOfEntry"),
+                     function(x) {fields[[x]]}),
+              l1,
+              lapply(c("workCategory",
+                       "workDescription"),
+                     function(x) {fields[[x]]})
+  )
+  fields
+}
+
+# This controls what is displayed in the action button that toggles between work
+# numeric and category
+# 3.5 Time As Category/Hours buttons --------------------------------------
+observeEvent(
+  input$timeAsCat, {
+    if (input$timeAsCat %% 2 == 0) {
+      updateActionButton(
+        session,
+        inputId = "timeAsCat",
+        label = "Enter As Category"
+      )
+    } else {
+      updateActionButton(
+        session,
+        inputId = "timeAsCat",
+        label = "Enter As Hours"
+      )
+    }
+  })
+
+
 # Add Time ----------------------------------------------------------------
 
 observeEvent(
@@ -143,6 +204,9 @@ observeEvent(
         timeInputs$type,
         choices = choices
       )
+    fields <- toggleTime(fields)
+    
+    
     
     showModal(
       modalDialog(
@@ -173,10 +237,14 @@ observeEvent(
 
 observeEvent(
   input$editTime, {
+   # browser()
     choices <- choicesTime()
     row <- input[["time_rows_selected"]]
     if(!is.null(row)) {
       if (row > 0) {
+        # remove the timeAscat toggleButton from list so both can be displayed
+        # at the same time
+        timeInputs <- timeInputs[timeInputs$ids != "timeAsCat", ]
         fields <- 
           modalInputs(
             timeInputs$ids, 
@@ -185,7 +253,9 @@ observeEvent(
             reactiveData$time[row, ],
             choices = choices
           )
+        #fields <- toggleTime(fields)
         
+
         showModal(
           modalDialog(
             title = "Edit Time",
@@ -197,6 +267,20 @@ observeEvent(
               )
           )
         )
+        
+        # When a row is edited, need to make sure the correct time input is used
+        # (categry/hour). This will check which was used in the row to be edited,
+        # and will make sure the UI displays it
+        # if (!is.na(reactiveData$time[row, "workTime"])) {
+        #   if (!(input$timeAsCat %% 2 == 1 || is.null(input$timeAsCat))) {
+        #     click("timeAsCat")
+        #   }
+        # }
+        # else if (!is.na(reactiveData$time[row, "workTimeCategory"])) {
+        #   if (input$timeAsCat %% 2 == 1 || is.null(input$timeAsCat)) {
+        #     click("timeAsCat")
+        #   }
+        # }
       }
     }
   }
@@ -214,6 +298,101 @@ observeEvent(
     removeModal()
   }
 )
+
+
+
+
+
+
+
+# Fetch Merged Time Data --------------------------------------------------
+
+# 1.1 Database Query ------------------------------------------------------
+# This query request the database to get the time table and join with projects
+# and employees
+viewTimeQuery <- 
+  "select t.timeID,
+       t.timeProjectID,
+       p.projectName,
+       t.workBy,
+       e.employeeName,
+       e.employeeEmail,
+       t.dateOfWork,
+       t.dateOfEntry,
+       t.workTime,
+       t.workTimeCategory,
+       t.workCategory,
+       t.workDescription
+from time t
+left join projects p on t.timeProjectID = p.projectID
+left join employees e on t.workBy = e.bdshID"
+
+# 3.1 Fetch View Time Data --------------------------------------------
+# This observer fetches the data for the viewTables$time reactive using the
+# SQL query above whenever new time data is loaded from the database
+observeEvent(
+  reactiveData$time, {
+    viewTimeQuery <- dbSendQuery(BDSHProjects, viewTimeQuery)
+    reactiveData$viewTime <- dbFetch(viewTimeQuery)
+    dbClearResult(viewTimeQuery)
+  }
+)
+
+
+# 1.2 Vector of Variables to Display in Datatable ---------------------------
+viewTimeDisplay <- c("projectName",
+                     "employeeName",
+                     "employeeEmail",
+                     "dateOfWork",
+                     "dateOfEntry",
+                     "workTime",
+                     "workTimeCategory",
+                     "workCategory",
+                     "workDescription")
+
+
+
+
+# 2 Reactives -------------------------------------------------------------
+
+# filterViewTime Reactive -------------------------------------------------
+# Reactive to filter projects data based on viewTimeByProject,
+# viewTimeByEmployee, and viewTimeByDate
+filterViewTime <- 
+  reactive({
+    # browser()
+    if (!(is.null(input$viewTimeByProject) || 
+          is.null(input$viewTimeByEmployee) || 
+          is.null(input$viewTimeByDate))) {
+      
+      filtered <- reactiveData$viewTime %>% 
+        {if (input$viewTimeByProject != "All") {
+          filter(., timeProjectID == input$viewTimeByProject)
+        }
+          else {.}
+        } %>% 
+        {if (input$viewTimeByEmployee != "All") {
+          filter(., workBy == input$viewTimeByEmployee)
+        } 
+          else {.}
+        } %>% 
+        {if (!is.na(input$viewTimeByDate[1])) {
+          filter(., as.Date(dateOfWork) >= input$viewTimeByDate[1])
+        }
+          else {.}
+        } %>% 
+        {if (!is.na(input$viewTimeByDate[2])) {
+          filter(., as.Date(dateOfWork) <= input$viewTimeByDate[2])
+        }
+          else {.}
+        }
+      return(filtered)
+    }
+  })
+
+
+
+# 3 Observers -------------------------------------------------------------
 
 
 
