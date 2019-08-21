@@ -83,19 +83,20 @@ loadDatabase()
 
 # Function That Builds Inputs for Modals ----------------------------------
 modalInputs <- function(ids, labels, type, values, df, choices) {
+  # browser()
   fields <- list()
   for (i in seq_along(ids)) {
     if (type[i] == "skip") {
       fields[[ids[i]]] <- NULL
     }
     else if (type[i] == "textInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textInput(inputId = ids[i],
                                label = labels[i],
                                value = value)
     }
     else if (type[i] == "selectizeInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectizeInput(inputId = ids[i],
                                     label = labels[i],
                                     choices = c("", choices[[ids[[i]]]]),
@@ -103,20 +104,20 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
                                     )
     }
     else if (type[i] == "selectInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectInput(inputId = ids[i],
                                  label = labels[i],
                                  choices = NULL)
     }
     else if (type[i] == "textAreaInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textAreaInput(inputId = ids[i],
                                    label = labels[i],
                                    width = "300px",
                                    height = "102px")
     }
     else if (type[i] == "dateInput") {
-      value <- ifelse(missing(values) || is.na(values[i]), "", values[i])
+      value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- dateInput(inputId = ids[i],
                                label = labels[i])
     }
