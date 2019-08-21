@@ -294,7 +294,7 @@ shinyServer(
 # 3 Server Scripts ----------------------------------------------------------
     # serverAddTime
     source(
-      paste0(dirPath, "/app/serverScripts/serverAddTime.r"),
+      paste0(dirPath, "/app/serverScripts/serverTime.r"),
       local = TRUE
     )
     
