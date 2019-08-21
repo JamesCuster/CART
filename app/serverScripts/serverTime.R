@@ -16,17 +16,14 @@ observe({
 # NEED TO ADD THIS --------------------------------------------------------
 # Controls the project filter UI components
 output$timeFilters <- renderUI({
+  choices <- choicesTime()
   div(
     # By Project
     selectizeInput(
       inputId = "viewTimeByProject",
       label = "Project",
-      choices = "All",
-      selected = "All",
-      options = list(
-        placeholder = "All",
-        onInitialize = I("function() {this.setValue('All');}")
-      )
+      choices = choices[["viewTimeByProject"]],
+      selected = input$viewTimeByProject
     ),
     
     # By employee
@@ -34,12 +31,8 @@ output$timeFilters <- renderUI({
       selectizeInput(
         inputId = "viewTimeByEmployee",
         label = "BDSH Staff",
-        choices = "All",
-        selected = "All",
-        options = list(
-          placeholder = "All",
-          onInitialize = I("function() {this.setValue('All');}")
-        )
+        choices = choices[["viewTimeByEmployee"]],
+        selected = input$viewTimeByEmployee
       ),
       style = "margin-left: 20px;"
     ),
@@ -116,17 +109,39 @@ timeInputs <- data.frame(
 )
 
 
+# This reactive creates the object which stores the choices for the selection
+# inputs
+choicesTime <- reactive({
+  x <- list()
+  
+  # Time Inputs
+  x[["timeProjectID"]] <- valueLabel(reactiveData$projects, "projectID", "projectName")
+  x[["workBy"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
+  x[["workTimeCategory"]] <- c("Small", "Medium", "Large", "Extra Large")
+  x[["workCategory"]] <- list(
+    `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
+    Analysis = c("Data Management", "Analysis", "Report/Manuscript"),
+    `BDSH Other` = c("Professional Development", "Other"))
+  
+  # Time filter input choices
+  x[["viewTimeByProject"]] <- c("All", valueLabel(reactiveData$projects, "projectID", "projectName"))
+  x[["viewTimeByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
+  x
+})
+
+
 
 # Add Time ----------------------------------------------------------------
 
 observeEvent(
   input$addTime, {
+    choices <- choicesTime()
     fields <- 
       modalInputs(
         timeInputs$ids, 
         timeInputs$labels, 
         timeInputs$type,
-        choices = NULL
+        choices = choices
       )
     
     showModal(
