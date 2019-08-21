@@ -70,21 +70,6 @@ shinyServer(
     }
     
     
-    # function that create delete SQL query
-    deleteCallback <- function(df, row, idVar, tab) {
-      rowid <- df[row, idVar]
-      query <- paste0(
-        "delete from ",
-        tab, 
-        " where ",
-        idVar,
-        " = ",
-        rowid
-      )
-      dbExecute(BDSHProjects, query)
-    }
-    
-    
     # function that create update SQL query
     updateCallback <- function(ids, df, row, idVar, tab) {
       ids <- ids[!ids %in% idVar]
