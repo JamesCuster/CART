@@ -13,6 +13,72 @@ observe({
 
 
 
+# NEED TO ADD THIS --------------------------------------------------------
+# Controls the project filter UI components
+output$timeFilters <- renderUI({
+  div(
+    # By Project
+    selectizeInput(
+      inputId = "viewTimeByProject",
+      label = "Project",
+      choices = "All",
+      selected = "All",
+      options = list(
+        placeholder = "All",
+        onInitialize = I("function() {this.setValue('All');}")
+      )
+    ),
+    
+    # By employee
+    div(
+      selectizeInput(
+        inputId = "viewTimeByEmployee",
+        label = "BDSH Staff",
+        choices = "All",
+        selected = "All",
+        options = list(
+          placeholder = "All",
+          onInitialize = I("function() {this.setValue('All');}")
+        )
+      ),
+      style = "margin-left: 20px;"
+    ),
+    
+    # By date range
+    div(
+      dateRangeInput(
+        inputId = "viewTimeByDate",
+        label = "Date Range",
+        start = as.Date(NA),
+        end = as.Date(NA)
+      ),
+      style = "margin-left: 20px;"
+    ),
+    style = "display: flex; align-itme: flex-start"
+  )
+})
+
+
+
+
+output$projects <- renderDataTable(
+  datatable(
+ reactiveData$time,
+    selection='single', 
+    rownames=FALSE,
+    escape = FALSE,
+    options = list(
+      dom = '<"top"fl> t <"bottom"ip>'
+    )
+  ),
+  server=TRUE
+)
+
+
+
+
+
+
 # # 1 Helper Functions And Objects ------------------------------------------
 # 
 # # Add time form inputs
