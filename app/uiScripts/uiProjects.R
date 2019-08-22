@@ -1,6 +1,6 @@
 tabPanel(
   
-  "View Projects",
+  "Projects",
   
   tags$h1("Projects"),
   
@@ -15,11 +15,8 @@ tabPanel(
     "Edit"
   ),
   
-  
   # Filter Projects inputs
   uiOutput("projectFilters"),
-
-
 
   # Projects Data
   dataTableOutput("projects", width = 300)
