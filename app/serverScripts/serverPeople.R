@@ -72,8 +72,14 @@ observeEvent(
 
 
 # Edit Researcher ------------------------------------------------------------
+# this object is used to preserve the row selected. It is assinged once a row is
+# selected and the edit button is pressed. It is used in the renderDataTable
+# call
+researcherRowSelected <- NULL
+
 observeEvent(
   input$editResearcher, {
+    researcherRowSelected <<- input[["researchers_rows_selected"]]
     row <- input[["researchers_rows_selected"]]
     if(!is.null(row)) {
       if (row > 0) {
@@ -121,14 +127,26 @@ output$researchers <-
   renderDataTable(
     datatable(
       reactiveData$researchers,
-      selection='single', 
+      selection = list(
+        mode = 'single',
+        selected = researcherRowSelected
+      ), 
+      extensions = "Select",
       rownames=FALSE,
       options = list(
-        dom = '<"top"fl> t <"bottom"ip>'
+        dom = '<"top"fl> t <"bottom"ip>',
+        rowId = 'researcherID'#,
+        # select = list(
+        #   style = 'os',
+        #   items = 'row',
+        #   selected = 2
+        # )
       )
     ),
-    server=TRUE
+    server = TRUE
   )
+
+
 
 
 output$downloadResearchers <- downloadHandler(
@@ -217,8 +235,15 @@ observeEvent(
 
 
 # edit Employee -----------------------------------------------------------
+# this object is used to preserve the row selected. It is assinged once a row is
+# selected and the edit button is pressed. It is used in the renderDataTable
+# call
+employeeRowSelected <- NULL
+
+
 observeEvent(
   input$editEmployee, {
+    employeeRowSelected <<- input[["employees_rows_selected"]]
     row <- input[["employees_rows_selected"]]
     if(!is.null(row)) {
       if (row > 0) {
@@ -310,8 +335,10 @@ output$employees <-
   renderDataTable(
     datatable(
       reactiveData$employees,
-      selection='single', 
-      rownames=FALSE,
+      selection = list(
+        mode = 'single', 
+        selected = employeeRowSelected),
+      rownames = FALSE,
       options = list(
         dom = '<"top"fl> t <"bottom"ip>'
       )

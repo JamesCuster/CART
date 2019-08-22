@@ -54,8 +54,11 @@ output$projectFilters <- renderUI({
 output$projects <- renderDataTable(
   datatable(
     filterViewProjects()[, viewProjectsDisplay],
-    selection='single', 
-    rownames=FALSE,
+    selection = list(
+      mode = 'single',
+      selected = projectRowSelected
+    ), 
+    rownames = FALSE,
     escape = FALSE,
     options = list(
       dom = '<"top"fl> t <"bottom"ip>'
@@ -173,8 +176,14 @@ observeEvent(
 
 
 # 2.2.2 Edit Project ------------------------------------------------------
+# this object is used to preserve the row selected. It is assinged once a row is
+# selected and the edit button is pressed. It is used in the renderDataTable
+# call
+projectRowSelected <- NULL
+
 observeEvent(
   input$editProject, {
+    projectRowSelected <<- input[["projects_rows_selected"]]
     choices <- choicesProjects()
     row <- input[["projects_rows_selected"]]
     if(!is.null(row)) {
@@ -285,13 +294,13 @@ observeEvent(
 # This vector is a subset of variables in ReactiveData$viewProjects which are
 # viewable in the datatable output
 viewProjectsDisplay <- c("View Details",
+                         "projectID",
                          "projectName",
                          "bdshLeadName",
                          "bdshSecondaryName",
                          "projectPIName",
                          "projectStatus",
-                         "projectDueDate"
-)
+                         "projectDueDate")
 
 
 # 4.1.2 Add View Details Link ---------------------------------------------

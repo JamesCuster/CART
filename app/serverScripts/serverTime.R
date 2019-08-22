@@ -57,8 +57,10 @@ output$timeFilters <- renderUI({
 output$time <- renderDataTable(
   datatable(
     filterViewTime()[, viewTimeDisplay],
-    selection='single', 
-    rownames=FALSE,
+    selection = list (
+      mode = 'single',
+      selected = timeRowSelected),
+    rownames = FALSE,
     escape = FALSE,
     options = list(
       dom = '<"top"fl> t <"bottom"ip>'
@@ -234,10 +236,14 @@ observeEvent(
 
 
 # Edit Time ---------------------------------------------------------------
+# this object is used to preserve the row selected. It is assinged once a row is
+# selected and the edit button is pressed. It is used in the renderDataTable
+# call
+timeRowSelected <- NULL
 
 observeEvent(
   input$editTime, {
-   # browser()
+    timeRowSelected <<- input[["time_rows_selected"]]
     choices <- choicesTime()
     row <- input[["time_rows_selected"]]
     if(!is.null(row)) {
@@ -267,24 +273,11 @@ observeEvent(
               )
           )
         )
-        
-        # When a row is edited, need to make sure the correct time input is used
-        # (categry/hour). This will check which was used in the row to be edited,
-        # and will make sure the UI displays it
-        # if (!is.na(reactiveData$time[row, "workTime"])) {
-        #   if (!(input$timeAsCat %% 2 == 1 || is.null(input$timeAsCat))) {
-        #     click("timeAsCat")
-        #   }
-        # }
-        # else if (!is.na(reactiveData$time[row, "workTimeCategory"])) {
-        #   if (input$timeAsCat %% 2 == 1 || is.null(input$timeAsCat)) {
-        #     click("timeAsCat")
-        #   }
-        # }
       }
     }
   }
 )
+
 
 observeEvent(
   input$updateTime, {
@@ -298,10 +291,6 @@ observeEvent(
     removeModal()
   }
 )
-
-
-
-
 
 
 
@@ -327,6 +316,7 @@ from time t
 left join projects p on t.timeProjectID = p.projectID
 left join employees e on t.workBy = e.bdshID"
 
+
 # 3.1 Fetch View Time Data --------------------------------------------
 # This observer fetches the data for the viewTables$time reactive using the
 # SQL query above whenever new time data is loaded from the database
@@ -349,7 +339,6 @@ viewTimeDisplay <- c("projectName",
                      "workTimeCategory",
                      "workCategory",
                      "workDescription")
-
 
 
 
