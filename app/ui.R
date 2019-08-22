@@ -77,37 +77,22 @@ shinyUI(
 
     tabsetPanel(id = "tab",
       
-      # Add tab panels (add project/time, view (project/time) -------------------
+      # Add tab panels for projects, time, and people ---------------------
       
-      # # addProject
-      # source(
-      #   paste0(dirPath, "/app/uiScripts/uiAddProject.r"), 
-      #   local = TRUE)$value,
-      # 
-      # addTime
-      source(
-        paste0(dirPath, "/app/uiScripts/uiTime.r"),
-        local = TRUE)$value,
-
-      # viewProjects
+      # Projects
       source(
         paste0(dirPath, "/app/uiScripts/uiProjects.r"),
         local = TRUE)$value,
       
-      # addPeople
+      # Time
+      source(
+        paste0(dirPath, "/app/uiScripts/uiTime.r"),
+        local = TRUE)$value,
+      
+      # People
       source(
         paste0(dirPath, "/app/uiScripts/uiPeople.r"), 
-        local = TRUE)$value#,
-      
-      # # viewTime
-      # source(
-      #   paste0(dirPath, "/app/uiScripts/uiViewTime.r"), 
-      #   local = TRUE)$value,
-      # 
-      # # viewPeople
-      # source(
-      #   paste0(dirPath, "/app/uiScripts/uiViewPeople.r"), 
-      #   local = TRUE)$value
+        local = TRUE)$value
     )
   )
 )
