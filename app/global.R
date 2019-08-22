@@ -83,7 +83,6 @@ loadDatabase()
 
 # Function That Builds Inputs for Modals ----------------------------------
 modalInputs <- function(ids, labels, type, values, df, choices) {
-  # browser()
   fields <- list()
   for (i in seq_along(ids)) {
     if (type[i] == "skip") {
@@ -107,7 +106,7 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectInput(inputId = ids[i],
                                  label = labels[i],
-                                 choices = NULL)
+                                 choices = c("", choices[[ids[[i]]]]))
     }
     else if (type[i] == "textAreaInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
