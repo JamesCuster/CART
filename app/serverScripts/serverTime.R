@@ -12,8 +12,6 @@ observe({
 })
 
 
-
-# NEED TO ADD THIS --------------------------------------------------------
 # Controls the project filter UI components
 output$timeFilters <- renderUI({
   choices <- choicesTime()
@@ -50,8 +48,6 @@ output$timeFilters <- renderUI({
     style = "display: flex; align-itme: flex-start"
   )
 })
-
-
 
 
 output$time <- renderDataTable(
@@ -111,28 +107,6 @@ timeInputs <- data.frame(
 )
 
 
-# This reactive creates the object which stores the choices for the selection
-# inputs
-choicesTime <- reactive({
-  x <- list()
-  
-  # Time Inputs
-  x[["timeProjectID"]] <- valueLabel(reactiveData$projects, "projectID", "projectName")
-  x[["workBy"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
-  x[["workTimeCategory"]] <- c("Small", "Medium", "Large", "Extra Large")
-  x[["workCategory"]] <- list(
-    `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
-    Analysis = c("Data Management", "Analysis", "Report/Manuscript"),
-    `BDSH Other` = c("Professional Development", "Other"))
-  
-  # Time filter input choices
-  x[["viewTimeByProject"]] <- c("All", valueLabel(reactiveData$projects, "projectID", "projectName"))
-  x[["viewTimeByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
-  x
-})
-
-
-
 # time toggle function
 # This function is used to write the conditionalPanel inputs required to be able
 # to toggle between entering work as a number or as a category. This is a unique
@@ -173,9 +147,8 @@ toggleTime <- function(fields) {
   fields
 }
 
-# This controls what is displayed in the action button that toggles between work
-# numeric and category
-# 3.5 Time As Category/Hours buttons --------------------------------------
+# This controls the button that controls toggling between time as numeric or
+# category (it updates the text displayed in the button when clicked)
 observeEvent(
   input$timeAsCat, {
     if (input$timeAsCat %% 2 == 0) {
@@ -194,8 +167,31 @@ observeEvent(
   })
 
 
-# Add Time ----------------------------------------------------------------
+# This reactive creates the object which stores the choices for the selection
+# inputs
+choicesTime <- reactive({
+  x <- list()
+  
+  # Time Inputs
+  x[["timeProjectID"]] <- valueLabel(reactiveData$projects, "projectID", "projectName")
+  x[["workBy"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
+  x[["workTimeCategory"]] <- c("Small", "Medium", "Large", "Extra Large")
+  x[["workCategory"]] <- list(
+    `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
+    Analysis = c("Data Management", "Analysis", "Report/Manuscript"),
+    `BDSH Other` = c("Professional Development", "Other"))
+  
+  # Time filter input choices
+  x[["viewTimeByProject"]] <- c("All", valueLabel(reactiveData$projects, "projectID", "projectName"))
+  x[["viewTimeByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
+  x
+})
 
+
+
+# 2.2 Manipulate Time Data ------------------------------------------------
+
+# 2.2.1 Add Time ----------------------------------------------------------
 observeEvent(
   input$addTime, {
     choices <- choicesTime()
@@ -207,8 +203,6 @@ observeEvent(
         choices = choices
       )
     fields <- toggleTime(fields)
-    
-    
     
     showModal(
       modalDialog(
@@ -224,7 +218,6 @@ observeEvent(
   }
 )
 
-
 observeEvent(
   input$insertTime, {
     # browser()
@@ -234,8 +227,7 @@ observeEvent(
 )
 
 
-
-# Edit Time ---------------------------------------------------------------
+# 2.2.2 Edit Time ---------------------------------------------------------
 # this object is used to preserve the row selected. It is assinged once a row is
 # selected and the edit button is pressed. It is used in the renderDataTable
 # call
@@ -259,9 +251,7 @@ observeEvent(
             reactiveData$time[row, ],
             choices = choices
           )
-        #fields <- toggleTime(fields)
         
-
         showModal(
           modalDialog(
             title = "Edit Time",
@@ -278,7 +268,6 @@ observeEvent(
   }
 )
 
-
 observeEvent(
   input$updateTime, {
     row <- input[["time_rows_selected"]]
@@ -294,9 +283,9 @@ observeEvent(
 
 
 
-# Fetch Merged Time Data --------------------------------------------------
+# 3 Fetch Merged Time Data ------------------------------------------------
 
-# 1.1 Database Query ------------------------------------------------------
+# 3.1 Database Query ------------------------------------------------------
 # This query request the database to get the time table and join with projects
 # and employees
 viewTimeQuery <- 
@@ -317,8 +306,8 @@ left join projects p on t.timeProjectID = p.projectID
 left join employees e on t.workBy = e.bdshID"
 
 
-# 3.1 Fetch View Time Data --------------------------------------------
-# This observer fetches the data for the viewTables$time reactive using the
+# 3.2 Fetch View Time Data --------------------------------------------
+# This observer fetches the data for the reactiveData$viewTime reactive using the
 # SQL query above whenever new time data is loaded from the database
 observeEvent(
   reactiveData$time, {
@@ -329,7 +318,12 @@ observeEvent(
 )
 
 
-# 1.2 Vector of Variables to Display in Datatable ---------------------------
+
+# 4 View Time Data --------------------------------------------------------
+
+# 4.1 Helper Objects and Functions ----------------------------------------
+
+# 4.1.1 Vector of Variables to Display in Datatable -----------------------
 viewTimeDisplay <- c("projectName",
                      "employeeName",
                      "employeeEmail",
@@ -340,11 +334,7 @@ viewTimeDisplay <- c("projectName",
                      "workCategory",
                      "workDescription")
 
-
-
-# 2 Reactives -------------------------------------------------------------
-
-# filterViewTime Reactive -------------------------------------------------
+# 4.1.2 filterViewTime Reactive -------------------------------------------
 # Reactive to filter projects data based on viewTimeByProject,
 # viewTimeByEmployee, and viewTimeByDate
 filterViewTime <- 
@@ -378,236 +368,3 @@ filterViewTime <-
       return(filtered)
     }
   })
-
-
-
-# 3 Observers -------------------------------------------------------------
-
-
-
-
-
-# # 1 Helper Functions And Objects ------------------------------------------
-# 
-# # Add time form inputs
-# addTimeInputs <- 
-  # c("timeID",
-  #   "timeProjectID",
-  #   "workBy",
-  #   "dateOfWork",
-  #   "dateOfEntry",
-  #   "workTime",
-  #   "workTimeCategory",
-  #   "workCategory",
-  #   "workDescription")
-# 
-# # addTimeFormData variables
-# addTimeFields <- 
-#   c("Delete",
-#     "Edit",
-#     "timeID",
-#     "timeProjectID",
-#     "timeProjectName",
-#     "workBy",
-#     "workByName",
-#     "dateOfWork",
-#     "dateOfEntry",
-#     "workTime",
-#     "workTimeCategory",
-#     "workCategory",
-#     "workDescription")
-# 
-# addTimeRemoveForDatabase <- 
-#   c("Delete",
-#     "Edit",
-#     "timeProjectName", 
-#     "workByName")
-# 
-# 
-# # 2 Reactives ---------------------------------------------------------------
-# 
-# # 2.1 addTimeFormData reactive --------------------------------------------
-# # make reactive data.frame for addTimeFormData
-# reactiveFormData$timeFormData <- 
-#   setNames(data.frame(matrix(nrow = 0, ncol = 13)), addTimeFields)
-# 
-# 
-# # 2.2 cleanTimeFormData reactive ------------------------------------------
-# # Reactive that cleans form data to be converted to data.frame
-# cleanTimeFormData <-
-#   reactive({
-#     timeFormResponse <- sapply(addTimeFields, function(x) {
-#       if (x %in% c("dateOfWork", "dateOfEntry")) {
-#         as.character(input[[x]])
-#       }
-#       # takes the projectID and fetches projectName from projects data.frame
-#       else if (x %in% "timeProjectName") {
-#         if (input[[gsub("Name", "ID", x)]] == "") {
-#           NA
-#         }
-#         else {
-#           x <- gsub("Name", "ID", x)
-#           reactiveData$projects[reactiveData$projects$projectID == input[[x]], "projectName", drop = TRUE]
-#         }
-#       }
-#       else if (x %in% "workByName") {
-#         if (input[[gsub("Name", "", x)]] == "") {
-#           NA
-#         }
-#         else {
-#           x <- gsub("Name", "", x)
-#           reactiveData$employees[reactiveData$employees$bdshID == input[[x]], "employeeName", drop = TRUE]
-#         }
-#       }
-#       
-#       # projectID is handled by database. Delete/Edit are added when Add To
-#       # Queue is pressed
-#       else if (x %in% c("Delete", "Edit", "timeID")) {
-#         NA
-#       }
-#       else if (input[[x]] == "" || is.null(input[[x]])) {
-#         NA
-#       }
-#       else {
-#         input[[x]]
-#       }
-#     })
-#   })
-# 
-# 
-# 
-# # 3 Observers ---------------------------------------------------------------
-# 
-# # 3.1 Add To Queue button -------------------------------------------------
-# observeEvent(
-#   input$submitAddTime, {
-#     # Applies the cleanTimeFormData reactive and converts it to data.frame
-#     timeFormResponse <- as.data.frame(t(cleanTimeFormData()), stringsAsFactors = FALSE)
-#     
-#     # Adds timeFormResponses to the timeFormData reactive
-#     reactiveFormData$timeFormData <- rbind(reactiveFormData$timeFormData, timeFormResponse)
-#     
-#     # adds the Delete/Edit links to timeFormData
-#     reactiveFormData$timeFormData <- addDeleteEditLink(reactiveFormData$timeFormData, "timeFormData")
-#     
-#     # Resets the addTime form inputs to defaults
-#     sapply(
-#       addTimeInputs,
-#       function(x) {
-#         reset(x)
-#       }
-#     )
-#   })
-# 
-# 
-# # 3.2 Save To Database button ---------------------------------------------
-# observeEvent(
-#   input$timeToDatabase, {
-#     # remove variables that are not saved to database (Peoples Names,
-#     # delete/edit links, values/labels variables)
-#     timeFormData <-
-#       reactiveFormData$timeFormData[, !(names(reactiveFormData$timeFormData) %in% addTimeRemoveForDatabase)]
-#     
-#     # Write table to database
-#     dbWriteTable(BDSHProjects, "time", timeFormData, append = TRUE)
-#     
-#     # Clear reactive data.frame after added to database
-#     reactiveFormData$timeFormData <- reactiveFormData$timeFormData[c(), ]
-#   }
-# )
-# 
-# 
-# # 3.3 Table Link Delete Row -------------------------------------------------
-# # This controls what happens when the delete buttons on the time form
-# # datatable are pressed
-# observeEvent(
-#   input$timeFormDataDelete, {
-#     # identify row to be deleted
-#     rowID <- parseDeleteEvent(input$timeFormDataDelete)
-#     
-#     # delete row from data.frame
-#     reactiveFormData$timeFormData <- reactiveFormData$timeFormData[-rowID, ]
-#     
-#     # reset data.frame's row.names and recalculate the Delete/Edit links
-#     row.names(reactiveFormData$timeFormData) <- NULL
-#     reactiveFormData$timeFormData <- addDeleteEditLink(reactiveFormData$timeFormData, "timeFormData")
-#   }
-# )
-# 
-# 
-# # 3.4 Table Links Edit Row --------------------------------------------------
-# # # This controls what happens when the edit buttons on the time form
-# # datatable are pressed
-# observeEvent(
-#   input$timeFormDataEdit, {
-#     # identify row to be edited
-#     rowID <- parseDeleteEvent(input$timeFormDataEdit)
-#     
-#     # Grab row to be edited
-#     editTime <- reactiveFormData$timeFormData[rowID, ]
-#     
-#     # Remove the row to be edited from the data.frame/table
-#     reactiveFormData$timeFormData <- reactiveFormData$timeFormData[-rowID, ]
-#     
-#     # reset data.frame's row.names and recalculate the Delete/Edit links
-#     row.names(reactiveFormData$timeFormData) <- NULL
-#     reactiveFormData$timeFormData <- addDeleteEditLink(reactiveFormData$timeFormData, "timeFormData")
-#     
-#     # When a row is edited, need to make sure the correct time input is used
-#     # (categry/hour). This will check which was used in the row to be edited,
-#     # and will make sure the UI displays it
-#     if (!is.na(editTime$workTime)) {
-#       if (!(input$timeAsCat %% 2 == 0)) {
-#         click("timeAsCat")
-#       }
-#     }
-#     else if (!is.na(editTime$workTimeCat)) {
-#       if (input$timeAsCat %% 2 == 0) {
-#         click("timeAsCat")
-#       }
-#     }
-#     
-#     # Repopulate the form with the values of row to be edited
-#     sapply(
-#       addTimeInputs,
-#       function(x) {
-#         updateTextInput(
-#           session,
-#           inputId = x,
-#           value = editTime[, x]
-#         )
-#       }
-#     )
-#   }
-# )
-# 
-# 
-# # 3.5 Time As Category/Hours buttons --------------------------------------
-# observeEvent(
-#   input$timeAsCat, {
-#     if (input$timeAsCat %% 2 == 0) {
-#       updateActionButton(
-#         session,
-#         inputId = "timeAsCat",
-#         label = "Enter As Category"
-#       )
-#     } else {
-#       updateActionButton(
-#         session,
-#         inputId = "timeAsCat",
-#         label = "Enter As Hours"
-#       )
-#     }
-# })
-# 
-# 
-# 
-# # 4 Output ------------------------------------------------------------------
-# 
-# # 4.1 Time Form Datatable ---------------------------------------------------
-# output$timeFormData <- 
-#   renderDataTable(
-#     datatable(
-#       reactiveFormData$timeFormData[-3], 
-#       escape = FALSE)
-#   )
