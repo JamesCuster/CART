@@ -1,17 +1,94 @@
+# 1 UI Components ---------------------------------------------------------
 
 # controls the edit button being grayed out
 observe({
+  # researchers
   if (is.null(input[["researchers_rows_selected"]]) || input[["researchers_rows_selected"]] == "") {
     disable("editResearcher")
   }
   else {
     enable("editResearcher")
   }
+  
+  # Employees
+  if (is.null(input[["employees_rows_selected"]]) || input[["employees_rows_selected"]] == "") {
+    disable("editEmployee")
+  }
+  else {
+    enable("editEmployee")
+  }
 })
 
 
-# Create Input data.frame
-# this data.frame stores information about what inputs are used for researchers 
+# 1.1 Researchers Datatable -----------------------------------------------
+output$researchers <- 
+  renderDataTable(
+    datatable(
+      reactiveData$researchers,
+      selection = list(
+        mode = 'single',
+        selected = researcherRowSelected
+      ), 
+      extensions = "Select",
+      rownames=FALSE,
+      options = list(
+        dom = '<"top"fl> t <"bottom"ip>',
+        rowId = 'researcherID'
+      )
+    ),
+    server = TRUE
+  )
+
+
+# 1.2 Researchers download ------------------------------------------------
+output$downloadResearchers <- downloadHandler(
+  filename = function() {
+    paste("researchers_", Sys.Date(), ".csv", sep = "")
+  },
+  content = function(file) {
+    write.csv(reactiveData$researchers, 
+              file, 
+              row.names = FALSE)
+  }
+)
+
+
+# 1.3 employees Datatable -------------------------------------------------
+output$employees <- 
+  renderDataTable(
+    datatable(
+      reactiveData$employees,
+      selection = list(
+        mode = 'single', 
+        selected = employeeRowSelected),
+      rownames = FALSE,
+      options = list(
+        dom = '<"top"fl> t <"bottom"ip>'
+      )
+    ),
+    server=TRUE
+  )
+
+
+# 1.4 Employees download --------------------------------------------------
+output$downloadEmployees <- downloadHandler(
+  filename = function() {
+    paste("employees_", Sys.Date(), ".csv", sep = "")
+  },
+  content = function(file) {
+    write.csv(reactiveData$employees,
+              file,
+              row.names = FALSE)
+  }
+)
+
+
+
+# 2 Manipulate Researcher/Employee Data -----------------------------------
+
+# 2.1 Helper Objects And Functions ----------------------------------------
+
+# this data.frame stores information about what inputs are used for researchers
 researcherInputs <- 
   data.frame(
     ids = c("researcherID",
@@ -36,8 +113,33 @@ researcherInputs <-
   )
 
 
+# this data.frame stores information about what inputs are used for employees
+employeeInputs <- 
+  data.frame(
+    ids = c("bdshID",
+            "employeeUteid",
+            "employeeName",
+            "employeeEmail",
+            "degree",
+            "role"),
+    labels = c("bdshIDID",
+               "Employees's UT EID",
+               "Employees's Name",
+               "Emplyees Email",
+               "Degree",
+               "Role"),
+    type = c("skip",
+             "textInput",
+             "textInput",
+             "textInput",
+             "textInput",
+             "textInput"),
+    stringsAsFactors = FALSE
+  )
 
-# Add Researcher -----------------------------------------------------
+
+
+# 2.2 Add Researcher ------------------------------------------------------
 observeEvent(
   input$addResearcher, {
     fields <- 
@@ -61,7 +163,6 @@ observeEvent(
   }
 )
 
-
 observeEvent(
   input$insertResearcher, {
     insertCallback(researcherInputs$ids, "researchers")
@@ -71,7 +172,7 @@ observeEvent(
 
 
 
-# Edit Researcher ------------------------------------------------------------
+# 2.3 Edit Researcher -----------------------------------------------------
 # this object is used to preserve the row selected. It is assinged once a row is
 # selected and the edit button is pressed. It is used in the renderDataTable
 # call
@@ -107,7 +208,6 @@ observeEvent(
   }
 )
 
-
 observeEvent(
   input$updateResearcher, {
     row <- input[["researchers_rows_selected"]]
@@ -123,84 +223,7 @@ observeEvent(
 
 
 
-output$researchers <- 
-  renderDataTable(
-    datatable(
-      reactiveData$researchers,
-      selection = list(
-        mode = 'single',
-        selected = researcherRowSelected
-      ), 
-      extensions = "Select",
-      rownames=FALSE,
-      options = list(
-        dom = '<"top"fl> t <"bottom"ip>',
-        rowId = 'researcherID'#,
-        # select = list(
-        #   style = 'os',
-        #   items = 'row',
-        #   selected = 2
-        # )
-      )
-    ),
-    server = TRUE
-  )
-
-
-
-
-output$downloadResearchers <- downloadHandler(
-  filename = function() {
-    paste("researchers_", Sys.Date(), ".csv", sep = "")
-  },
-  content = function(file) {
-    write.csv(reactiveData$researchers, 
-              file, 
-              row.names = FALSE)
-  }
-)
-
-
-
-# Employees ---------------------------------------------------------------
-
-# controls the edit/delete buttons being grayed out
-observe({
-  if (is.null(input[["employees_rows_selected"]]) || input[["employees_rows_selected"]] == "") {
-    disable("editEmployee")
-    disable("removeEmployee")
-  }
-  else {
-    enable("editEmployee")
-    enable("removeEmployee")
-  }
-})
-
-employeeInputs <- 
-  data.frame(
-    ids = c("bdshID",
-            "employeeUteid",
-            "employeeName",
-            "employeeEmail",
-            "degree",
-            "role"),
-    labels = c("bdshIDID",
-               "Employees's UT EID",
-               "Employees's Name",
-               "Emplyees Email",
-               "Degree",
-               "Role"),
-    type = c("skip",
-             "textInput",
-             "textInput",
-             "textInput",
-             "textInput",
-             "textInput"),
-    stringsAsFactors = FALSE
-  )
-
-
-# Add Employee -----------------------------------------------------
+# 2.4 Add Employee --------------------------------------------------------
 observeEvent(
   input$addEmployee, {
     fields <- 
@@ -224,7 +247,6 @@ observeEvent(
   }
 )
 
-
 observeEvent(
   input$insertEmployee, {
     insertCallback(employeeInputs$ids, "employees")
@@ -234,12 +256,11 @@ observeEvent(
 
 
 
-# edit Employee -----------------------------------------------------------
+# 2.5 Edit Employee -------------------------------------------------------
 # this object is used to preserve the row selected. It is assinged once a row is
 # selected and the edit button is pressed. It is used in the renderDataTable
 # call
 employeeRowSelected <- NULL
-
 
 observeEvent(
   input$editEmployee, {
@@ -271,7 +292,6 @@ observeEvent(
   }
 )
 
-
 observeEvent(
   input$updateEmployee, {
     row <- input[["employees_rows_selected"]]
@@ -282,78 +302,5 @@ observeEvent(
       "bdshID",
       "employees")
     removeModal()
-  }
-)
-
-
-
-# Delete Employee -------------------------------------------------------
-observeEvent(
-  input$removeEmployee, {
-    row <- input[["employees_rows_selected"]]
-    if (!is.null(row) && row > 0) {
-      rowid <- reactiveData$employees[input[["employees_rows_selected"]], "bdshID"]
-      fields <- list()
-      for (i in employeeInputs$ids) {
-        fields[[i]] <- div(paste0(i, " = ", reactiveData$employees[rowid, i]))
-      }
-      
-      showModal(
-        modalDialog(
-          title = "Delete Employee",
-          tags$p("Are you sure you want to delete this record?"),
-          fields,
-          footer = 
-            div(
-              modalButton("Cancel"),
-              actionButton("deleteEmployee", "Delete")
-            )
-        )
-      )
-    }
-  }
-)
-
-
-observeEvent(
-  input$deleteEmployee, {
-    row <- input[["employees_rows_selected"]]
-    deleteCallback(
-      reactiveData$employees,
-      row,
-      "bdshID",
-      "employees")
-    removeModal()
-  }
-)
-
-
-
-# output ------------------------------------------------------------------
-
-output$employees <- 
-  renderDataTable(
-    datatable(
-      reactiveData$employees,
-      selection = list(
-        mode = 'single', 
-        selected = employeeRowSelected),
-      rownames = FALSE,
-      options = list(
-        dom = '<"top"fl> t <"bottom"ip>'
-      )
-    ),
-    server=TRUE
-  )
-
-
-output$downloadEmployees <- downloadHandler(
-  filename = function() {
-    paste("employees_", Sys.Date(), ".csv", sep = "")
-  },
-  content = function(file) {
-    write.csv(reactiveData$employees,
-              file,
-              row.names = FALSE)
   }
 )
