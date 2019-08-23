@@ -12,7 +12,8 @@ observe({
 })
 
 
-# Controls the project filter UI components
+
+# 1.1 Project Filters -----------------------------------------------------
 output$projectFilters <- renderUI({
   choices <- choicesProjects()
   div(
@@ -51,6 +52,7 @@ output$projectFilters <- renderUI({
 })
 
 
+# 1.2 Projects Datatable --------------------------------------------------
 output$projects <- renderDataTable(
   datatable(
     filterViewProjects()[, viewProjectsDisplay],
@@ -442,7 +444,7 @@ observeEvent(
 )
 
 
-# 4.2.2 filterViewProjects Reactive -----------------------------------------------
+# 4.2.2 Filter Projects Reactive ------------------------------------------
 # Reactive to filter projects data based on viewProjectsByStatus,
 # viewProjectsByEmployee, and viewProjectsByResearcher
 filterViewProjects <-
@@ -481,3 +483,58 @@ filterViewProjects <-
       return(filtered)
     }
   })
+
+
+
+# 5 Download Projects -----------------------------------------------------
+
+
+# 5.1 Download Projects Modal ---------------------------------------------
+observeEvent(
+  input$downloadProjectData, {
+    showModal(
+      modalDialog(
+        title = "Download Project",
+        
+        radioButtons(
+          "projectsDownloadSelection",
+          "Select The Project Data You Want",
+          c("Complete Data", "Filtered Data"),
+          selected = "Complete Data"
+        ),
+        
+        footer = 
+          div(
+            modalButton("Cancel"),
+            downloadButton("downloadProjects", "Download Projects")
+          )
+      )
+    )
+  }
+)
+
+
+# 5.2 Collect Projects Download Data --------------------------------------
+getDownloadProjectData <- reactive({
+    if (input$projectsDownloadSelection == "Filtered Data") {
+      df <- filterViewProjects()
+    }
+    else {
+      df <- reactiveData$viewProjects
+    }
+    df
+  }
+)
+
+
+# 5.3 Projects Download Handler -------------------------------------------
+output$downloadProjects <- downloadHandler(
+  filename = function() {
+    paste("projects_", Sys.Date(), ".csv", sep = "")
+  },
+  content = function(file) {
+    write.csv(getDownloadProjectData(),
+              file,
+              row.names = FALSE)
+  }
+)
