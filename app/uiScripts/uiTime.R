@@ -1,5 +1,5 @@
 tabPanel(
-  "Add Time",
+  "Time",
   
   tags$h1("Time"),
   
@@ -20,5 +20,10 @@ tabPanel(
   tags$br(),
   tags$br(),
   
-  dataTableOutput("time", width = 300)
+  dataTableOutput("time", width = 300),
+  
+  actionButton(
+    "downloadTimeData",
+    "Download Time"
+  )
 )

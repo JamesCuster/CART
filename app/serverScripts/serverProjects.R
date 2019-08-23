@@ -488,13 +488,12 @@ filterViewProjects <-
 
 # 5 Download Projects -----------------------------------------------------
 
-
 # 5.1 Download Projects Modal ---------------------------------------------
 observeEvent(
   input$downloadProjectData, {
     showModal(
       modalDialog(
-        title = "Download Project",
+        title = "Download Project Data",
         
         radioButtons(
           "projectsDownloadSelection",

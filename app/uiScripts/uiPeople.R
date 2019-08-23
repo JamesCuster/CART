@@ -1,5 +1,5 @@
 tabPanel(
-  "Add People",
+  "People",
   
   # Add Researcher ----------------------------------------------------------
   

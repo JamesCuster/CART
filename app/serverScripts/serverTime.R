@@ -323,7 +323,7 @@ observeEvent(
 
 # 4.1 Helper Objects and Functions ----------------------------------------
 
-# 4.1.1 Vector of Variables to Display in Datatable -----------------------
+# 4.1.1 Datatable Display Variables ---------------------------------------
 viewTimeDisplay <- c("projectName",
                      "employeeName",
                      "employeeEmail",
@@ -334,7 +334,7 @@ viewTimeDisplay <- c("projectName",
                      "workCategory",
                      "workDescription")
 
-# 4.1.2 filterViewTime Reactive -------------------------------------------
+# 4.1.2 Filter Time Reactive ----------------------------------------------
 # Reactive to filter projects data based on viewTimeByProject,
 # viewTimeByEmployee, and viewTimeByDate
 filterViewTime <- 
@@ -368,3 +368,55 @@ filterViewTime <-
       return(filtered)
     }
   })
+
+
+# 5 Download Time ---------------------------------------------------------
+
+# 5.1 Download Time Modal -------------------------------------------------
+observeEvent(
+  input$downloadTimeData, {
+    showModal(
+      modalDialog(
+        title = "Download Time Data",
+        
+        radioButtons(
+          "timeDownloadSelection",
+          "Select The Time Data You Want",
+          c("Complete Data", "Filtered Data"),
+          selected = "Complete Data"
+        ),
+        
+        footer = 
+          div(
+            modalButton("Cancel"),
+            downloadButton("downloadTime", "Download Time")
+          )
+      )
+    )
+  }
+)
+
+
+# 5.2 Collect Projects Download Data --------------------------------------
+getDownloadTimeData <- reactive({
+  if (input$timeDownloadSelection == "Filtered Data") {
+    df <- filterViewTime()
+  }
+  else {
+    df <- reactiveData$viewTime
+  }
+  df
+})
+
+
+# 5.3 Projects Download Handler -------------------------------------------
+output$downloadTime <- downloadHandler(
+  filename = function() {
+    paste("time_", Sys.Date(), ".csv", sep = "")
+  },
+  content = function(file) {
+    write.csv(getDownloadTimeData(),
+              file,
+              row.names = FALSE)
+  }
+)
