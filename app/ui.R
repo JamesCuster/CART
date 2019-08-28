@@ -25,6 +25,30 @@ shinyUI(
     ")),
     
     
+    # CSS used to control search and "show X entries" in datatables
+    tags$style(HTML(
+      ".top {
+        display: flex;
+        justify-content: space-between;
+        width: 800px;
+      }
+      
+      .dataTables_wrapper
+      .dataTables_filter {
+        float: none;
+      }
+      
+      .dataTables_wrapper
+      .dataTables_length {
+        float: none;
+      }
+      
+      .bottom{
+        width: 500px;
+      }"
+    )),
+
+    
     # Title
     div(
       tags$h1("C", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
@@ -53,36 +77,21 @@ shinyUI(
 
     tabsetPanel(id = "tab",
       
-      # Add tab panels (add project/time, view (project/time) -------------------
+      # Add tab panels for projects, time, and people ---------------------
       
-      # addProject
+      # Projects
       source(
-        paste0(dirPath, "/app/uiScripts/uiAddProject.r"), 
+        paste0(dirPath, "/app/uiScripts/uiProjects.r"),
         local = TRUE)$value,
       
-      # addTime
+      # Time
       source(
-        paste0(dirPath, "/app/uiScripts/uiAddTime.r"), 
+        paste0(dirPath, "/app/uiScripts/uiTime.r"),
         local = TRUE)$value,
       
-      # addPeople
+      # People
       source(
-        paste0(dirPath, "/app/uiScripts/uiAddPeople.r"), 
-        local = TRUE)$value,
-      
-      # viewProjects
-      source(
-        paste0(dirPath, "/app/uiScripts/uiViewProjects.r"), 
-        local = TRUE)$value,
-      
-      # viewTime
-      source(
-        paste0(dirPath, "/app/uiScripts/uiViewTime.r"), 
-        local = TRUE)$value,
-      
-      # viewPeople
-      source(
-        paste0(dirPath, "/app/uiScripts/uiViewPeople.r"), 
+        paste0(dirPath, "/app/uiScripts/uiPeople.r"), 
         local = TRUE)$value
     )
   )
