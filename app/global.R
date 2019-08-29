@@ -64,39 +64,39 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
     else if (type[i] == "textInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textInput(inputId = ids[i],
-                               label = labels[i],
-                               value = value)
+                                    label = labels[i],
+                                    value = value)
     }
     else if (type[i] == "selectizeInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectizeInput(inputId = ids[i],
-                                    label = labels[i],
-                                    choices = c("", choices[[ids[[i]]]]),
-                                    selected = value
-                                    )
+                                         label = labels[i],
+                                         choices = c("", choices[[ids[[i]]]]),
+                                         selected = value)
     }
     else if (type[i] == "selectInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectInput(inputId = ids[i],
-                                 label = labels[i],
-                                 choices = c("", choices[[ids[[i]]]]))
+                                      label = labels[i],
+                                      choices = c("", choices[[ids[[i]]]]))
     }
     else if (type[i] == "textAreaInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textAreaInput(inputId = ids[i],
-                                   label = labels[i],
-                                   width = "300px",
-                                   height = "102px")
+                                        label = labels[i],
+                                        width = "300px",
+                                        height = "102px")
     }
     else if (type[i] == "dateInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- dateInput(inputId = ids[i],
-                               label = labels[i])
+                                    label = labels[i],
+                                    value = value)
     }
     else if (type[i] == "actionButton") {
       fields[[ids[i]]] <- actionButton(inputId = ids[i],
-                                  label = labels[i],
-                                  style = "margin-left: 20px; margin-top: 24px; height: 34px;")
+                                       label = labels[i],
+                                       style = "margin-left: 20px; margin-top: 24px; height: 34px;")
     }
   }
   fields
