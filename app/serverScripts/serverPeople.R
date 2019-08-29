@@ -33,7 +33,8 @@ output$researchers <-
       rownames=FALSE,
       options = list(
         dom = '<"top"fl> t <"bottom"ip>',
-        rowId = 'researcherID'
+        rowId = 'researcherID',
+        order = list(0, 'desc')
       )
     ),
     server = TRUE

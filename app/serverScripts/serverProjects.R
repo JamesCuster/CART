@@ -63,7 +63,8 @@ output$projects <- renderDataTable(
     rownames = FALSE,
     escape = FALSE,
     options = list(
-      dom = '<"top"fl> t <"bottom"ip>'
+      dom = '<"top"fl> t <"bottom"ip>',
+      order = list(1, 'desc')
     )
   ),
   server=TRUE
