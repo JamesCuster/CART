@@ -19,7 +19,7 @@ tabPanel(
   tags$br(),
   tags$br(),
   
-  dataTableOutput("researchers", width = 300),
+  dataTableOutput("researchers"),
   
   downloadButton("downloadResearchers", "Download Researchers"),
   

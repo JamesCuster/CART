@@ -28,9 +28,8 @@ output$researchers <-
       selection = list(
         mode = 'single',
         selected = researcherRowSelected
-      ), 
-      extensions = "Select",
-      rownames=FALSE,
+      ),
+      rownames = FALSE,
       options = list(
         dom = '<"top"fl> t <"bottom"ip>',
         rowId = 'researcherID',

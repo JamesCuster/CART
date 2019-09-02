@@ -20,7 +20,7 @@ tabPanel(
   tags$br(),
   tags$br(),
   
-  dataTableOutput("time", width = 300),
+  dataTableOutput("time"),
   
   actionButton(
     "downloadTimeData",

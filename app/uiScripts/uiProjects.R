@@ -19,7 +19,7 @@ tabPanel(
   uiOutput("projectFilters"),
 
   # Projects Data
-  dataTableOutput("projects", width = 300),
+  dataTableOutput("projects"),
   
   actionButton(
     "downloadProjectData",
