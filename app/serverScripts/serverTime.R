@@ -59,7 +59,8 @@ output$time <- renderDataTable(
     rownames = FALSE,
     escape = FALSE,
     options = list(
-      dom = '<"top"fl> t <"bottom"ip>'
+      dom = '<"top"fl> t <"bottom"ip>',
+      order = list(0, 'desc')
     )
   ),
   server=TRUE
@@ -324,7 +325,8 @@ observeEvent(
 # 4.1 Helper Objects and Functions ----------------------------------------
 
 # 4.1.1 Datatable Display Variables ---------------------------------------
-viewTimeDisplay <- c("projectName",
+viewTimeDisplay <- c("timeID",
+                     "projectName",
                      "employeeName",
                      "employeeEmail",
                      "dateOfWork",
