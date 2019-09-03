@@ -84,7 +84,10 @@ shinyServer(
         lapply(
           ids, 
           function(x) {
-            if (class(input[[x]]) == "Date" || input[[x]] == "") {
+            if (class(input[[x]]) == "Date") {
+              paste0(x, " = ", "'", as.character(input[[x]]), "'")
+            }
+            else if (input[[x]] == "") {
               paste0(x, " = ", "null")
             }
             else {
