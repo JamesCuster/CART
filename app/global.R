@@ -84,6 +84,7 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textAreaInput(inputId = ids[i],
                                         label = labels[i],
+                                        value = value,
                                         width = "300px",
                                         height = "102px")
     }
