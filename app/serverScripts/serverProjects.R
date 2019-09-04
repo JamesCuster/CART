@@ -160,7 +160,18 @@ observeEvent(
     showModal(
       modalDialog(
         title = "Add Project",
+        # *************************************************************************************************
+        radioButtons(
+          inputId =  "fiscalYear19", 
+          label = "Was The Project Initiated in FY 2019?", 
+          choices = c("Yes", "No"),
+          selected = "No",
+          inline = TRUE
+        ),
+        tags$hr(),
+        # *************************************************************************************************
         fields,
+        
         footer = 
           div(
             modalButton("Cancel"),
@@ -169,6 +180,22 @@ observeEvent(
       )
     )
   })
+
+
+# *************************************************************************************************
+observeEvent(input$fiscalYear19, {
+  if (input$fiscalYear19 == "Yes") {
+    session$sendCustomMessage(
+      "projectID", 
+      max(
+        reactiveData$projects[reactiveData$projects$projectID < 20000, "projectID"]
+      ) + 1)
+  }
+  else {
+    return()
+  }
+})
+# *************************************************************************************************
 
 observeEvent(
   input$insertProject, {
