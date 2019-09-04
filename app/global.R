@@ -53,6 +53,19 @@ loadDatabase <- function(tables = c("projects", "employees", "time", "researcher
 loadDatabase()
 
 
+# Manage Project IDs Based On Fiscal Year ---------------------------------
+projectIDFiscalYear <- function() {
+  if (format(Sys.Date(),"%m") %in% c("09", "10", "11", "12")) {
+    idStart <- (as.numeric(format(Sys.Date(),"%y")) + 1) * 1000
+  } else {
+    idStart <- as.numeric(format(Sys.Date(),"%y")) * 1000
+  }
+  idStartQuery <- paste0("UPDATE SQLITE_SEQUENCE SET seq = ", idStart," WHERE name = 'projects';")
+  dbExecute(BDSHProjects, idStartQuery)
+}
+projectIDFiscalYear()
+
+
 
 # Function That Builds Inputs for Modals ----------------------------------
 modalInputs <- function(ids, labels, type, values, df, choices) {
