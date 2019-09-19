@@ -43,32 +43,29 @@ shinyServer(
     
     # creates insert SQL query
     insertCallback <- function(ids, tab) {
-      insert <- paste0(
-        "insert into ",
-        tab,
-        " (",
-        paste0(ids, collapse = ", "),
-        ") values ("
-      )
-      fields <- paste(
-        lapply(
-          ids, 
-          function(x) {
-            if (class(input[[x]]) == "Date") {
-              paste0("'", as.character(input[[x]]), "'")
-            }
-            else if (is.null(input[[x]]) || is.na(input[[x]]) ||input[[x]] == "") {
-              "null"
-            }
-            else {
-              paste0("'", input[[x]], "'")
-            }
-          }
-        ),
-        collapse = ", "
-      )
-      query <- paste0(insert, fields, ")")
-      dbExecute(BDSHProjects, query)
+      # Creates data.frame of field values for new entry
+      new <- lapply(ids,
+                    function(x) {
+                      if (class(input[[x]]) == "Date") {
+                        if (length(input[[x]]) == 0) {
+                          NA
+                        }
+                        else {
+                          as.character(input[[x]])
+                        }
+                      }
+                      else if (is.null(input[[x]]) || length(input[[x]]) == 0 || input[[x]] == "") {
+                        NA
+                      }
+                      else {
+                        input[[x]]
+                      }
+                    }) %>% 
+        setNames(ids) %>% 
+        as.data.frame()
+      
+      # inserts new entry into database
+      dbWriteTable(BDSHProjects, tab, new, append = TRUE)
     }
     
     
