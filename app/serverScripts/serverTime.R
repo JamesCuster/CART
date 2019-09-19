@@ -236,9 +236,11 @@ timeRowSelected <- NULL
 
 observeEvent(
   input$editTime, {
+    # browser()
     timeRowSelected <<- input[["time_rows_selected"]]
     choices <- choicesTime()
     row <- input[["time_rows_selected"]]
+    rowID <- filterViewTime()[row, "timeID"]
     if(!is.null(row)) {
       if (row > 0) {
         # remove the timeAscat toggleButton from list so both can be displayed
@@ -249,7 +251,7 @@ observeEvent(
             timeInputs$ids, 
             timeInputs$labels, 
             timeInputs$type,
-            reactiveData$time[row, ],
+            reactiveData$time[reactiveData$time$timeID == rowID, ],
             choices = choices
           )
         
@@ -272,10 +274,10 @@ observeEvent(
 observeEvent(
   input$updateTime, {
     row <- input[["time_rows_selected"]]
+    rowID <- filterViewTime()[row, "timeID"]
     updateCallback(
-      timeInputs[!timeInputs$ids == "timeAsCat", "ids"], 
-      reactiveData$time, 
-      row, 
+      timeInputs[!timeInputs$ids == "timeAsCat", "ids"],
+      rowID, 
       "timeID",
       "time")
     removeModal()

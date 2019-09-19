@@ -182,6 +182,7 @@ observeEvent(
   input$editResearcher, {
     researcherRowSelected <<- input[["researchers_rows_selected"]]
     row <- input[["researchers_rows_selected"]]
+    rowID <- reactiveData$researchers[row, "researcherID"]
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
@@ -189,7 +190,7 @@ observeEvent(
             researcherInputs$ids, 
             researcherInputs$labels, 
             researcherInputs$type,
-            reactiveData$researchers[row, ]
+            reactiveData$researchers[reactiveData$researchers$researcherID == rowID, ]
           )
         
         showModal(
@@ -211,10 +212,10 @@ observeEvent(
 observeEvent(
   input$updateResearcher, {
     row <- input[["researchers_rows_selected"]]
+    rowID <- reactiveData$researchers[row, "researcherID"]
     updateCallback(
-      researcherInputs$ids, 
-      reactiveData$researchers, 
-      row, 
+      researcherInputs$ids,
+      rowID, 
       "researcherID",
       "researchers")
     removeModal()
@@ -266,6 +267,7 @@ observeEvent(
   input$editEmployee, {
     employeeRowSelected <<- input[["employees_rows_selected"]]
     row <- input[["employees_rows_selected"]]
+    rowID <- reactiveData$employees[row, "bdshID"]
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
@@ -273,7 +275,7 @@ observeEvent(
             employeeInputs$ids, 
             employeeInputs$labels, 
             employeeInputs$type,
-            reactiveData$employees[row, ]
+            reactiveData$employees[reactiveData$employees$bdshID == rowID, ]
           )
         
         showModal(
@@ -295,10 +297,10 @@ observeEvent(
 observeEvent(
   input$updateEmployee, {
     row <- input[["employees_rows_selected"]]
+    rowID <- reactiveData$employees[row, "bdshID"]
     updateCallback(
-      employeeInputs$ids, 
-      reactiveData$employees, 
-      row, 
+      employeeInputs$ids,
+      rowID, 
       "bdshID",
       "employees")
     removeModal()

@@ -216,6 +216,7 @@ observeEvent(
     projectRowSelected <<- input[["projects_rows_selected"]]
     choices <- choicesProjects()
     row <- input[["projects_rows_selected"]]
+    rowID <- filterViewProjects()[row, "projectID"]
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
@@ -223,7 +224,7 @@ observeEvent(
             projectInputs$ids, 
             projectInputs$labels, 
             projectInputs$type,
-            reactiveData$projects[row, ],
+            reactiveData$projects[reactiveData$projects$projectID == rowID, ],
             choices = choices
           )
         
@@ -246,10 +247,10 @@ observeEvent(
 observeEvent(
   input$updateProject, {
     row <- input[["projects_rows_selected"]]
+    rowID <- filterViewProjects()[row, "projectID"]
     updateCallback(
-      projectInputs$ids, 
-      reactiveData$projects, 
-      row, 
+      projectInputs$ids,
+      rowID, 
       "projectID",
       "projects")
     removeModal()
