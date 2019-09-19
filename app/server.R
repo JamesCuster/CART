@@ -43,63 +43,75 @@ shinyServer(
     
     # creates insert SQL query
     insertCallback <- function(ids, tab) {
-      insert <- paste0(
-        "insert into ",
-        tab,
-        " (",
-        paste0(ids, collapse = ", "),
-        ") values ("
-      )
-      fields <- paste(
-        lapply(
-          ids, 
-          function(x) {
-            if (class(input[[x]]) == "Date") {
-              paste0("'", as.character(input[[x]]), "'")
-            }
-            else if (is.null(input[[x]]) || is.na(input[[x]]) ||input[[x]] == "") {
-              "null"
-            }
-            else {
-              paste0("'", input[[x]], "'")
-            }
-          }
-        ),
-        collapse = ", "
-      )
-      query <- paste0(insert, fields, ")")
-      dbExecute(BDSHProjects, query)
+      # Creates data.frame of field values for new entry
+      new <- lapply(ids,
+                    function(x) {
+                      if (class(input[[x]]) == "Date") {
+                        if (length(input[[x]]) == 0) {
+                          NA
+                        }
+                        else {
+                          as.character(input[[x]])
+                        }
+                      }
+                      else if (is.null(input[[x]]) || length(input[[x]]) == 0 || input[[x]] == "") {
+                        NA
+                      }
+                      else {
+                        input[[x]]
+                      }
+                    }) %>% 
+        setNames(ids) %>% 
+        as.data.frame()
+      
+      # inserts new entry into database
+      dbWriteTable(BDSHProjects, tab, new, append = TRUE)
     }
     
     
     # Creates update SQL query
-    updateCallback <- function(ids, df, row, idVar, tab) {
-      ids <- ids[!ids %in% idVar]
-      update <- paste0(
-        "update ",
-        tab,
-        " set "
-      )
-      fields <- paste(
-        lapply(
-          ids, 
-          function(x) {
-            if (class(input[[x]]) == "Date") {
-              paste0(x, " = ", "'", as.character(input[[x]]), "'")
-            }
-            else if (input[[x]] == "") {
-              paste0(x, " = ", "null")
-            }
-            else {
-              paste0(x, " = ", paste0("'", input[[x]], "'"))
-            }
-          }
-        ),
-        collapse = ", "
-      )
-      where <- paste0(" where ", idVar, " = ", df[row, idVar])
-      query <- paste0(update, fields, where)
-      dbExecute(BDSHProjects, query)
+    updateCallback <- function(ids, rowID, idVar, tab) {
+      # Creates data.frame of updated field values
+      new <- lapply(ids,
+                    function(x) {
+                      if (x == idVar) {
+                        rowID
+                      }
+                      else if (class(input[[x]]) == "Date") {
+                        if (length(input[[x]]) == 0) {
+                          NA
+                        }
+                        else {
+                          as.character(input[[x]])
+                        }
+                      }
+                      else if (is.null(input[[x]]) || length(input[[x]]) == 0 || input[[x]] == "") {
+                        NA
+                      }
+                      else {
+                        input[[x]]
+                      }
+                    }) %>% 
+        setNames(ids) %>% 
+        as.data.frame(stringsAsFactors = FALSE)
+      
+      # creates update statement with named matching for values
+      upStatement <- 
+        paste0(
+          "update ",
+          tab,
+          " set ",
+          paste0("'", ids[!ids == idVar], "'= $", ids[!ids == idVar], collapse = ", "),
+          " where ",
+          idVar,
+          "= $",
+          idVar
+        )
+      
+      up <- dbSendQuery(BDSHProjects, upStatement)
+      # fills in upStatement with values from new data.frame
+      dbBind(up, new)
+      dbClearResult(up)
     }
     
     

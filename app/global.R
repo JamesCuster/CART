@@ -9,7 +9,7 @@ library(shinyjs)
 dirPath <- "C:/Users/jmc6538/Desktop/BDSHProjectTracking"
 
 # Connect to database
-BDSHProjects <- dbConnect(SQLite(), paste0(dirPath, "/BDSHProjects.sqlite"))
+BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))
 
 
 # Define the reactiveData reactive
