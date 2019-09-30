@@ -58,7 +58,8 @@ shinyUI(
       tags$h6("esource", style = "font-size: 10px; margin-bottom: 20px;"),
       tags$h1("T", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -16px;"),
       tags$h6("racker", style = "font-size: 10px; margin-bottom: 20px; margin-left: -16px;"),
-      style = "display: flex; align-items: flex-end;"
+      style = "display: flex; align-items: flex-end;",
+      img(src='main.jpg', align = "right")
     ),
 
     # div(

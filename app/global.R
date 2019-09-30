@@ -78,34 +78,38 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textInput(inputId = ids[i],
                                     label = labels[i],
-                                    value = value)
+                                    value = value,
+                                    width = 400)
     }
     else if (type[i] == "selectizeInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectizeInput(inputId = ids[i],
                                          label = labels[i],
                                          choices = c("", choices[[ids[[i]]]]),
-                                         selected = value)
+                                         selected = value,
+                                         width = 400)
     }
     else if (type[i] == "selectInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- selectInput(inputId = ids[i],
                                       label = labels[i],
-                                      choices = c("", choices[[ids[[i]]]]))
+                                      choices = c("", choices[[ids[[i]]]]),
+                                      width = 400)
     }
     else if (type[i] == "textAreaInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- textAreaInput(inputId = ids[i],
                                         label = labels[i],
                                         value = value,
-                                        width = "300px",
+                                        width = "400px",
                                         height = "102px")
     }
     else if (type[i] == "dateInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
       fields[[ids[i]]] <- dateInput(inputId = ids[i],
                                     label = labels[i],
-                                    value = value)
+                                    value = value,
+                                    width = 400)
     }
     else if (type[i] == "actionButton") {
       fields[[ids[i]]] <- actionButton(inputId = ids[i],
@@ -128,6 +132,19 @@ valueLabel <- function(df, value, label) {
   x <- x[sort(names(x))]
   return(x)
 }
+
+# special case for when value/label is projectID/projectName
+valueLableProject <- function(df, value, label) {
+  # Creates the new label
+  label <- paste(df[[value]], df[["projectPIName"]], "-", df[[label]])
+  x <- setNames(
+    as.character(df[[value]]),
+    label
+  )
+  x <- x[sort(names(x))]
+  return(x)
+}
+
 
 
 
