@@ -21,7 +21,8 @@ output$timeFilters <- renderUI({
       inputId = "viewTimeByProject",
       label = "Project",
       choices = choices[["viewTimeByProject"]],
-      selected = input$viewTimeByProject
+      selected = input$viewTimeByProject,
+      width = 400
     ),
     
     # By employee
@@ -173,8 +174,8 @@ observeEvent(
 choicesTime <- reactive({
   x <- list()
   
-  # Time Inputs
-  x[["timeProjectID"]] <- valueLabel(reactiveData$projects, "projectID", "projectName")
+  # choices for time modal Inputs
+  x[["timeProjectID"]] <- valueLableProject(reactiveData$viewProjects, "projectID", "projectName")
   x[["workBy"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
   x[["workTimeCategory"]] <- c("Small", "Medium", "Large", "Extra Large")
   x[["workCategory"]] <- list(
@@ -182,8 +183,8 @@ choicesTime <- reactive({
     Analysis = c("Data Management", "Analysis", "Report/Manuscript"),
     `BDSH Other` = c("Professional Development", "Other"))
   
-  # Time filter input choices
-  x[["viewTimeByProject"]] <- c("All", valueLabel(reactiveData$projects, "projectID", "projectName"))
+  # choices for time datatable filters
+  x[["viewTimeByProject"]] <- c("All", valueLableProject(reactiveData$viewProjects, "projectID", "projectName"))
   x[["viewTimeByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
   x
 })
