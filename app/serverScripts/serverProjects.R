@@ -132,10 +132,17 @@ choicesProjects <- reactive({
   x[["projectSupport2"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
-  x[["projectStatus"]] <- c("Active", "Closed", "Dormant")
+  x[["projectStatus"]] <- list("Active", 
+                            Closed = paste0("Closed - ", 
+                                            c("Grant Declined", "Funding Declined", 
+                                              "Analysis Completed", "Loss to Follow-up")), 
+                            Dormant = paste0("Dormant - ", 
+                                             c("Grant Submitted", "Manuscrip Submitted", 
+                                               "Analysis Completed", "Loss to Follow-up")),
+                            `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
   
   # Project Filter Input choices (Inputs Created in Section 1)
-  x[["viewProjectsByStatus"]] <- c("All", "Active", "Closed", "Dormant")
+  x[["viewProjectsByStatus"]] <- c("All", x[["projectStatus"]])
   x[["viewProjectsByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
   x[["viewProjectsByResearcher"]] <- c("All", valueLabel(reactiveData$researchers, "researcherID", "researcherName"))
   x
