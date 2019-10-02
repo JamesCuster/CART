@@ -163,12 +163,123 @@ observeEvent(
   }
 )
 
+
+
+# When an attempt to add a researcher is made, this function is run to check the
+# new entry against the database to prevent dupliations. Researcher UTeid, name,
+# and email are all checked. If no duplication is found, a NULL value is
+# returned, if a possible duplicate is found, then that entry(ies) are grabbed
+# from the database to be displayed in a modal that is handeled by the
+# observeEvent below
+checkDuplicateResearcher <- function(id, name, email) {
+  #browser()
+  # This function checks if `check` is in field
+  # check is one of id, name, email
+  # field is the corresponding field in the researchers table
+  checkInField <- function(check, field) {
+    any(grepl(check, field, ignore.case = TRUE))
+  }
+  
+  # control logic to check for duplicate researcher. If no duplicate is found
+  # FALSE is returned. If a duplicate is found, then progress to the next
+  # section to find the duplication, and display modal for user to determine
+  # next steps
+  # checks if id input is duplicate
+  if (checkInField(id, reactiveData$researchers$researcherUteid)) {
+    duplication <- id
+  }
+  # trims any leading/trailing whitespace in id and checks if duplicate
+  else if (checkInField(trimws(id), reactiveData$researchers$researcherUteid)) {
+    duplication <- trimws(id)
+  }
+  # Checks if name input is duplicate 
+  else if (checkInField(name, reactiveData$researchers$researcherName)) {
+    duplication <- name
+  }
+  # trims any leading/trailing whitespace in name and checks if duplicate
+  else if (checkInField(trimws(name), reactiveData$researchers$researcherName)) {
+    duplication <- trimws(name)
+  }
+  # Checks if name input is duplicate 
+  else if (checkInField(email, reactiveData$researchers$researcherEmail)) {
+    duplication <- email
+  }
+  # trims any leading/trailing whitespace in name and checks if duplicate
+  else if (checkInField(trimws(email), reactiveData$researchers$researcherEmail)) {
+    duplication <- trimws(email)
+  }
+  # If no duplication is found, return FALSE
+  else {
+    return(NULL)
+  }
+  
+  # If duplicate is found, get the duplicate row
+  duplicationRow <- 
+    reactiveData$researchers[rowSums(reactiveData$researchers == duplication, na.rm = TRUE) > 0, ]
+  
+  return(duplicationRow)
+}
+
+
+# ObserveEvent for when insertResearcher is pressed on the Add Researcher Modal
 observeEvent(
   input$insertResearcher, {
-    insertCallback(researcherInputs$ids, "researchers")
+    # Remove the Add Researcher Modal
     removeModal()
-  }
-)
+    
+    # Check if new entry is duplicate
+    duplicate <- checkDuplicateResearcher(
+      input$researcherUteid,
+      input$researcherName,
+      input$researcherEmail
+    )
+    
+    # Create output datatable to display if there is a duplicate
+    output$duplicateResearcher <- renderDataTable(
+      duplicate,
+      options = list(dom = 't')
+      )
+    
+    # If there is a duplicate, then this control flow will display a modal which
+    # shows the entry in the database that matches the new input and give the
+    # option of canceling or proceeding with the addition. If no duplicate is
+    # found then the new entry is added.
+    if (!is.null(duplicate)) {
+      showModal(
+        modalDialog(
+          size = "l",
+          title = "Possible Researcher Duplicate",
+          "Is this the researcher you are trying to add?",
+          dataTableOutput("duplicateResearcher"),
+          "If yes, the researcher already exists in the database. Please cancel addition.\n 
+        If no, proceed with addition.",
+          footer = 
+            div(
+              actionButton("continueAddResearcher", "Add Researcher"),
+              actionButton("cancelAddResearcher", "Cancel Addition")
+            )
+        )
+      )
+    }
+    else {
+      insertCallback(researcherInputs$ids, "researchers")
+    }
+})
+
+
+# This contols what happens if a duplicate researcher is found and the user
+# presses the Add Researcher button on the Possible Duplicate Researcher modal
+observeEvent(input$continueAddResearcher, {
+  removeModal()
+  insertCallback(researcherInputs$ids, "researchers")
+})
+
+
+# This contols what happens if a duplicate researcher is found and the user
+# presses the Cancel Addition button on the Possible Duplicate Researcher modal
+observeEvent(input$cancelAddResearcher, {
+  removeModal()
+})
 
 
 
