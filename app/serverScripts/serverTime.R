@@ -12,43 +12,73 @@ observe({
 })
 
 
-# Controls the project filter UI components
-output$timeFilters <- renderUI({
+
+observeEvent(reactiveData, {
+  browser()
   choices <- choicesTime()
-  div(
-    # By Project
-    selectizeInput(
-      inputId = "viewTimeByProject",
-      label = "Project",
-      choices = choices[["viewTimeByProject"]],
-      selected = input$viewTimeByProject,
-      width = 400
-    ),
-    
-    # By employee
-    div(
-      selectizeInput(
-        inputId = "viewTimeByEmployee",
-        label = "BDSH Staff",
-        choices = choices[["viewTimeByEmployee"]],
-        selected = input$viewTimeByEmployee
-      ),
-      style = "margin-left: 20px;"
-    ),
-    
-    # By date range
-    div(
-      dateRangeInput(
-        inputId = "viewTimeByDate",
-        label = "Date Range",
-        start = as.Date(NA),
-        end = as.Date(NA)
-      ),
-      style = "margin-left: 20px;"
-    ),
-    style = "display: flex; align-itme: flex-start"
+  
+  # by project
+  updateSelectizeInput(
+    session,
+    inputId = "viewTimeByProject",
+    choices = choices[["viewTimeByProject"]],
+    selected = input$viewTimeByProject
+  )
+  
+  # By employee
+  updateSelectizeInput(
+    session,
+    inputId = "viewTimeByEmployee",
+    choices = choices[["viewTimeByEmployee"]],
+    selected = input$viewTimeByEmployee
+  )
+  
+  # By date range
+  updateDateRangeInput(
+    session,
+    inputId = "viewTimeByDate",
+    start = input$viewTimeByDate[1],
+    end = input$viewTimeByDate[2]
   )
 })
+
+# Controls the project filter UI components
+# output$timeFilters <- renderUI({
+#   choices <- choicesTime()
+#   div(
+#     # By Project
+#     selectizeInput(
+#       inputId = "viewTimeByProject",
+#       label = "Project",
+#       choices = choices[["viewTimeByProject"]],
+#       selected = input$viewTimeByProject,
+#       width = 400
+#     ),
+#     
+#     # By employee
+#     div(
+#       selectizeInput(
+#         inputId = "viewTimeByEmployee",
+#         label = "BDSH Staff",
+#         choices = choices[["viewTimeByEmployee"]],
+#         selected = input$viewTimeByEmployee
+#       ),
+#       style = "margin-left: 20px;"
+#     ),
+#     
+#     # By date range
+#     div(
+#       dateRangeInput(
+#         inputId = "viewTimeByDate",
+#         label = "Date Range",
+#         start = as.Date(NA),
+#         end = as.Date(NA)
+#       ),
+#       style = "margin-left: 20px;"
+#     ),
+#     style = "display: flex; align-itme: flex-start"
+#   )
+# })
 
 
 output$time <- renderDataTable(

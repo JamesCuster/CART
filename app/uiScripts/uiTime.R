@@ -14,8 +14,38 @@ tabPanel(
     "Edit"
   ),
   
+  div(
+    selectizeInput(
+      inputId = "viewTimeByProject",
+      label = "Project",
+      choices = "All",
+      width = 400
+    ),
+    
+    
+    div(
+      selectizeInput(
+        inputId = "viewTimeByEmployee",
+        label = "BDSH Staff",
+        choices = "All"
+      ),
+      style = "margin-left: 20px;"
+    ),
+    
+    div(
+      dateRangeInput(
+        inputId = "viewTimeByDate",
+        label = "Date Range",
+        start = as.Date(NA),
+        end = as.Date(NA)
+      ),
+      style = "margin-left: 20px;"
+    ),
+    style = "display: flex; align-itme: flex-start"
+  ),
+    
   # Filter time inputs
-  uiOutput("timeFilters"),
+  #uiOutput("timeFilters"),
   
   tags$br(),
   tags$br(),
