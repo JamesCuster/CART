@@ -63,7 +63,7 @@ shinyUI(
     ),
     div(
       tags$br(),
-      img(src='main.jpg', align = "bottom", width = "70%", height = "70%"),
+      img(src='main.jpg', align = "bottom", width = "525px", height = "300px"),
       style = "margin-bottom: 20px;"
     )
     ),
