@@ -14,42 +14,34 @@ observe({
 
 
 # 1.1 Project Filters -----------------------------------------------------
-output$projectFilters <- renderUI({
+
+# Updates the project filter choices 
+observeEvent(reactiveData, {
   choices <- choicesProjects()
-  div(
-    selectInput(
-      inputId = "viewProjectsByStatus",
-      label = "Project Status",
-      choices = choices[["viewProjectsByStatus"]],
-      selected = input$viewProjectsByStatus
-    ),
-    div(
-      selectizeInput(
-        inputId = "viewProjectsByEmployee",
-        label = "BDSH Staff",
-        choices = choices[["viewProjectsByEmployee"]],
-        selected = input$viewProjectsByEmployee,
-        options = list(
-          placeholder = "All"
-        )
-      ),
-      style = "margin-left: 20px;"
-    ),
-    div(
-      selectizeInput(
-        inputId = "viewProjectsByResearcher",
-        label = "Reearcher",
-        choices = choices[["viewProjectsByResearcher"]],
-        selected = input$viewProjectsByResearcher,
-        options = list(
-          placeholder = "All"
-        )
-      ),
-      style = "margin-left: 20px;"
-    ),
-    style = "display: flex; align-items: flex-start;"
+  updateSelectizeInput(
+    session,
+    inputId = "viewProjectsByStatus",
+    choices = choices[["viewProjectsByStatus"]],
+    selected = input[["viewProjectsByStatus"]]
+  )
+  
+  updateSelectizeInput(
+    session,
+    inputId = "viewProjectsByEmployee",
+    label = "BDSH Staff",
+    choices = choices[["viewProjectsByEmployee"]],
+    selected = input[["viewProjectsByEmployee"]]
+  )
+  
+  updateSelectizeInput(
+    session,
+    inputId = "viewProjectsByResearcher",
+    label = "Reearcher",
+    choices = choices[["viewProjectsByResearcher"]],
+    selected = input[["viewProjectsByResearcher"]]
   )
 })
+
 
 
 # 1.2 Projects Datatable --------------------------------------------------
@@ -132,12 +124,19 @@ choicesProjects <- reactive({
   x[["projectSupport2"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
-  x[["projectStatus"]] <- c("Active", "Closed", "Dormant")
+  x[["projectStatus"]] <- list("Active", 
+                            Closed = paste0("Closed - ", 
+                                            c("Grant Declined", "Funding Declined", 
+                                              "Analysis Completed", "Loss to Follow-up")), 
+                            Dormant = paste0("Dormant - ", 
+                                             c("Grant Submitted", "Manuscrip Submitted", 
+                                               "Analysis Completed", "Loss to Follow-up")),
+                            `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
   
   # Project Filter Input choices (Inputs Created in Section 1)
-  x[["viewProjectsByStatus"]] <- c("All", "Active", "Closed", "Dormant")
-  x[["viewProjectsByEmployee"]] <- c("All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
-  x[["viewProjectsByResearcher"]] <- c("All", valueLabel(reactiveData$researchers, "researcherID", "researcherName"))
+  x[["viewProjectsByStatus"]] <- c(All = "All", x[["projectStatus"]])
+  x[["viewProjectsByEmployee"]] <- c(All = "All", valueLabel(reactiveData$employees, "bdshID", "employeeName"))
+  x[["viewProjectsByResearcher"]] <- c(All = "All", valueLabel(reactiveData$researchers, "researcherID", "researcherName"))
   x
 })
 
@@ -478,8 +477,13 @@ observeEvent(
 # viewProjectsByEmployee, and viewProjectsByResearcher
 filterViewProjects <-
   reactive({
-    if (!(is.null(input$viewProjectsByStatus) || 
-          is.null(input$viewProjectsByEmployee) || 
+    # If reactiveData$viewProjects has not been created yet, this allows the
+    # reactive to be skipped
+    if (is.null(reactiveData$viewProjects)) {
+      return()
+    }
+    if (!(is.null(input$viewProjectsByStatus) ||
+          is.null(input$viewProjectsByEmployee) ||
           is.null(input$viewProjectsByResearcher))) {
       
       filtered <- reactiveData$viewProjects %>%
@@ -509,6 +513,11 @@ filterViewProjects <-
       
       # add View Details link
       filtered <- addViewDetails(filtered, "viewProjects")
+      return(filtered)
+      }
+    else {
+      # add View Details link
+      filtered <- addViewDetails(reactiveData$viewProjects, "viewProjects")
       return(filtered)
     }
   })

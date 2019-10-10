@@ -172,12 +172,16 @@ observeEvent(
 # from the database to be displayed in a modal that is handeled by the
 # observeEvent below
 checkDuplicateResearcher <- function(id, name, email) {
-  #browser()
   # This function checks if `check` is in field
   # check is one of id, name, email
   # field is the corresponding field in the researchers table
   checkInField <- function(check, field) {
-    any(grepl(check, field, ignore.case = TRUE))
+    if (check == "") {
+      FALSE
+    }
+    else {
+      any(grepl(check, field, ignore.case = TRUE))
+    }
   }
   
   # control logic to check for duplicate researcher. If no duplicate is found
