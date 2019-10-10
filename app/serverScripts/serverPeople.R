@@ -180,7 +180,7 @@ checkDuplicateResearcher <- function(id, name, email) {
       FALSE
     }
     else {
-      any(grepl(check, field, ignore.case = TRUE))
+      any(check == field, na.rm = TRUE)
     }
   }
   
@@ -219,7 +219,7 @@ checkDuplicateResearcher <- function(id, name, email) {
   
   # If duplicate is found, get the duplicate row
   duplicationRow <- 
-    reactiveData$researchers[rowSums(reactiveData$researchers == duplication, na.rm = TRUE) > 0, ]
+    reactiveData$researchers[rowSums(reactiveData$researchers == duplication, na.rm = TRUE) > 0, -6]
   
   return(duplicationRow)
 }
