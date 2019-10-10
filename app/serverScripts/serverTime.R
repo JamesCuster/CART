@@ -14,7 +14,6 @@ observe({
 
 
 observeEvent(reactiveData, {
-  browser()
   choices <- choicesTime()
   
   # by project
@@ -252,7 +251,6 @@ observeEvent(
 
 observeEvent(
   input$insertTime, {
-    # browser()
     insertCallback(timeInputs[!timeInputs$ids == "timeAsCat", "ids"], "time")
     removeModal()
   }
@@ -267,7 +265,6 @@ timeRowSelected <- NULL
 
 observeEvent(
   input$editTime, {
-    # browser()
     timeRowSelected <<- input[["time_rows_selected"]]
     choices <- choicesTime()
     row <- input[["time_rows_selected"]]
@@ -374,7 +371,6 @@ viewTimeDisplay <- c("timeID",
 # viewTimeByEmployee, and viewTimeByDate
 filterViewTime <- 
   reactive({
-    # browser()
     if (!(is.null(input$viewTimeByProject) || 
           is.null(input$viewTimeByEmployee) || 
           is.null(input$viewTimeByDate))) {
