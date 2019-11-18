@@ -82,7 +82,8 @@ projectInputs <-
             "projectSupport4",
             "projectDescription",
             "projectStatus",
-            "projectDueDate"),
+            "projectDueDate",
+            "educationProject"),
     labels = c("projectID",
                "Project Name",
                "BDSH Lead",
@@ -94,7 +95,8 @@ projectInputs <-
                "Support Staff 4",
                "Brief Description",
                "Status",
-               "Due Date"),
+               "Due Date",
+               "Is this a resident, fellow, or student project?"),
     type = c("skip",
              "textInput",
              "selectizeInput",
@@ -106,7 +108,8 @@ projectInputs <-
              "selectizeInput",
              "textAreaInput",
              "selectInput",
-             "dateInput"),
+             "dateInput",
+             "selectInput"),
     stringsAsFactors = FALSE
   )
 
@@ -125,13 +128,14 @@ choicesProjects <- reactive({
   x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectStatus"]] <- list("Active", 
-                            Closed = paste0("Closed - ", 
-                                            c("Grant Declined", "Funding Declined", 
-                                              "Analysis Completed", "Loss to Follow-up")), 
-                            Dormant = paste0("Dormant - ", 
-                                             c("Grant Submitted", "Manuscrip Submitted", 
-                                               "Analysis Completed", "Loss to Follow-up")),
-                            `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
+                               Closed = paste0("Closed - ", 
+                                               c("Grant Declined", "Funding Declined", 
+                                                 "Analysis Completed", "Loss to Follow-up")), 
+                               Dormant = paste0("Dormant - ", 
+                                                c("Grant Submitted", "Manuscrip Submitted", 
+                                                  "Analysis Completed", "Loss to Follow-up")),
+                               `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
+  x[["educationProject"]] <- c("No", "Resident or Fellow", "Student")
   
   # Project Filter Input choices (Inputs Created in Section 1)
   x[["viewProjectsByStatus"]] <- c(All = "All", x[["projectStatus"]])
@@ -139,6 +143,7 @@ choicesProjects <- reactive({
   x[["viewProjectsByResearcher"]] <- c(All = "All", valueLabel(reactiveData$researchers, "researcherID", "researcherName"))
   x
 })
+
 
 
 
@@ -291,7 +296,8 @@ viewProjectsQuery <-
             r5.researcherEmail as projectSupport4Email,
             p.projectDescription,
             p.projectStatus,
-            p.projectDueDate
+            p.projectDueDate,
+            p.educationProject
         from projects p
     left join employees e1 on p.bdshLead = e1.bdshID
     left join employees e2 on p.bdshSecondary = e2.bdshID
@@ -398,7 +404,15 @@ modalText <- function(x) {
         
         # Support Staff4
         div("Support Staff 4", class = "modalVariableNames"),
-        div(x$projectSupport4Name, class = "modalVariableContent")
+        div(x$projectSupport4Name, class = "modalVariableContent"),
+        
+        # Project Status
+        div("Project Status", class = "modalVariableNames"),
+        div(x$projectStatus, class = "modalVariableContent"),
+        
+        # Project Due Date
+        div("Project Due Date", class = "modalVariableNames"),
+        div(x$projectDueDate, class = "modalVariableContent")
       ),
       
       # second column div
@@ -430,6 +444,11 @@ modalText <- function(x) {
         # Support Staff Email 4
         div("Support Staff 4 Email", class = "modalVariableNames"),
         div(x$projectSupport4Email, class = "modalVariableContent"),
+        
+        # Education project
+        div("Student/Trainee Education Project", class = "modalVariableNames"),
+        div(x$educationProject, class = "modalVariableContent"),
+        
         style = "margin-left: 15%"
       ),
       style = "display: flex; align-items: flex-start;"
@@ -437,15 +456,7 @@ modalText <- function(x) {
     
     # Description div
     div("Project Description", class = "modalVariableNames"),
-    div(x$projectDescription, class = "modalVariableContent"),
-    
-    # Project Status
-    div("Project Status", class = "modalVariableNames"),
-    div(x$projectStatus, class = "modalVariableContent"),
-    
-    # Project Due Date
-    div("Project Due Date", class = "modalVariableNames"),
-    div(x$projectDueDate, class = "modalVariableContent")
+    div(x$projectDescription, class = "modalVariableContent")
   )
 }
 
