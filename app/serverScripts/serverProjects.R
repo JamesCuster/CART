@@ -132,9 +132,8 @@ choicesProjects <- reactive({
                                                c("Grant Declined", "Funding Declined", 
                                                  "Analysis Completed", "Loss to Follow-up")), 
                                Dormant = paste0("Dormant - ", 
-                                                c("Grant Submitted", "Manuscrip Submitted", 
-                                                  "Analysis Completed", "Loss to Follow-up")),
-                               `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
+                                                c("Grant Submitted", "Manuscript Submitted", 
+                                                  "Analysis Completed", "Loss to Follow-up")))
   x[["educationProject"]] <- c("No", "Resident or Fellow", "Student")
   
   # Project Filter Input choices (Inputs Created in Section 1)
