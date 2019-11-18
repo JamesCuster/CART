@@ -130,8 +130,7 @@ choicesProjects <- reactive({
                                               "Analysis Completed", "Loss to Follow-up")), 
                             Dormant = paste0("Dormant - ", 
                                              c("Grant Submitted", "Manuscript Submitted", 
-                                               "Analysis Completed", "Loss to Follow-up")),
-                            `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
+                                               "Analysis Completed", "Loss to Follow-up")))
   
   # Project Filter Input choices (Inputs Created in Section 1)
   x[["viewProjectsByStatus"]] <- c(All = "All", x[["projectStatus"]])
