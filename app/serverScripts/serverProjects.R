@@ -404,7 +404,15 @@ modalText <- function(x) {
         
         # Support Staff4
         div("Support Staff 4", class = "modalVariableNames"),
-        div(x$projectSupport4Name, class = "modalVariableContent")
+        div(x$projectSupport4Name, class = "modalVariableContent"),
+        
+        # Project Status
+        div("Project Status", class = "modalVariableNames"),
+        div(x$projectStatus, class = "modalVariableContent"),
+        
+        # Project Due Date
+        div("Project Due Date", class = "modalVariableNames"),
+        div(x$projectDueDate, class = "modalVariableContent")
       ),
       
       # second column div
@@ -436,6 +444,11 @@ modalText <- function(x) {
         # Support Staff Email 4
         div("Support Staff 4 Email", class = "modalVariableNames"),
         div(x$projectSupport4Email, class = "modalVariableContent"),
+        
+        # Education project
+        div("Student/Trainee Education Project", class = "modalVariableNames"),
+        div(x$educationProject, class = "modalVariableContent"),
+        
         style = "margin-left: 15%"
       ),
       style = "display: flex; align-items: flex-start;"
@@ -443,15 +456,7 @@ modalText <- function(x) {
     
     # Description div
     div("Project Description", class = "modalVariableNames"),
-    div(x$projectDescription, class = "modalVariableContent"),
-    
-    # Project Status
-    div("Project Status", class = "modalVariableNames"),
-    div(x$projectStatus, class = "modalVariableContent"),
-    
-    # Project Due Date
-    div("Project Due Date", class = "modalVariableNames"),
-    div(x$projectDueDate, class = "modalVariableContent")
+    div(x$projectDescription, class = "modalVariableContent")
   )
 }
 
