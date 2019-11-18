@@ -129,7 +129,7 @@ choicesProjects <- reactive({
                                             c("Grant Declined", "Funding Declined", 
                                               "Analysis Completed", "Loss to Follow-up")), 
                             Dormant = paste0("Dormant - ", 
-                                             c("Grant Submitted", "Manuscrip Submitted", 
+                                             c("Grant Submitted", "Manuscript Submitted", 
                                                "Analysis Completed", "Loss to Follow-up")),
                             `Do Not Use - Kept for backward compatibility` = c("Closed", "Dormant"))
   
