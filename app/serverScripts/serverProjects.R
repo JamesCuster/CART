@@ -36,7 +36,7 @@ observeEvent(reactiveData, {
   updateSelectizeInput(
     session,
     inputId = "viewProjectsByResearcher",
-    label = "Reearcher",
+    label = "Researcher",
     choices = choices[["viewProjectsByResearcher"]],
     selected = input[["viewProjectsByResearcher"]]
   )
