@@ -106,10 +106,10 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
                                         height = "102px")
     }
     else if (type[i] == "dateInput") {
-      value <- ifelse(missing(values) || is.na(values[ids[i]]), "", values[ids[i]])
+      value <- ifelse(missing(values) || is.na(values[ids[i]]), NA, values[ids[i]])
       fields[[ids[i]]] <- dateInput(inputId = ids[i],
                                     label = labels[i],
-                                    value = value,
+                                    value = value[[1]],
                                     width = 400)
     }
     else if (type[i] == "actionButton") {
