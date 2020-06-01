@@ -94,6 +94,7 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
       fields[[ids[i]]] <- selectInput(inputId = ids[i],
                                       label = labels[i],
                                       choices = c("", choices[[ids[[i]]]]),
+                                      selected = value,
                                       width = 400)
     }
     else if (type[i] == "textAreaInput") {
