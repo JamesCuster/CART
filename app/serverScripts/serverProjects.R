@@ -56,7 +56,8 @@ output$projects <- renderDataTable(
     escape = FALSE,
     options = list(
       dom = '<"top"fl> t <"bottom"ip>',
-      order = list(1, 'desc')
+      order = list(1, 'desc')#,
+      # displayStart = ifelse(is.null(projectRowSelected), 0, projectRowSelected %/% 10)
     )
   ),
   server=TRUE
