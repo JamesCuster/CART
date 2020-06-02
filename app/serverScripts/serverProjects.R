@@ -311,7 +311,9 @@ viewProjectsQuery <-
             r5.researcherName as projectSupport4Name,
             r5.researcherEmail as projectSupport4Email,
             p.projectDescription,
+            p.projectFunded,
             p.projectStatus,
+            p.projectStatusComment,
             p.projectDueDate,
             p.educationProject
         from projects p
@@ -386,7 +388,7 @@ addViewDetails <- function(df, idPrefix) {
 # 4.1.3 Modal Function --------------------------------------------------------
 # This function creates the HTML for a modal when View Details is clicked on a
 # row in the datatable output
-modalText <- function(x) {
+modalText <- function(x) {browser()
   div(
     h1(x$projectName),
     
@@ -438,9 +440,9 @@ modalText <- function(x) {
           )
         },
         
-        # Education project
-        div("Student/Trainee Education Project", class = "modalVariableNames"),
-        div(x$educationProject, class = "modalVariableContent"),
+        # Funded Project
+        div("Project Funded", class = "modalVariableNames"),
+        div(x$projectFunded, class = "modalVariableContent"),
         
         # Project Status
         div("Project Status", class = "modalVariableNames"),
@@ -500,6 +502,10 @@ modalText <- function(x) {
             div(x$projectSupport4Email, class = "modalVariableContent")
           )
         },
+        
+        # Education project
+        div("Student/Trainee Education Project", class = "modalVariableNames"),
+        div(x$educationProject, class = "modalVariableContent"),
         
         style = "margin-left: 15%"
       ),
