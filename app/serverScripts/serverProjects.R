@@ -393,20 +393,36 @@ modalText <- function(x) {
         div(x$projectPIPrimaryDept, class = "modalVariableContent"),
         
         # Support Staff1
-        div("Support Staff 1", class = "modalVariableNames"),
-        div(x$projectSupport1Name, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport1Name)) {
+          list(
+            div("Support Staff 1", class = "modalVariableNames"),
+            div(x$projectSupport1Name, class = "modalVariableContent")
+          )
+        },
         
         # Support Staff2
-        div("Support Staff 2", class = "modalVariableNames"),
-        div(x$projectSupport2Name, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport2Name)) {
+          list(
+            div("Support Staff 2", class = "modalVariableNames"),
+            div(x$projectSupport2Name, class = "modalVariableContent")
+          )
+        },
         
         # Support Staff3
-        div("Support Staff 3", class = "modalVariableNames"),
-        div(x$projectSupport3Name, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport3Name)) {
+          list(
+            div("Support Staff 3", class = "modalVariableNames"),
+            div(x$projectSupport3Name, class = "modalVariableContent")
+          )
+        },
         
         # Support Staff4
-        div("Support Staff 4", class = "modalVariableNames"),
-        div(x$projectSupport4Name, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport4Name)) {
+          list(
+            div("Support Staff 4", class = "modalVariableNames"),
+            div(x$projectSupport4Name, class = "modalVariableContent")
+          )
+        },
         
         # Education project
         div("Student/Trainee Education Project", class = "modalVariableNames"),
@@ -440,20 +456,36 @@ modalText <- function(x) {
         div(x$projectPISecondaryDept, class = "modalVariableContent"),
         
         # Support Staff Email 1
-        div("Support Staff 1 Email", class = "modalVariableNames"),
-        div(x$projectSupport1Email, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport1Email)) {
+          list(
+            div("Support Staff 1 Email", class = "modalVariableNames"),
+            div(x$projectSupport1Email, class = "modalVariableContent")
+          )
+        },
         
         # Support Staff Email 2
-        div("Support Staff 2 Email", class = "modalVariableNames"),
-        div(x$projectSupport2Email, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport2Email)) {
+          list(
+            div("Support Staff 2 Email", class = "modalVariableNames"),
+            div(x$projectSupport2Email, class = "modalVariableContent")
+          )
+        },
         
         # Support Staff Email 3
-        div("Support Staff 3 Email", class = "modalVariableNames"),
-        div(x$projectSupport3Email, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport3Email)) {
+          list(
+            div("Support Staff 3 Email", class = "modalVariableNames"),
+            div(x$projectSupport3Email, class = "modalVariableContent")
+          )
+        },
         
         # Support Staff Email 4
-        div("Support Staff 4 Email", class = "modalVariableNames"),
-        div(x$projectSupport4Email, class = "modalVariableContent"),
+        if (!is.na(x$projectSupport4Email)) {
+          list(
+            div("Support Staff 4 Email", class = "modalVariableNames"),
+            div(x$projectSupport4Email, class = "modalVariableContent")
+          )
+        },
         
         style = "margin-left: 15%"
       ),
