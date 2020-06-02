@@ -81,6 +81,7 @@ projectInputs <-
             "projectSupport3",
             "projectSupport4",
             "projectDescription",
+            "projectFunded",
             "projectStatus",
             "projectStatusComment",
             "projectDueDate",
@@ -95,6 +96,7 @@ projectInputs <-
                "Support Staff 3",
                "Support Staff 4",
                "Brief Description",
+               "Project Funded",
                "Project Status",
                "Project Status Comment",
                "Due Date",
@@ -109,6 +111,7 @@ projectInputs <-
              "selectizeInput",
              "selectizeInput",
              "textAreaInput",
+             "selectizeInput",
              "selectInput",
              "textAreaInput",
              "dateInput",
@@ -130,6 +133,7 @@ choicesProjects <- reactive({
   x[["projectSupport2"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
+  x[["projectFunded"]] <- c("Yes", "No")
   x[["projectStatus"]] <- list("Active", 
                                Closed = paste0("Closed - ", 
                                                c("Funding Declined", "Manuscript Accepted",
