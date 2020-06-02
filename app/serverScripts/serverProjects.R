@@ -237,6 +237,16 @@ observeEvent(
             reactiveData$projects[reactiveData$projects$projectID == rowID, ],
             choices = choices
           )
+        # Add extra text to projectFunded input 
+        fields$projectFunded$children <- 
+          list(fields$projectFunded$children,
+               div("If this project was unfunded and became funded, do not 
+                   change this field to funded as this would change all unfunded 
+                   time entered to funded time. If you need to track funded time 
+                   for this project, please create a new project entry in CART. 
+                   If you just need to indicate that the project became funded, 
+                   please do so in the Project Status below.",
+                   style = "margin-top: -15px;"))
         
         showModal(
           modalDialog(
