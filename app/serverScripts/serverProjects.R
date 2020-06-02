@@ -133,7 +133,7 @@ choicesProjects <- reactive({
   x[["projectSupport2"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
-  x[["projectFunded"]] <- c("Yes", "No")
+  x[["projectFunded"]] <- c("Funded", "Unfunded")
   x[["projectStatus"]] <- list("Active", 
                                Closed = paste0("Closed - ", 
                                                c("Funding Declined", "Manuscript Accepted",
