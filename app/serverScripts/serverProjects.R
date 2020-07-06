@@ -137,7 +137,7 @@ choicesProjects <- reactive({
   x[["projectFunded"]] <- c("Funded", "Unfunded")
   x[["projectStatus"]] <- list("Active", 
                                Closed = paste0("Closed - ", 
-                                               c("Funding Declined", "Manuscript Accepted",
+                                               c("Funding Awarded", "Funding Declined", "Manuscript Accepted",
                                                  "Analysis Completed", "Loss to Follow-up")), 
                                Dormant = paste0("Dormant - ", 
                                                 c("Grant Submitted", "Manuscript Submitted", 
