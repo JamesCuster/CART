@@ -6,7 +6,8 @@ library(shinyjs)
 
 
 # Database related functions ----------------------------------------------
-dirPath <- "C:/Users/jmc6538/Desktop/CART"
+  # dirPath is defined in run.R and supplied via an argument in the CART.bat call
+  # to rscript
 
 # Connect to database
 BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))
