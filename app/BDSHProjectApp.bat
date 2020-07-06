@@ -1,1 +1,0 @@
-rscript "run.r"

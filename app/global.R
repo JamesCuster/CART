@@ -6,7 +6,7 @@ library(shinyjs)
 
 
 # Database related functions ----------------------------------------------
-dirPath <- "C:/Users/jmc6538/Desktop/BDSHProjectTracking"
+dirPath <- "C:/Users/jmc6538/Desktop/CART"
 
 # Connect to database
 BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))
