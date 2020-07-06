@@ -1,1 +1,0 @@
-rscript "C:\Users\jmc6538\Desktop\CART\app\run.r"
