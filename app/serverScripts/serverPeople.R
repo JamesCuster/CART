@@ -115,7 +115,7 @@ researcherInputs <-
 choicesResearcher <- reactive({
   x <- list()
   deptList <- 
-    list(`Dell Medical School` = c("Dell Pediatric Research Institute",
+    list(`Dell Medical School` = list("Dell Pediatric Research Institute",
                                    "Diagnostic Medicine",
                                    "Health Social Work",
                                    "Internal Medicine",
@@ -128,13 +128,13 @@ choicesResearcher <- reactive({
                                    "Population Health",
                                    "Psychiatry",
                                    "Surgery and Perioperative Care",
-                                   "Women’s Health",
+                                   "Women's Health",
                                    "Other Dell Medical School"),
-         `UT Austin` = c("UT Austin"),
-         `Other UT` = c("Other UT"),
-         `Other` = c("Other"))
+         `UT` = list("UT Austin", "Other UT"),
+         `Other` = list("Other"))
   x[["primaryDept"]] <- deptList
   x[["secondaryDept"]]<- deptList
+  x
 })
 
 
