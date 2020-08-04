@@ -107,8 +107,8 @@ researcherInputs <-
              "textInput",
              "textInput",
              "textInput",
-             "textInput",
-             "textInput"),
+             "selectizeInput",
+             "selectizeInput"),
     stringsAsFactors = FALSE
   )
 
@@ -167,6 +167,7 @@ employeeInputs <-
 # 2.2 Add Researcher ------------------------------------------------------
 observeEvent(
   input$addResearcher, {
+    choices <- choicesResearcher()
     fields <- 
       modalInputs(
         researcherInputs$ids, 
