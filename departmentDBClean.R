@@ -101,14 +101,14 @@ researchers[which(!researchers$primaryDept %in% deptList), ]
 researchers$secondaryDept <- gsub("Department of | - Division of Dermatology|Department Chair, ", 
                                 "", researchers$secondaryDept, ignore.case = TRUE)
 
-# Remaining enteries to be updated
+# Remaining entries to be updated
 researchers[which(!(researchers$secondaryDept %in% deptList) & !is.na(researchers$secondaryDept)), ]
 
 
 # there is someone with Psychology, which is not a department. Replacing with NA
 researchers[researchers$secondaryDept == "Psychology" & !is.na(researchers$secondaryDept), "secondaryDept"] <- NA
 
-# Remaining enteries to be updated
+# Remaining entries to be updated
 researchers[which(!(researchers$secondaryDept %in% deptList) & !is.na(researchers$secondaryDept)), ]
 
 
@@ -117,26 +117,26 @@ researchers[which(!researchers$secondaryDept %in% deptList), "secondaryDept"] <-
   gsub("Medicine", "Internal Medicine", 
        researchers[which(!researchers$secondaryDept %in% deptList), "secondaryDept"], ignore.case = TRUE)
 
-# Remaining enteries to be updated
+# Remaining entries to be updated
 researchers[which(!(researchers$secondaryDept %in% deptList) & !is.na(researchers$secondaryDept)), ]
 
 
 # Molly Lopez's primary department is school of social work, secondary should be missing
 researchers[researchers$researcherName == "Molly Lopez" & !is.na(researchers$researcherName), "secondaryDept"] <- NA
 
-# Remaining enteries to be updated
+# Remaining entries to be updated
 researchers[which(!(researchers$secondaryDept %in% deptList) & !is.na(researchers$secondaryDept)), ]
 
 
 # Marissa Mery does not have secondary department according to directory it is removed
 researchers[researchers$researcherName == "Marissa Mery" & !is.na(researchers$researcherName), "secondaryDept"] <- NA
 
-# Remaining enteries to be updated
+# Remaining entries to be updated
 researchers[which(!(researchers$secondaryDept %in% deptList) & !is.na(researchers$secondaryDept)), ]
 
 
-# Adrienne Dula's secondary department should be Diagnositc Medicine
+# Adrienne Dula's secondary department should be Diagnostic Medicine
 researchers[researchers$researcherName == "Adrienne Dula" & !is.na(researchers$researcherName), "secondaryDept"] <- "Diagnostic Medicine"
 
-# Remaining enteries to be updated
+# Remaining entries to be updated
 researchers[which(!(researchers$secondaryDept %in% deptList) & !is.na(researchers$secondaryDept)), ]
