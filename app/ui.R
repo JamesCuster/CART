@@ -46,7 +46,17 @@ shinyUI(
         width: 500px;
       }"
     )),
-
+    
+    
+    # CSS that adds a border below group headers for grouped choices in
+    # selectizeInput headers
+    tags$style(HTML(
+      ".selectize-dropdown .optgroup-header {
+        font-size: 14px;
+        font-weight: bold; 
+      }
+      "
+    )),
     
     # Title
     div(
