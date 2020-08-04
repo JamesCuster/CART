@@ -172,7 +172,8 @@ observeEvent(
       modalInputs(
         researcherInputs$ids, 
         researcherInputs$labels, 
-        researcherInputs$type
+        researcherInputs$type,
+        choices = choices
       )
     
     showModal(
@@ -324,6 +325,7 @@ observeEvent(
     researcherRowSelected <<- input[["researchers_rows_selected"]]
     row <- input[["researchers_rows_selected"]]
     rowID <- reactiveData$researchers[row, "researcherID"]
+    choices <- choicesResearcher()
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
@@ -331,7 +333,8 @@ observeEvent(
             researcherInputs$ids, 
             researcherInputs$labels, 
             researcherInputs$type,
-            reactiveData$researchers[reactiveData$researchers$researcherID == rowID, ]
+            reactiveData$researchers[reactiveData$researchers$researcherID == rowID, ],
+            choices = choices
           )
         
         showModal(
