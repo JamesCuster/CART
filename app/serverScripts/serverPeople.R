@@ -112,6 +112,31 @@ researcherInputs <-
     stringsAsFactors = FALSE
   )
 
+choicesResearcher <- reactive({
+  x <- list()
+  deptList <- 
+    list(`Dell Medical School` = c("Dell Pediatric Research Institute",
+                                   "Diagnostic Medicine",
+                                   "Health Social Work",
+                                   "Internal Medicine",
+                                   "Medical Education",
+                                   "Neurology",
+                                   "Neurosurgery",
+                                   "Oncology",
+                                   "Ophthalmology",
+                                   "Pediatrics",
+                                   "Population Health",
+                                   "Psychiatry",
+                                   "Surgery and Perioperative Care",
+                                   "Women’s Health",
+                                   "Other Dell Medical School"),
+         `UT Austin` = c("UT Austin"),
+         `Other UT` = c("Other UT"),
+         `Other` = c("Other"))
+  x[["primaryDept"]] <- deptList
+  x[["secondaryDept"]]<- deptList
+})
+
 
 # this data.frame stores information about what inputs are used for employees
 employeeInputs <- 
