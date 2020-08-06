@@ -58,6 +58,18 @@ shinyUI(
       "
     )),
     
+    tags$style(HTML(
+      ".input-notes-table {
+        margin-top: -13px;
+        font-size: 13px;
+      }
+      
+      .input-notes-table td:last-of-type {
+        padding-left: 3px;
+      }
+      "
+    )),
+    
     # Title
     div(
     div(
