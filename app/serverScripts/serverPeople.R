@@ -194,7 +194,7 @@ observeEvent(
         researcherInputs$type,
         choices = choices
       )
-    # browser()
+    # Add department note
     fields$primaryDept$children <- list(fields$primaryDept$children,
                                         inputNotesTable(ResearcherDeptNotes))
     showModal(
@@ -347,6 +347,7 @@ observeEvent(
     row <- input[["researchers_rows_selected"]]
     rowID <- reactiveData$researchers[row, "researcherID"]
     choices <- choicesResearcher()
+    
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
@@ -357,7 +358,9 @@ observeEvent(
             reactiveData$researchers[reactiveData$researchers$researcherID == rowID, ],
             choices = choices
           )
-        
+        # Add notes to department inputs
+        fields$primaryDept$children <- list(fields$primaryDept$children,
+                                            inputNotesTable(ResearcherDeptNotes))
         showModal(
           modalDialog(
             title = "Edit Researcher",
