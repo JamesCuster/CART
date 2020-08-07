@@ -389,7 +389,7 @@ addViewDetails <- function(df, idPrefix) {
 # 4.1.3 Modal Function --------------------------------------------------------
 # This function creates the HTML for a modal when View Details is clicked on a
 # row in the datatable output
-modalText <- function(x) {browser()
+modalText <- function(x) {
   div(
     h1(x$projectName),
     
