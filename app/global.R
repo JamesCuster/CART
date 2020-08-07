@@ -157,3 +157,19 @@ parseDeleteEvent <- function(idstr) {
   res <- as.integer(sub(".*_([0-9]+)", "\\1", idstr))
   if (!is.na(res)) res
 }
+
+
+
+# This function is used to compile a two column data.frame into a simple html
+# table to be displayed underneath an input to provide additional notes and
+# directions for an input.
+inputNotesTable <- function(x) {
+  # td elements
+  tdElements <- apply(x, 1, function(y) {lapply(y, tags$td)})
+  withTags({
+    table(class = "input-notes-table",
+          lapply(tdElements, tr)
+    )
+  })
+}
+

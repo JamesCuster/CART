@@ -107,10 +107,54 @@ researcherInputs <-
              "textInput",
              "textInput",
              "textInput",
-             "textInput",
-             "textInput"),
+             "selectizeInput",
+             "selectizeInput"),
     stringsAsFactors = FALSE
   )
+
+choicesResearcher <- reactive({
+  x <- list()
+  deptList <- 
+    list(`Dell Medical School` = 
+           list("Dell Pediatric Research Institute",
+                "Diagnostic Medicine",
+                "Health Social Work",
+                "Internal Medicine",
+                "Medical Education",
+                "Neurology",
+                "Neurosurgery",
+                "Oncology",
+                "Ophthalmology",
+                "Pediatrics",
+                "Population Health",
+                "Psychiatry",
+                "Surgery and Perioperative Care",
+                "Women's Health",
+                "Other Dell Medical School"),
+         `Seton/Ascension` = 
+           list("Seton/Ascension"),
+         `UT` = 
+           list("School of Social Work",
+                "School of Nursing",
+                "College of Pharmacy",
+                "Other UT Austin",
+                "Other UT System"),
+         `Other` = 
+           list("Other"))
+  x[["primaryDept"]] <- deptList
+  x[["secondaryDept"]]<- deptList
+  x
+})
+
+
+# Data frame that contains input notes for researcher department. Call input
+# notes table to render to html
+ResearcherDeptNotes <- data.frame(`1` = c("Notes: ", "", ""), 
+                  `2` = c("For Dell Med students and residents use Medical Education.", 
+                          "For Seton/Ascension residents use Seton/Ascension.", 
+                          "For other UT students use department of Dell Med Advisor."), 
+                  stringsAsFactors = FALSE)
+
 
 
 # this data.frame stores information about what inputs are used for employees
@@ -142,13 +186,17 @@ employeeInputs <-
 # 2.2 Add Researcher ------------------------------------------------------
 observeEvent(
   input$addResearcher, {
+    choices <- choicesResearcher()
     fields <- 
       modalInputs(
         researcherInputs$ids, 
         researcherInputs$labels, 
-        researcherInputs$type
+        researcherInputs$type,
+        choices = choices
       )
-    
+    # Add department note
+    fields$primaryDept$children <- list(fields$primaryDept$children,
+                                        inputNotesTable(ResearcherDeptNotes))
     showModal(
       modalDialog(
         title = "Add Researcher",
@@ -166,10 +214,10 @@ observeEvent(
 
 
 # When an attempt to add a researcher is made, this function is run to check the
-# new entry against the database to prevent dupliations. Researcher UTeid, name,
+# new entry against the database to prevent duplication. Researcher UTeid, name,
 # and email are all checked. If no duplication is found, a NULL value is
 # returned, if a possible duplicate is found, then that entry(ies) are grabbed
-# from the database to be displayed in a modal that is handeled by the
+# from the database to be displayed in a modal that is handled by the
 # observeEvent below
 checkDuplicateResearcher <- function(id, name, email) {
   # This function checks if `check` is in field
@@ -298,6 +346,8 @@ observeEvent(
     researcherRowSelected <<- input[["researchers_rows_selected"]]
     row <- input[["researchers_rows_selected"]]
     rowID <- reactiveData$researchers[row, "researcherID"]
+    choices <- choicesResearcher()
+    
     if(!is.null(row)) {
       if (row > 0) {
         fields <- 
@@ -305,9 +355,12 @@ observeEvent(
             researcherInputs$ids, 
             researcherInputs$labels, 
             researcherInputs$type,
-            reactiveData$researchers[reactiveData$researchers$researcherID == rowID, ]
+            reactiveData$researchers[reactiveData$researchers$researcherID == rowID, ],
+            choices = choices
           )
-        
+        # Add notes to department inputs
+        fields$primaryDept$children <- list(fields$primaryDept$children,
+                                            inputNotesTable(ResearcherDeptNotes))
         showModal(
           modalDialog(
             title = "Edit Researcher",
