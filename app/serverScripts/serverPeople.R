@@ -115,22 +115,27 @@ researcherInputs <-
 choicesResearcher <- reactive({
   x <- list()
   deptList <- 
-    list(`Dell Medical School` = list("Dell Pediatric Research Institute",
-                                   "Diagnostic Medicine",
-                                   "Health Social Work",
-                                   "Internal Medicine",
-                                   "Medical Education",
-                                   "Neurology",
-                                   "Neurosurgery",
-                                   "Oncology",
-                                   "Ophthalmology",
-                                   "Pediatrics",
-                                   "Population Health",
-                                   "Psychiatry",
-                                   "Surgery and Perioperative Care",
-                                   "Women's Health",
-                                   "Other Dell Medical School"),
-         `UT` = list("UT Austin", "Other UT"),
+    list(`Dell Medical School` = 
+           list("Dell Pediatric Research Institute",
+                "Diagnostic Medicine",
+                "Health Social Work",
+                "Internal Medicine",
+                "Medical Education",
+                "Neurology",
+                "Neurosurgery",
+                "Oncology",
+                "Ophthalmology",
+                "Pediatrics",
+                "Population Health",
+                "Psychiatry",
+                "Surgery and Perioperative Care",
+                "Women's Health",
+                "Other Dell Medical School"),
+         `UT` = list("School of Social Work",
+                     "School of Nursing",
+                     "College of Pharmacy",
+                     "Other UT Austin", 
+                     "Other UT System"),
          `Other` = list("Other"))
   x[["primaryDept"]] <- deptList
   x[["secondaryDept"]]<- deptList
