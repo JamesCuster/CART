@@ -109,6 +109,7 @@ timeInputs <- data.frame(
           "workBy",
           "dateOfWork",
           "dateOfEntry",
+          "timeFunded",
           "workTime",
           "workTimeCategory",
           "timeAsCat",
@@ -119,6 +120,7 @@ timeInputs <- data.frame(
              "BDSH Staff",
              "Work Completed On",
              "Work Logged On",
+             "Was This Time Funded?",
              "Time Spent",
              "Time Category",
              "Enter As Category",
@@ -129,6 +131,7 @@ timeInputs <- data.frame(
            "selectizeInput",
            "dateInput",
            "dateInput",
+           "selectizeInput",
            "textInput",
            "selectizeInput",
            "actionButton",
@@ -206,6 +209,7 @@ choicesTime <- reactive({
   # choices for time modal Inputs
   x[["timeProjectID"]] <- valueLableProject(reactiveData$viewProjects, "projectID", "projectName")
   x[["workBy"]] <- valueLabel(reactiveData$employees, "bdshID", "employeeName")
+  x[["timeFunded"]] <- c("Funded", "Unfunded")
   x[["workTimeCategory"]] <- c("Small", "Medium", "Large", "Extra Large")
   x[["workCategory"]] <- list(
     `Study Design` = c("Conceptualization", "Analysis Plan", "Power/Sample Size"),
@@ -328,6 +332,7 @@ viewTimeQuery <-
        e.employeeEmail,
        t.dateOfWork,
        t.dateOfEntry,
+       t.timeFunded,
        t.workTime,
        t.workTimeCategory,
        t.workCategory,
@@ -361,6 +366,7 @@ viewTimeDisplay <- c("timeID",
                      "employeeEmail",
                      "dateOfWork",
                      "dateOfEntry",
+                     "timeFunded",
                      "workTime",
                      "workTimeCategory",
                      "workCategory",
