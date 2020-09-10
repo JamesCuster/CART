@@ -53,5 +53,16 @@ time <- time[, c("timeID", "timeProjectID", "workBy", "dateOfWork", "dateOfEntry
          "workDescription")]
 
 
+
+# There are 2 time entries that don't have date. Manually add them
+time[343, "dateOfWork"] <- time[344, "dateOfWork"]
+time[393, "dateOfWork"] <- time[394, "dateOfWork"]
+
+
+# Nazan entered time in project 1010 that was for the THC project and thus was
+# funded work. manually change timeFunded for these entries
+time[c(391, 412), "timeFunded"] <- "Funded"
+
+
 dbWriteTable(BDSHProjects, "time", value = time, append = FALSE, 
              overwrite = TRUE)
