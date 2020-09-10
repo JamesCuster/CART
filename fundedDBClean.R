@@ -30,8 +30,7 @@ table(projects$projectFunded, p, useNA = "ifany")
 
 projects$projectFunded <- p
 
-dbWriteTable(BDSHProjects, "projects", value = projects, append = FALSE, 
-             overwrite = TRUE)
+
 
 
 
