@@ -9,7 +9,7 @@ library(shinyjs)
   # dirPath is defined in run.R and supplied via an argument in the CART.bat
   # call to rscript. However, if dirPath is not defined up to this point, then
   # need it defined locally, that is what this code below does
-dirPath <- ifelse(exists("dirPath"), dirPath, "C:/Users/jmc6538/Documents/BDSHProjects/CART")
+dirPath <- ifelse(exists("dirPath"), dirPath, "Z:/CART/")
 
 # Connect to database
 BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))

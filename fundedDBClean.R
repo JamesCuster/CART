@@ -5,12 +5,12 @@ library(RSQLite)
 # Impute funded in Projects -----------------------------------------------
 
 # read in funded CSV
-funded <- read.csv("C:/Users/jmc6538/Documents/BDSHProjects/CART/FundedProjects.csv", 
+funded <- read.csv("Z:/CART/FundedProjects.csv", 
                    stringsAsFactors = FALSE)
 funded <- na.omit(funded)
 
 # Database path
-dirPath <- ifelse(exists("dirPath"), dirPath, "C:/Users/jmc6538/Documents/BDSHProjects/CART")
+dirPath <- ifelse(exists("dirPath"), dirPath, "Z:/CART")
 
 # Connect to database
 BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))
