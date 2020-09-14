@@ -72,40 +72,13 @@ shinyUI(
     
     # Title
     div(
-    div(
-      tags$h1("C", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
-      tags$h6("uster", style = "font-size: 10px; margin-bottom: 20px; margin-left: -6px;"),
-      tags$h1("A", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
-      tags$h6("ctive", style = "font-size: 10px; margin-bottom: 20px;"),
-      tags$h1("R", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -3px;"),
-      tags$h6("esource", style = "font-size: 10px; margin-bottom: 20px;"),
-      tags$h1("T", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -16px;"),
-      tags$h6("racker", style = "font-size: 10px; margin-bottom: 20px; margin-left: -16px;"),
+      tags$h1("CART", style = "font-size: 100px; font-weight: 900; font-family: inherit; font-style: italic; z-index: 1"),
+      img(src='gokart2.jpg', style = "height: 79px; margin-bottom: 19px; margin-left: -20px"),
       style = "display: flex; align-items: flex-end;"
     ),
-    div(
-      tags$br(),
-      img(src='main.jpg', align = "bottom", width = "525px", height = "300px"),
-      style = "margin-bottom: 20px;"
-    )
-    ),
-    
-
-    # div(
-    #   tags$h1("C", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
-    #   tags$h6("uster", style = "font-size: 10px; margin-bottom: 20px; margin-left: -6px;"),
-    #   tags$h1("R", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -3px;"),
-    #   tags$h6("esource", style = "font-size: 10px; margin-bottom: 20px;"),
-    #   tags$h1("A", style = "font-size: 72px; font-weight: 900; font-family: inherit;"),
-    #   tags$h6("ctivity", style = "font-size: 10px; margin-bottom: 20px;"),
-    #   tags$h1("P", style = "font-size: 72px; font-weight: 900; font-family: inherit; margin-left: -16px;"),
-    #   tags$h6("rogress", style = "font-size: 10px; margin-bottom: 20px; margin-left: -16px;"),
-    #   style = "display: flex; align-items: flex-end;"
-    # ),
 
 
     tabsetPanel(id = "tab",
-      
       # Add tab panels for projects, time, and people ---------------------
       
       # Projects

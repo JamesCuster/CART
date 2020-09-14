@@ -82,7 +82,6 @@ projectInputs <-
             "projectSupport3",
             "projectSupport4",
             "projectDescription",
-            "projectFunded",
             "projectStatus",
             "projectStatusComment",
             "projectDueDate",
@@ -97,7 +96,6 @@ projectInputs <-
                "Support Staff 3",
                "Support Staff 4",
                "Brief Description",
-               "Project Funded",
                "Project Status",
                "Project Status Comment",
                "Due Date",
@@ -112,7 +110,6 @@ projectInputs <-
              "selectizeInput",
              "selectizeInput",
              "textAreaInput",
-             "selectizeInput",
              "selectInput",
              "textAreaInput",
              "dateInput",
@@ -134,7 +131,6 @@ choicesProjects <- reactive({
   x[["projectSupport2"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport3"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
   x[["projectSupport4"]] <- valueLabel(reactiveData$researchers, "researcherID", "researcherName")
-  x[["projectFunded"]] <- c("Funded", "Unfunded")
   x[["projectStatus"]] <- list("Active", 
                                Closed = paste0("Closed - ", 
                                                c("Funding Awarded", "Funding Declined", "Manuscript Accepted",
@@ -238,16 +234,6 @@ observeEvent(
             reactiveData$projects[reactiveData$projects$projectID == rowID, ],
             choices = choices
           )
-        # Add extra text to projectFunded input 
-        fields$projectFunded$children <- 
-          list(fields$projectFunded$children,
-               div("If this project was unfunded and became funded, do not 
-                   change this field to funded as this would change all unfunded 
-                   time entered to funded time. If you need to track funded time 
-                   for this project, please create a new project entry in CART. 
-                   If you just need to indicate that the project became funded, 
-                   please do so in the Project Status below.",
-                   style = "margin-top: -15px;"))
         
         showModal(
           modalDialog(
@@ -312,7 +298,6 @@ viewProjectsQuery <-
             r5.researcherName as projectSupport4Name,
             r5.researcherEmail as projectSupport4Email,
             p.projectDescription,
-            p.projectFunded,
             p.projectStatus,
             p.projectStatusComment,
             p.projectDueDate,
@@ -440,10 +425,6 @@ modalText <- function(x) {
             div(x$projectSupport4Name, class = "modalVariableContent")
           )
         },
-        
-        # Funded Project
-        div("Project Funded", class = "modalVariableNames"),
-        div(x$projectFunded, class = "modalVariableContent"),
         
         # Project Status
         div("Project Status", class = "modalVariableNames"),
