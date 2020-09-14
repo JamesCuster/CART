@@ -66,3 +66,11 @@ time[c(391, 412), "timeFunded"] <- "Funded"
 
 dbWriteTable(BDSHProjects, "time", value = time, append = FALSE, 
              overwrite = TRUE)
+
+
+# Remove projectFunded column from projects table. -----------------------------
+projects <- projects[, -which(names(projects) == "projectFunded")]
+
+
+dbWriteTable(BDSHProjects, "projects", value = projects, append = FALSE, 
+             overwrite = TRUE)
