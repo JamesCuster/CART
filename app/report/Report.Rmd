@@ -1,9 +1,22 @@
 ---
-title: "Untitled"
-author: "James Custer"
-date: "9/15/2020"
-output: html_document
+title: "BDSH Unfunded Projects"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: TRUE
 ---
+```{r}
+fy <- 2020
+```
+---
+subtitle: "`r sprintf('Fiscal Year %s', fy)`"
+---
+
+
+
 
 ```{r setup, include = FALSE}
 library(RSQLite)
@@ -11,8 +24,10 @@ library(lubridate)
 library(ggplot2)
 library(magrittr)
 library(dplyr)
+library(knitr)
 
-knitr::opts_chunk$set(include = FALSE)
+knitr::opts_chunk$set(include = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
 
 # Directory Path
 dirPath <- ifelse(exists("dirPath"), 
@@ -120,7 +135,7 @@ time$degree[grepl("MS", time$degree)] <- "MS"
 ```
 
 
-
+# BDSH Projects
 
 ```{r}
 # Collect projects that were initiated or active in given FY
@@ -130,44 +145,37 @@ startDate <- paste0(fy - 1, "-09-01")
 endDate <- paste0(fy, "-08-31")
 
 
-# # First get projectIDs for projects with corresponding FY id
-# initiated <- grep(paste0("^", fyShort), projects$projectID, value = TRUE)
-
-
 # Get projects that had work completed between startDate and endDate
 workedon <- time[which(time$date %within% interval(startDate, endDate)), ]
 workedon <- unique(workedon[workedon$timeFunded == "Unfunded", "timeProjectID"])
 
-
+# data.frame of all projects worked on in `fy`
 fyProjects <- projects[projects$projectID %in% workedon, ]
 ```
 
 The BDSHub worked on a total of `r nrow(fyProjects)` without funding support during the `r fy`FY.
 
-```{r, include = TRUE, echo = FALSE}
-
+```{r, include = TRUE}
 # barchart of the unfunded projects by department
 ggplot(fyProjects) + 
   geom_bar(aes(x = reorder(projectPIPrimaryDept, 
                            projectPIPrimaryDept, 
-                           function(x)-length(x)))
-           ) + 
+                           function(x)-length(x)))) + 
   theme_bw() +
-  theme(
-    axis.text.x = element_text(
-      angle = 60, 
-      hjust = 1,
-      vjust = 1)
-  ) + 
-  labs(
-    title = sprintf("BDSHub FY %s Unfunded Projects by Primary Department of PI", fy),
-    x = "Department",
-    y = "Total"
-  )
+  theme(axis.text.x = element_text(angle = 60,
+                                   hjust = 1,
+                                   vjust = 1)) + 
+  labs(title = sprintf("BDSHub FY %s Unfunded Projects by Primary Department of PI", 
+                       fy),
+       x = "Department",
+       y = "Total")
 ```
 
 
 
+
+
+# BDSH Unfunded Effort
 
 ```{r}
 # Create FY week number data.frame ---------------------------------------------
@@ -330,5 +338,20 @@ timeFY %>%
   theme_bw() +
   labs(title = "Histogram of Percent Effort over a Month by Project PI's Project by BDSH Employee Degree",
        x = "Percent Effort (% of Month)")
+```
+
+
+
+# Project Appendix
+```{r, results = 'asis'}
+projApp <- fyProjects[, c("projectID", "projectName", "projectPIName", "projectPIPrimaryDept", "projectStatus")]
+
+deptProjects <- lapply(split(projApp, projApp$projectPIPrimaryDept), function(x) {
+  dept <- x[1, "projectPIPrimaryDept"]
+  df <- x[order(x$projectStatus, x$projectPIPrimaryDept), -grep("Dept", names(x))]
+  cat(sprintf("### %s \n", dept))
+  print(kable(df, row.names = FALSE))
+  return(invisible(structure(list(dept = dept, df = df), class = "DeptProjects")))
+})
 ```
 
