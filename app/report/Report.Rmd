@@ -100,9 +100,10 @@ dbClearResult(timeQuery)
 
 
 
-
 ```{r}
 # some data cleaning for the time data -----------------------------------------
+
+
 # The dateOfWork and dateOfEntry columns users sometimes use one, both. Want to
 # use dateOfWork if it is available, and dateOfEntry if not.
 time$date <- ifelse(is.na(time$dateOfWork), time$dateOfEntry, time$dateOfWork)
@@ -112,6 +113,10 @@ time$date <- ymd(time$date)
 
 # Convert time$workTime to numeric
 time$workTime <- as.numeric(time$workTime)
+
+# clean degree to be MS, MPH to be MS
+time$degree[grepl("MS", time$degree)] <- "MS"
+
 ```
 
 
@@ -140,9 +145,13 @@ fyProjects <- projects[projects$projectID %in% workedon, ]
 The BDSHub worked on a total of `r nrow(fyProjects)` without funding support during the `r fy`FY.
 
 ```{r, include = TRUE, echo = FALSE}
+
 # barchart of the unfunded projects by department
 ggplot(fyProjects) + 
-  geom_bar(aes(x = projectPIPrimaryDept)) + 
+  geom_bar(aes(x = reorder(projectPIPrimaryDept, 
+                           projectPIPrimaryDept, 
+                           function(x)-length(x)))
+           ) + 
   theme_bw() +
   theme(
     axis.text.x = element_text(
@@ -151,7 +160,7 @@ ggplot(fyProjects) +
       vjust = 1)
   ) + 
   labs(
-    title = "BDSHub Unfunded Projects by Primary Department of PI",
+    title = sprintf("BDSHub FY %s Unfunded Projects by Primary Department of PI", fy),
     x = "Department",
     y = "Total"
   )
@@ -185,8 +194,6 @@ fyWeeks <- data.frame(start = seq(as.Date(startDateMonday), as.Date(endDate), 7)
 fyWeeks$week <- rownames(fyWeeks)
 # Add start/end interval
 fyWeeks$int <- interval(fyWeeks$start, fyWeeks$end)
-
-
 
 
 # Create inflation factor for number of projects worked on in a week. ----------
@@ -269,14 +276,59 @@ timeFY <- timeFY %>%
     month = month(date)
   )
 
-# Calculate % effort per month for each entry
-foo <- timeFY %>% 
-  group_by(timeProjectID, month, degree) %>% 
-  summarise(monthHours = sum(timeInflation), .groups = "drop") %>% 
-  mutate(monthPercentEffort = (monthHours/1500) * 1200)
 
-ggplot(foo) + 
-  geom_histogram(aes(x = monthPercentEffort, fill = degree))
+# Make some plots
 
+# Calculate % effort per month for each Department
+timeFY %>% 
+  # First merge PIDept into time table
+  left_join(projects %>% select(projectID, projectPIPrimaryDept),
+            by = c("timeProjectID" = "projectID")) %>% 
+  group_by(projectPIPrimaryDept) %>% 
+  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
+  ggplot(aes(x = timeDept)) + 
+  geom_histogram() + 
+  theme_bw() +
+  labs(title = "Histogram of Percent Effort over a Month by Project PI's Department",
+       x = "Percent Effort (% of Month)")
+
+timeFY %>% 
+  # First merge PIDept into time table
+  left_join(projects %>% select(projectID, projectPIPrimaryDept),
+            by = c("timeProjectID" = "projectID")) %>% 
+  group_by(projectPIPrimaryDept, degree) %>% 
+  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
+  ggplot(aes(x = timeDept)) + 
+  geom_histogram() + 
+  theme_bw() +
+  facet_wrap(~degree) + 
+  labs(title = "Histogram of Percent Effort over a Month by Project PI's Department by BDSH Employee Degree",
+       x = "Percent Effort (% of Month)")
+
+
+timeFY %>% 
+  # First merge PIDept into time table
+  left_join(projects %>% select(projectID, projectPIPrimaryDept),
+            by = c("timeProjectID" = "projectID")) %>% 
+  group_by(timeProjectID) %>% 
+  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
+  ggplot(aes(x = timeDept)) + 
+  geom_histogram() + 
+  theme_bw() +
+  labs(title = "Histogram of Percent Effort over a Month by Project PI's Project",
+       x = "Percent Effort (% of Month)")
+
+timeFY %>% 
+  # First merge PIDept into time table
+  left_join(projects %>% select(projectID, projectPIPrimaryDept),
+            by = c("timeProjectID" = "projectID")) %>% 
+  group_by(timeProjectID, degree) %>% 
+  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
+  ggplot(aes(x = timeDept)) + 
+  geom_histogram() + 
+  facet_wrap(~degree) + 
+  theme_bw() +
+  labs(title = "Histogram of Percent Effort over a Month by Project PI's Project by BDSH Employee Degree",
+       x = "Percent Effort (% of Month)")
 ```
 
