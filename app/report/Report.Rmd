@@ -1,5 +1,5 @@
 ---
-title: "BDSH Unfunded Projects"
+title: "BDSH Pilot and Pre-funding Projects"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   html_document:
@@ -8,15 +8,6 @@ output:
     toc_float:
       collapsed: TRUE
 ---
-```{r}
-fy <- 2020
-```
----
-subtitle: "`r sprintf('Fiscal Year %s', fy)`"
----
-
-
-
 
 ```{r setup, include = FALSE}
 library(RSQLite)
@@ -27,7 +18,7 @@ library(dplyr)
 library(knitr)
 
 knitr::opts_chunk$set(include = TRUE)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 
 # Directory Path
 dirPath <- ifelse(exists("dirPath"), 
@@ -39,6 +30,15 @@ dirPath <- ifelse(exists("dirPath"),
 # Connect to database
 BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))
 ```
+
+
+```{r}
+fy <- 2020
+```
+---
+subtitle: "`r sprintf('Fiscal Year %s', fy)`"
+---
+
 
 
 
@@ -153,9 +153,9 @@ workedon <- unique(workedon[workedon$timeFunded == "Unfunded", "timeProjectID"])
 fyProjects <- projects[projects$projectID %in% workedon, ]
 ```
 
-The BDSHub worked on a total of `r nrow(fyProjects)` without funding support during the `r fy`FY.
+The BDSHub worked on a total of `r nrow(fyProjects)` pilot or pre-funding projects between `r length(unique(fyProjects$projectPIName))` different PIs during the `r fy`FY.
 
-```{r, include = TRUE}
+```{r, include = TRUE, results = 'asis'}
 # barchart of the unfunded projects by department
 ggplot(fyProjects) + 
   geom_bar(aes(x = reorder(projectPIPrimaryDept, 
@@ -165,17 +165,44 @@ ggplot(fyProjects) +
   theme(axis.text.x = element_text(angle = 60,
                                    hjust = 1,
                                    vjust = 1)) + 
-  labs(title = sprintf("BDSHub FY %s Unfunded Projects by Primary Department of PI", 
+  labs(title = sprintf("BDSHub FY %s Projects by Primary Department of PI", 
                        fy),
        x = "Department",
        y = "Total")
+
+cat("<br><br><br>")
+
+# Bar chart of the number of PIs from each department we have worked with
+foo <- fyProjects[!duplicated(fyProjects[, c("projectPIName", "projectPIPrimaryDept")]), c("projectPIName", "projectPIPrimaryDept")]
+
+# Match deparment order from plot above
+a <- reorder(fyProjects$projectPIPrimaryDept,
+        fyProjects$projectPIPrimaryDept,
+        function(x) -length(x)) %>% 
+  levels
+
+foo$projectPIPrimaryDept <- factor(foo$projectPIPrimaryDept, levels = a)
+
+
+ggplot(foo) + 
+  geom_bar(aes(x = projectPIPrimaryDept)) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 60,
+                                   hjust = 1,
+                                   vjust = 1)) + 
+  labs(title = sprintf("FY %s Number of PIs Interacted With by Deparment", 
+                       fy),
+       x = "Department",
+       y = "Total PIs")
+
+cat("<br><br><br>")
 ```
 
 
 
 
 
-# BDSH Unfunded Effort
+# BDSH Effort on Pilot or Pre-Funding Projects
 
 ```{r}
 # Create FY week number data.frame ---------------------------------------------
@@ -254,7 +281,7 @@ timeFY <- timeFYweek %>%
 
 
 
-```{r}
+```{r, message=FALSE, results = 'asis'}
 # Make 3 new variables
   # time
     # takes the value of workTimeCategory if it exist and converts it to a
@@ -285,59 +312,144 @@ timeFY <- timeFY %>%
   )
 
 
+# Merge timeFY with project info
+timeFY <- timeFY %>% 
+  left_join(projects %>% select(projectID, projectPIPrimaryDept, projectPIName),
+            by = c("timeProjectID" = "projectID"))
+
+
 # Make some plots
 
-# Calculate % effort per month for each Department
+# Plot of % effort by project total
 timeFY %>% 
-  # First merge PIDept into time table
-  left_join(projects %>% select(projectID, projectPIPrimaryDept),
-            by = c("timeProjectID" = "projectID")) %>% 
-  group_by(projectPIPrimaryDept) %>% 
-  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
-  ggplot(aes(x = timeDept)) + 
-  geom_histogram() + 
-  theme_bw() +
-  labs(title = "Histogram of Percent Effort over a Month by Project PI's Department",
-       x = "Percent Effort (% of Month)")
-
-timeFY %>% 
-  # First merge PIDept into time table
-  left_join(projects %>% select(projectID, projectPIPrimaryDept),
-            by = c("timeProjectID" = "projectID")) %>% 
-  group_by(projectPIPrimaryDept, degree) %>% 
-  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
-  ggplot(aes(x = timeDept)) + 
-  geom_histogram() + 
-  theme_bw() +
-  facet_wrap(~degree) + 
-  labs(title = "Histogram of Percent Effort over a Month by Project PI's Department by BDSH Employee Degree",
-       x = "Percent Effort (% of Month)")
-
-
-timeFY %>% 
-  # First merge PIDept into time table
-  left_join(projects %>% select(projectID, projectPIPrimaryDept),
-            by = c("timeProjectID" = "projectID")) %>% 
   group_by(timeProjectID) %>% 
-  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
-  ggplot(aes(x = timeDept)) + 
-  geom_histogram() + 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  mutate(timeProjectID = as.character(timeProjectID)) %>% 
+  ggplot(aes(x = reorder(timeProjectID, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
   theme_bw() +
-  labs(title = "Histogram of Percent Effort over a Month by Project PI's Project",
-       x = "Percent Effort (% of Month)")
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH Percent Effort of a Month by Project",
+       y = "Percent Effort (% of Month)",
+       x = "Projects")
 
-timeFY %>% 
-  # First merge PIDept into time table
-  left_join(projects %>% select(projectID, projectPIPrimaryDept),
-            by = c("timeProjectID" = "projectID")) %>% 
+cat("<br><br><br>")
+
+# Plot of % effort by project degree
+foo <- timeFY %>% 
   group_by(timeProjectID, degree) %>% 
-  summarise(timeDept = sum(timeInflation), .groups = "drop") %>% 
-  ggplot(aes(x = timeDept)) + 
-  geom_histogram() + 
-  facet_wrap(~degree) + 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  right_join(expand.grid(timeProjectID = unique(timeFY$timeProjectID),
+                         degree = unique(timeFY$degree)),
+             by = c("timeProjectID", "degree")) %>% 
+  mutate(time = ifelse(is.na(time), 0, time))
+
+
+
+
+foo %>% 
+  filter(degree == "MS") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(timeProjectID, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
   theme_bw() +
-  labs(title = "Histogram of Percent Effort over a Month by Project PI's Project by BDSH Employee Degree",
-       x = "Percent Effort (% of Month)")
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH MS Percent Effort of a Month by Project",
+       y = "Percent Effort (% of Month)",
+       x = "Projects")
+
+cat("<br><br><br>")
+
+
+foo %>% 
+  filter(degree == "PhD") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(timeProjectID, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH PhD Percent Effort of a Month by Project",
+       y = "Percent Effort (% of Month)",
+       x = "Projects")
+
+cat("<br><br><br>")
+
+
+# Do the same three plots as above, but by PI
+
+# Fill in na PI names with missing
+timeFY$projectPIName <- ifelse(is.na(timeFY$projectPIName), "Missing", timeFY$projectPIName)
+
+# Plot of % effort by PI total
+timeFY %>% 
+  group_by(projectPIName) %>% 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  ggplot(aes(x = reorder(projectPIName, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH Total Percent Effort of a Month by PI",
+       y = "Percent Effort (% of Month)",
+       x = "PIs")
+
+cat("<br><br><br>")
+
+
+# Plot by degree
+foo <- timeFY %>% 
+  group_by(projectPIName, degree) %>% 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  right_join(expand.grid(projectPIName = unique(timeFY$projectPIName),
+                         degree = unique(timeFY$degree)),
+             by = c("projectPIName", "degree")) %>% 
+  mutate(time = ifelse(is.na(time), 0, time))
+
+
+
+foo %>% 
+  filter(degree == "MS") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(projectPIName, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH MS Percent Effort of a Month by PI",
+       y = "Percent Effort (% of Month)",
+       x = "PIs")
+
+cat("<br><br><br>")
+
+
+foo %>% 
+  filter(degree == "PhD") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(projectPIName, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH PhD Percent Effort of a Month by PI",
+       y = "Percent Effort (% of Month)",
+       x = "PIs")
+
+cat("<br><br><br><br><br><br>")
 ```
 
 
