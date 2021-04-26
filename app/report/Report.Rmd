@@ -1,0 +1,469 @@
+---
+title: "BDSH Pilot and Pre-funding Projects"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: TRUE
+---
+
+```{r setup, include = FALSE}
+library(RSQLite)
+library(lubridate)
+library(ggplot2)
+library(magrittr)
+library(dplyr)
+library(knitr)
+
+knitr::opts_chunk$set(include = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+
+# Directory Path
+dirPath <- ifelse(exists("dirPath"), 
+                  dirPath, 
+                  ifelse(Sys.info()["nodename"] == "DMSBIOMED02", 
+                         "Z:/CART/",
+                         "C:/Users/jmc6538/Documents/BDSHProjects/CART/"))
+
+# Connect to database
+BDSHProjects <- dbConnect(dbDriver("SQLite"), paste0(dirPath, "/BDSHProjects.sqlite"))
+```
+
+
+```{r}
+fy <- 2020
+```
+---
+subtitle: "`r sprintf('Fiscal Year %s', fy)`"
+---
+
+
+
+
+```{r}
+# Gather project data -----------------------------------------------------
+projectsQuery <- "select  p.projectID,
+  p.projectName,
+  p.bdshLead,
+  e1.employeeName as bdshLeadName,
+  e1.employeeEmail as bdshLeadEmail,
+  p.bdshSecondary,
+  e2.employeeName as bdshSecondaryName,
+  e2.employeeEmail as bdshSecondaryEmail,
+  p.projectPI,
+  r1.researcherName as projectPIName,
+  r1.researcherEmail as projectPIEmail,
+  r1.primaryDept as projectPIPrimaryDept,
+  r1.secondaryDept as projectPISecondaryDept,
+  p.projectSupport1,
+  r2.researcherName as projectSupport1Name,
+  r2.researcherEmail as projectSupport1Email,
+  p.projectSupport2,
+  r3.researcherName as projectSupport2Name,
+  r3.researcherEmail as projectSupport2Email,
+  p.projectSupport3,
+  r4.researcherName as projectSupport3Name,
+  r4.researcherEmail as projectSupport3Email,
+  p.projectSupport4,
+  r5.researcherName as projectSupport4Name,
+  r5.researcherEmail as projectSupport4Email,
+  p.projectDescription,
+  p.projectStatus,
+  p.projectDueDate,
+  p.educationProject
+  from projects p
+    left join employees e1 on p.bdshLead = e1.bdshID
+    left join employees e2 on p.bdshSecondary = e2.bdshID
+    left join researchers r1 on p.projectPI = r1.researcherID
+    left join researchers r2 on p.projectSupport1 = r2.researcherID
+    left join researchers r3 on p.projectSupport2 = r3.researcherID
+    left join researchers r4 on p.projectSupport3 = r4.researcherID
+    left join researchers r5 on p.projectSupport4 = r5.researcherID"
+
+projectsQuery <- dbSendQuery(BDSHProjects, projectsQuery)
+projects <- dbFetch(projectsQuery)
+dbClearResult(projectsQuery)
+
+
+
+# Gather time data
+timeQuery <- 
+  "select t.timeID,
+       t.timeProjectID,
+       p.projectName,
+       t.workBy,
+       e.employeeName,
+       e.employeeEmail,
+       e.degree,
+       t.dateOfWork,
+       t.dateOfEntry,
+       t.timeFunded,
+       t.workTime,
+       t.workTimeCategory,
+       t.workCategory,
+       t.workDescription
+from time t
+left join projects p on t.timeProjectID = p.projectID
+left join employees e on t.workBy = e.bdshID"
+
+timeQuery <- dbSendQuery(BDSHProjects, timeQuery)
+time <- dbFetch(timeQuery)
+dbClearResult(timeQuery)
+```
+
+
+
+```{r}
+# some data cleaning for the time data -----------------------------------------
+
+
+# The dateOfWork and dateOfEntry columns users sometimes use one, both. Want to
+# use dateOfWork if it is available, and dateOfEntry if not.
+time$date <- ifelse(is.na(time$dateOfWork), time$dateOfEntry, time$dateOfWork)
+
+# Convert time$date to a date
+time$date <- ymd(time$date)
+
+# Convert time$workTime to numeric
+time$workTime <- as.numeric(time$workTime)
+
+# clean degree to be MS, MPH to be MS
+time$degree[grepl("MS", time$degree)] <- "MS"
+
+```
+
+
+# BDSH Projects
+
+```{r}
+# Collect projects that were initiated or active in given FY
+fy <- 2020
+fyShort <- substr(fy, 3, 4)
+startDate <- paste0(fy - 1, "-09-01")
+endDate <- paste0(fy, "-08-31")
+
+
+# Get projects that had work completed between startDate and endDate
+workedon <- time[which(time$date %within% interval(startDate, endDate)), ]
+workedon <- unique(workedon[workedon$timeFunded == "Unfunded", "timeProjectID"])
+
+# data.frame of all projects worked on in `fy`
+fyProjects <- projects[projects$projectID %in% workedon, ]
+```
+
+The BDSHub worked on a total of `r nrow(fyProjects)` pilot or pre-funding projects between `r length(unique(fyProjects$projectPIName))` different PIs during the `r fy`FY.
+
+```{r, include = TRUE, results = 'asis'}
+# barchart of the unfunded projects by department
+ggplot(fyProjects) + 
+  geom_bar(aes(x = reorder(projectPIPrimaryDept, 
+                           projectPIPrimaryDept, 
+                           function(x)-length(x)))) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 60,
+                                   hjust = 1,
+                                   vjust = 1)) + 
+  labs(title = sprintf("BDSHub FY %s Projects by Primary Department of PI", 
+                       fy),
+       x = "Department",
+       y = "Total")
+
+cat("<br><br><br>")
+
+# Bar chart of the number of PIs from each department we have worked with
+foo <- fyProjects[!duplicated(fyProjects[, c("projectPIName", "projectPIPrimaryDept")]), c("projectPIName", "projectPIPrimaryDept")]
+
+# Match deparment order from plot above
+a <- reorder(fyProjects$projectPIPrimaryDept,
+        fyProjects$projectPIPrimaryDept,
+        function(x) -length(x)) %>% 
+  levels
+
+foo$projectPIPrimaryDept <- factor(foo$projectPIPrimaryDept, levels = a)
+
+
+ggplot(foo) + 
+  geom_bar(aes(x = projectPIPrimaryDept)) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 60,
+                                   hjust = 1,
+                                   vjust = 1)) + 
+  labs(title = sprintf("FY %s Number of PIs Interacted With by Deparment", 
+                       fy),
+       x = "Department",
+       y = "Total PIs")
+
+cat("<br><br><br>")
+```
+
+
+
+
+
+# BDSH Effort on Pilot or Pre-Funding Projects
+
+```{r}
+# Create FY week number data.frame ---------------------------------------------
+  #1 uses startDate and endDate supplied two code chunks above.
+  #2 find the first Monday prior to startDate
+  #3 make fyWeeks data.frame that includes columns:
+    #a start - the date of the Monday that starts the week
+    #b end - the date of the Sunday that concludes the week
+    #c week - the number week of the FY
+    #d int - combines start and end into an interval class. 
+    # ex:
+      #        start        end week                            int
+      # 1 2019-08-26 2019-09-01    1 2019-08-26 UTC--2019-09-01 UTC
+      # 2 2019-09-02 2019-09-08    2 2019-09-02 UTC--2019-09-08 UTC
+
+# find the date of the Monday before startDate
+startDateMonday <- ymd(startDate) - 0:6
+startDateMonday <- startDateMonday[which(weekdays(startDateMonday) == "Monday")]
+
+# Create fyWeeks data.frame
+fyWeeks <- data.frame(start = seq(as.Date(startDateMonday), as.Date(endDate), 7),
+                      end = seq(as.Date(startDateMonday)+6, as.Date(endDate)+6, 7))
+# Add week column
+fyWeeks$week <- rownames(fyWeeks)
+# Add start/end interval
+fyWeeks$int <- interval(fyWeeks$start, fyWeeks$end)
+
+
+# Create inflation factor for number of projects worked on in a week. ----------
+
+# Need 2 filtered time data sets.
+  #1 timeFYWeek 
+      # includes work completed between the earliest start and latest end
+      # dates in the fyWeeks data.frame. Note, this data set will likely include
+      # some work done outside of the FY, but it is only used to determine the
+      # number of projects worked on each week by each employee which is used to
+      # calculate the inflation factor
+  #2 timeFY
+    # includes time that should be counted towards the given FY, i.e. time that
+    # occured between startDate and endDate. Created from the timeFYWeek
+    # data.frame
+
+# Create the timeFYWeek data.frame
+timeFYweek <- time[time$date >= min(fyWeeks$start) & time$date <= max(fyWeeks$end), ]
+
+# For timeFYWeek determine which week of the FY each time entry occurred in 
+timeFYweek$fyWeek <- lapply(timeFYweek$date, function(x) {
+  which(ymd(x) %within% fyWeeks$int)
+}) %>% unlist()
+
+# Create timeFY
+timeFY <- timeFYweek[timeFYweek$date >= startDate & timeFYweek$date <= endDate, ]
+
+
+
+# Compute Inflation factor -----------------------------------------------------
+
+# Create the inflation factor for each employee for every week of the FY and
+# merge with timeFY
+timeFY <- timeFYweek %>% 
+  # sum number of projects each week for each person
+  group_by(employeeName, fyWeek, degree) %>% 
+  summarise(numberProjects = n(), .groups = "drop") %>% 
+  # Compute inflation factor
+  mutate(inflation = 
+           case_when(
+             grepl("PhD", degree) ~ 1 + (.05 * (numberProjects - 1)),
+             grepl("MS|MPH", degree) ~ 1 + (.1 * (numberProjects - 1))
+            )
+  ) %>% 
+  select(employeeName, fyWeek, inflation) %>%
+  # Merge with the timeFY data
+  left_join(timeFY, ., by = c("employeeName", "fyWeek"))
+```
+
+
+
+
+```{r, message=FALSE, results = 'asis'}
+# Make 3 new variables
+  # time
+    # takes the value of workTimeCategory if it exist and converts it to a
+    # numeric, if not it uses the numeric value of workTime
+  # timeInflation
+    # Takes time multiplied by the inflation factor
+  # monthPercentEffort
+    # calculates the percent effort of a month for a given time entry
+      # (hrs/1500) * 1200
+  # month
+    # Month that the work occured
+timeFY <- timeFY %>% 
+  mutate(
+    time = case_when(
+    workTimeCategory == "Small" ~ .5,
+    workTimeCategory == "Medium" ~ 1.5,
+    workTimeCategory == "Large" ~ 4.5,
+    workTimeCategory == "Extra Large" ~ 6.5,
+    is.na(workTimeCategory) ~ workTime,
+    TRUE ~ NA_real_
+    ),
+    
+    timeInflation = time * inflation,
+    
+    monthPercentEffort = (timeInflation / 1500) * 1200,
+    
+    month = month(date)
+  )
+
+
+# Merge timeFY with project info
+timeFY <- timeFY %>% 
+  left_join(projects %>% select(projectID, projectPIPrimaryDept, projectPIName),
+            by = c("timeProjectID" = "projectID"))
+
+
+# Make some plots
+
+# Plot of % effort by project total
+timeFY %>% 
+  group_by(timeProjectID) %>% 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  mutate(timeProjectID = as.character(timeProjectID)) %>% 
+  ggplot(aes(x = reorder(timeProjectID, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH Percent Effort of a Month by Project",
+       y = "Percent Effort (% of Month)",
+       x = "Projects")
+
+cat("<br><br><br>")
+
+# Plot of % effort by project degree
+foo <- timeFY %>% 
+  group_by(timeProjectID, degree) %>% 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  right_join(expand.grid(timeProjectID = unique(timeFY$timeProjectID),
+                         degree = unique(timeFY$degree)),
+             by = c("timeProjectID", "degree")) %>% 
+  mutate(time = ifelse(is.na(time), 0, time))
+
+
+
+
+foo %>% 
+  filter(degree == "MS") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(timeProjectID, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH MS Percent Effort of a Month by Project",
+       y = "Percent Effort (% of Month)",
+       x = "Projects")
+
+cat("<br><br><br>")
+
+
+foo %>% 
+  filter(degree == "PhD") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(timeProjectID, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH PhD Percent Effort of a Month by Project",
+       y = "Percent Effort (% of Month)",
+       x = "Projects")
+
+cat("<br><br><br>")
+
+
+# Do the same three plots as above, but by PI
+
+# Fill in na PI names with missing
+timeFY$projectPIName <- ifelse(is.na(timeFY$projectPIName), "Missing", timeFY$projectPIName)
+
+# Plot of % effort by PI total
+timeFY %>% 
+  group_by(projectPIName) %>% 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  ggplot(aes(x = reorder(projectPIName, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH Total Percent Effort of a Month by PI",
+       y = "Percent Effort (% of Month)",
+       x = "PIs")
+
+cat("<br><br><br>")
+
+
+# Plot by degree
+foo <- timeFY %>% 
+  group_by(projectPIName, degree) %>% 
+  summarise(time = sum(timeInflation), .groups = "drop") %>% 
+  right_join(expand.grid(projectPIName = unique(timeFY$projectPIName),
+                         degree = unique(timeFY$degree)),
+             by = c("projectPIName", "degree")) %>% 
+  mutate(time = ifelse(is.na(time), 0, time))
+
+
+
+foo %>% 
+  filter(degree == "MS") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(projectPIName, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH MS Percent Effort of a Month by PI",
+       y = "Percent Effort (% of Month)",
+       x = "PIs")
+
+cat("<br><br><br>")
+
+
+foo %>% 
+  filter(degree == "PhD") %>% 
+  arrange(time) %>% 
+  ggplot(aes(x = reorder(projectPIName, time, function(x) x), y = time)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme_bw() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(title = "BDSH PhD Percent Effort of a Month by PI",
+       y = "Percent Effort (% of Month)",
+       x = "PIs")
+
+cat("<br><br><br><br><br><br>")
+```
+
+
+
+# Project Appendix
+```{r, results = 'asis'}
+projApp <- fyProjects[, c("projectID", "projectName", "projectPIName", "projectPIPrimaryDept", "projectStatus")]
+
+deptProjects <- lapply(split(projApp, projApp$projectPIPrimaryDept), function(x) {
+  dept <- x[1, "projectPIPrimaryDept"]
+  df <- x[order(x$projectStatus, x$projectPIPrimaryDept), -grep("Dept", names(x))]
+  cat(sprintf("### %s \n", dept))
+  print(kable(df, row.names = FALSE))
+  return(invisible(structure(list(dept = dept, df = df), class = "DeptProjects")))
+})
+```
+
