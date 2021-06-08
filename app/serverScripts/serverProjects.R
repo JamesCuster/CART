@@ -99,7 +99,7 @@ projectInputs <-
                "Project Status",
                "Project Status Comment",
                "Due Date",
-               "Is this a resident, fellow, or student project?"),
+               "Is this internally funded activity"),
     type = c("skip",
              "textInput",
              "selectizeInput",
@@ -138,7 +138,7 @@ choicesProjects <- reactive({
                                Dormant = paste0("Dormant - ", 
                                                 c("Grant Submitted", "Manuscript Submitted", 
                                                   "Analysis Completed", "Loss to Follow-up")))
-  x[["educationProject"]] <- c("No", "Resident or Fellow", "Student")
+  x[["educationProject"]] <- c("No", "Resident or Fellow", "Student", "Faculty Activity")
   
   # Project Filter Input choices (Inputs Created in Section 1)
   x[["viewProjectsByStatus"]] <- c(All = "All", x[["projectStatus"]])
