@@ -36,8 +36,8 @@ tabPanel(
       dateRangeInput(
         inputId = "viewTimeByDate",
         label = "Date Range",
-        start = as.Date(NA),
-        end = as.Date(NA)
+        start = "2019-06-01",
+        end = NULL
       ),
       style = "margin-left: 20px;"
     ),

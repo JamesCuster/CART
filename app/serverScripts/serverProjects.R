@@ -168,12 +168,21 @@ observeEvent(
       modalDialog(
         title = "Add Project",
         # *************************************************************************************************
-        radioButtons(
-          inputId =  "fiscalYear19", 
-          label = "Was The Project Initiated in FY 2019?", 
-          choices = c("Yes", "No"),
-          selected = "No",
-          inline = TRUE
+        # What happens in the following 2 star sections controls the fiscal year
+        # along with `sendCustomMessage` projectID
+        # radioButtons(
+        #   inputId =  "fiscalYear19", 
+        #   label = "Was The Project Initiated in FY 2019?", 
+        #   choices = c("Yes", "No"),
+        #   selected = "No",
+        #   inline = TRUE
+        # ),
+        tags$hr(),
+        selectizeInput(
+          inputId = "fiscalYear",
+          label = "What fiscal year was the project initiated",
+          choices = c("", getFY():2019),
+          selected = ""
         ),
         tags$hr(),
         # *************************************************************************************************
@@ -190,22 +199,54 @@ observeEvent(
 
 
 # *************************************************************************************************
-observeEvent(input$fiscalYear19, {
-  if (input$fiscalYear19 == "Yes") {
-    session$sendCustomMessage(
-      "projectID", 
+# observeEvent(input$fiscalYear19, {
+#   if (input$fiscalYear19 == "Yes") {
+#     session$sendCustomMessage(
+#       "projectID", 
+#       max(
+#         reactiveData$projects[reactiveData$projects$projectID < 20000, "projectID"]
+#       ) + 1)
+#   }
+#   else {
+#     return()
+#   }
+# })
+
+observeEvent(input$fiscalYear, {
+  req(input$fiscalYear)
+  # browser()
+  if (input$fiscalYear == 2019) {
+    projectID <- 
       max(
-        reactiveData$projects[reactiveData$projects$projectID < 20000, "projectID"]
-      ) + 1)
+        reactiveData$projects$projectID[
+          reactiveData$projects$projectID < 20000]
+      ) + 1
+  } else {
+    l <- as.numeric(substr(input$fiscalYear, 3, 4)) * 1000
+    u <- (as.numeric(substr(input$fiscalYear, 3, 4)) + 1) * 1000
+    projectID <-
+      ifelse(
+        any(between(reactiveData$projects$projectID, l, u)),
+        max(
+          reactiveData$projects$projectID[
+            between(reactiveData$projects$projectID, l, u)]
+        ) + 1,
+        l
+      )
   }
-  else {
-    return()
-  }
+  session$sendCustomMessage(
+    "projectID", 
+    projectID)
 })
+
 # *************************************************************************************************
 
 observeEvent(
   input$insertProject, {
+    if (input$fiscalYear == "") {
+      showNotification("Fiscal year required to add project. Please add and try again.")
+    }
+    req(input$fiscalYear)
     insertCallback(projectInputs$ids, "projects")
     removeModal()
   }

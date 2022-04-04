@@ -61,6 +61,12 @@ loadDatabase()
 
 
 # Manage Project IDs Based On Fiscal Year ---------------------------------
+getFY <- function(date = Sys.Date()) {
+  ifelse(format(date, "%m") %in% c("09", "10", "11", "12"), 
+         as.numeric(format(Sys.Date(),"%Y")) + 1,
+         as.numeric(format(Sys.Date(),"%Y")))
+}
+
 projectIDFiscalYear <- function() {
   if (format(Sys.Date(),"%m") %in% c("09", "10", "11", "12")) {
     idStart <- (as.numeric(format(Sys.Date(),"%y")) + 1) * 1000
@@ -114,9 +120,12 @@ modalInputs <- function(ids, labels, type, values, df, choices) {
     }
     else if (type[i] == "dateInput") {
       value <- ifelse(missing(values) || is.na(values[ids[i]]), NA, values[ids[i]])
+      if (is.na(value)) {
+        value <- NULL
+        }
       fields[[ids[i]]] <- dateInput(inputId = ids[i],
                                     label = labels[i],
-                                    value = value[[1]],
+                                    value = value,
                                     width = 400)
     }
     else if (type[i] == "actionButton") {
