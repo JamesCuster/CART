@@ -5,9 +5,11 @@
 observe({
   if (is.null(input[["time_rows_selected"]]) || input[["time_rows_selected"]] == "") {
     disable("editTime")
+    disable("deleteTime")
   }
   else {
     enable("editTime")
+    enable("deleteTime")
   }
 })
 
@@ -319,6 +321,55 @@ observeEvent(
 
 
 
+# 2.2.3 Delete Time -------------------------------------------------------
+observeEvent(
+  input$deleteTime, {
+    row <- input[["time_rows_selected"]]
+    rowID <- reactiveData$time[row, "timeID"]
+    projID <- reactiveData$time[row, "timeProjectID"]
+    name <- reactiveData$projects[reactiveData$projects$projectID == projID,
+                                  "projectName"]
+    # browser()
+    modalText <- paste("You are about to delete Time ID ", 
+                       rowID, " for project ", 
+                       name, "
+                       This action cannot be undone.", sep = "")
+    
+    
+    shinyalert(
+      title = "Delete Confirmation",
+      text = modalText,
+      size = "s", 
+      closeOnEsc = TRUE,
+      closeOnClickOutside = FALSE,
+      html = FALSE,
+      # type = "success",
+      showConfirmButton = TRUE,
+      showCancelButton = TRUE,
+      confirmButtonText = "Delete",
+      confirmButtonCol = "#AEDEF4",
+      cancelButtonText = "Cancel",
+      inputId = "confirmDeleteTime",
+      timer = 0,
+      imageUrl = "",
+      animation = TRUE
+    ) 
+    
+  })
+
+observeEvent(input$confirmDeleteTime, {
+  browser()
+  row <- input[["time_rows_selected"]]
+  rowID <- reactiveData$time[row, "timeID"]
+  
+  if (input$confirmDeleteTime) {
+    deleteCallback(rowID, "timeID", "time")
+  }
+})
+
+
+
+
 # 3 Fetch Merged Time Data ------------------------------------------------
 
 # 3.1 Database Query ------------------------------------------------------
@@ -381,8 +432,7 @@ filterViewTime <-
     if (!(is.null(input$viewTimeByProject) || 
           is.null(input$viewTimeByEmployee) || 
           is.null(input$viewTimeByDate))) {
-      
-      filtered <- reactiveData$viewTime %>% 
+      filtered <- reactiveData$viewTime %>%
         {if (input$viewTimeByProject != "All") {
           filter(., timeProjectID == input$viewTimeByProject)
         }
@@ -394,12 +444,12 @@ filterViewTime <-
           else {.}
         } %>% 
         {if (!is.na(input$viewTimeByDate[1])) {
-          filter(., as.Date(dateOfWork) >= input$viewTimeByDate[1])
+          .[as.Date(.$dateOfWork) >= input$viewTimeByDate[1], ]
         }
           else {.}
         } %>% 
         {if (!is.na(input$viewTimeByDate[2])) {
-          filter(., as.Date(dateOfWork) <= input$viewTimeByDate[2])
+          .[as.Date(.$dateOfWork) <= input$viewTimeByDate[2], ]
         }
           else {.}
         }

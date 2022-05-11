@@ -400,7 +400,6 @@ observeEvent(
 # 2.4 Delete Researcher -----------------------------------------------------
 observeEvent(
   input$deleteResearcher, {
-    researcherRowSelected <<- input[["researchers_rows_selected"]]
     row <- input[["researchers_rows_selected"]]
     rowID <- reactiveData$researchers[row, "researcherID"]
     name <- reactiveData$researchers[row, "researcherName"]
@@ -535,7 +534,6 @@ observeEvent(
 # 2.4 Delete Employee -----------------------------------------------------
 observeEvent(
   input$deleteEmployee, {
-    employeeRowSelected <<- input[["employees_rows_selected"]]
     row <- input[["employees_rows_selected"]]
     rowID <- reactiveData$employees[row, "bdshID"]
     name <- reactiveData$employees[row, "employeeName"]

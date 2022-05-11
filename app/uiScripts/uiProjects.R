@@ -15,6 +15,10 @@ tabPanel(
     "Edit"
   ),
   
+  actionButton(
+    "deleteProject",
+    "Delete"
+  ),
 
   # Filter Projects inputs
     # Choices updated in serverProject.R

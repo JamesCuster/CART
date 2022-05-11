@@ -5,9 +5,11 @@
 observe({
   if (is.null(input[["projects_rows_selected"]]) || input[["projects_rows_selected"]] == "") {
     disable("editProject")
+    disable("deleteProject")
   }
   else {
     enable("editProject")
+    enable("deleteProject")
   }
 })
 
@@ -304,6 +306,55 @@ observeEvent(
     removeModal()
   }
 )
+
+
+
+# 2.2.3 Delete Project ----------------------------------------------------
+observeEvent(
+  input$deleteProject, {
+    row <- input[["projects_rows_selected"]]
+    rowID <- reactiveData$projects[row, "projectID"]
+    name <- reactiveData$projects[row, "projectName"]
+    
+    modalText <- paste("You are about to delete Project ID ", 
+                       rowID, ": ", 
+                       name, "
+                       This action cannot be undone.", sep = "")
+    
+    
+    shinyalert(
+      title = "Delete Confirmation",
+      text = modalText,
+      size = "s", 
+      closeOnEsc = TRUE,
+      closeOnClickOutside = FALSE,
+      html = FALSE,
+      # type = "success",
+      showConfirmButton = TRUE,
+      showCancelButton = TRUE,
+      confirmButtonText = "Delete",
+      confirmButtonCol = "#AEDEF4",
+      cancelButtonText = "Cancel",
+      inputId = "confirmDeleteProject",
+      timer = 0,
+      imageUrl = "",
+      animation = TRUE
+    ) 
+    
+  })
+
+
+
+observeEvent(input$confirmDeleteProject, {
+  row <- input[["projects_rows_selected"]]
+  rowID <- reactiveData$projects[row, "projectID"]
+  
+  if (input$confirmDeleteProject) {
+    deleteCallback(rowID, "projectID", "projects")
+  }
+})
+
+
 
 
 

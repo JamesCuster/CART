@@ -117,7 +117,7 @@ shinyServer(
     
     
     deleteCallback <- function(rowID, idVar, tab) {
-      deleteStatement <- paste0("delete from ", tab, " where ", idVar, "='", rowID, "'")
+      deleteStatement <- paste0("delete from ", tab, " where ", idVar, "=", rowID)
       delete <- dbSendQuery(BDSHProjects, deleteStatement)
       dbClearResult(delete)
     }
