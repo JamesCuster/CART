@@ -16,6 +16,11 @@ tabPanel(
     "Edit"
   ),
   
+  actionButton(
+    "deleteResearcher",
+    "Delete"
+  ),
+  
   tags$br(),
   tags$br(),
   
@@ -41,6 +46,11 @@ tabPanel(
   actionButton(
     "editEmployee",
     "Edit"
+  ),
+  
+  actionButton(
+    "deleteEmployee",
+    "Delete"
   ),
   
   tags$br(),
