@@ -14,6 +14,11 @@ tabPanel(
     "Edit"
   ),
   
+  actionButton(
+    "deleteTime",
+    "Delete"
+  ),
+  
   div(
     selectizeInput(
       inputId = "viewTimeByProject",

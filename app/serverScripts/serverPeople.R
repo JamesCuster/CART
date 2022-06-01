@@ -1,21 +1,25 @@
 # 1 UI Components ---------------------------------------------------------
 
-# controls the edit button being grayed out
+# controls the edit/delete buttons being grayed out
 observe({
   # researchers
   if (is.null(input[["researchers_rows_selected"]]) || input[["researchers_rows_selected"]] == "") {
     disable("editResearcher")
+    disable("deleteResearcher")
   }
   else {
     enable("editResearcher")
+    enable("deleteResearcher")
   }
   
   # Employees
   if (is.null(input[["employees_rows_selected"]]) || input[["employees_rows_selected"]] == "") {
     disable("editEmployee")
+    disable("deleteEmployee")
   }
   else {
     enable("editEmployee")
+    enable("deleteEmployee")
   }
 })
 
@@ -341,6 +345,7 @@ observeEvent(input$cancelAddResearcher, {
 # call
 researcherRowSelected <- NULL
 
+
 observeEvent(
   input$editResearcher, {
     researcherRowSelected <<- input[["researchers_rows_selected"]]
@@ -392,7 +397,56 @@ observeEvent(
 
 
 
-# 2.4 Add Employee --------------------------------------------------------
+# 2.4 Delete Researcher -----------------------------------------------------
+observeEvent(
+  input$deleteResearcher, {
+    row <- input[["researchers_rows_selected"]]
+    rowID <- reactiveData$researchers[row, "researcherID"]
+    name <- reactiveData$researchers[row, "researcherName"]
+    
+    modalText <- paste("You are about to delete Reseacher ID ", 
+                       rowID, ": ", 
+                       name, "
+                       This action cannot be undone.", sep = "")
+    
+    
+    shinyalert(
+      title = "Delete Confirmation",
+      text = modalText,
+      size = "s", 
+      closeOnEsc = TRUE,
+      closeOnClickOutside = FALSE,
+      html = FALSE,
+      # type = "success",
+      showConfirmButton = TRUE,
+      showCancelButton = TRUE,
+      confirmButtonText = "Delete",
+      confirmButtonCol = "#AEDEF4",
+      cancelButtonText = "Cancel",
+      inputId = "confirmDeleteResearcher",
+      timer = 0,
+      imageUrl = "",
+      animation = TRUE
+    ) 
+    
+})
+
+observeEvent(input$confirmDeleteResearcher, {
+  row <- input[["researchers_rows_selected"]]
+  rowID <- reactiveData$researchers[row, "researcherID"]
+  
+  if (input$confirmDeleteResearcher) {
+    deleteCallback(rowID, "researcherID", "researchers")
+  }
+})
+
+
+
+
+
+
+
+# 2.5 Add Employee --------------------------------------------------------
 observeEvent(
   input$addEmployee, {
     fields <- 
@@ -425,7 +479,7 @@ observeEvent(
 
 
 
-# 2.5 Edit Employee -------------------------------------------------------
+# 2.6 Edit Employee -------------------------------------------------------
 # this object is used to preserve the row selected. It is assinged once a row is
 # selected and the edit button is pressed. It is used in the renderDataTable
 # call
@@ -474,3 +528,48 @@ observeEvent(
     removeModal()
   }
 )
+
+
+
+# 2.4 Delete Employee -----------------------------------------------------
+observeEvent(
+  input$deleteEmployee, {
+    row <- input[["employees_rows_selected"]]
+    rowID <- reactiveData$employees[row, "bdshID"]
+    name <- reactiveData$employees[row, "employeeName"]
+    
+    modalText <- paste("You are about to delete Employee ID ", 
+                       rowID, ": ", 
+                       name, "
+                       This action cannot be undone.", sep = "")
+    
+    
+    shinyalert(
+      title = "Delete Confirmation",
+      text = modalText,
+      size = "s", 
+      closeOnEsc = TRUE,
+      closeOnClickOutside = FALSE,
+      html = FALSE,
+      # type = "success",
+      showConfirmButton = TRUE,
+      showCancelButton = TRUE,
+      confirmButtonText = "Delete",
+      confirmButtonCol = "#AEDEF4",
+      cancelButtonText = "Cancel",
+      inputId = "confirmDeleteEmployee",
+      timer = 0,
+      imageUrl = "",
+      animation = TRUE
+    ) 
+    
+  })
+
+observeEvent(input$confirmDeleteEmployee, {
+  row <- input[["employees_rows_selected"]]
+  rowID <- reactiveData$employees[row, "bdshID"]
+  
+  if (input$confirmDeleteEmployee) {
+    deleteCallback(rowID, "bdshID", "employees")
+  }
+})
