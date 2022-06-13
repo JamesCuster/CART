@@ -329,7 +329,6 @@ observeEvent(
     projID <- reactiveData$time[row, "timeProjectID"]
     name <- reactiveData$projects[reactiveData$projects$projectID == projID,
                                   "projectName"]
-    # browser()
     modalText <- paste("You are about to delete Time ID ", 
                        rowID, " for project ", 
                        name, "
@@ -358,7 +357,6 @@ observeEvent(
   })
 
 observeEvent(input$confirmDeleteTime, {
-  browser()
   row <- input[["time_rows_selected"]]
   rowID <- reactiveData$time[row, "timeID"]
   

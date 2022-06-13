@@ -216,7 +216,6 @@ observeEvent(
 
 observeEvent(input$fiscalYear, {
   req(input$fiscalYear)
-  # browser()
   if (input$fiscalYear == 2019) {
     projectID <- 
       max(
